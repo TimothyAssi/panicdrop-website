@@ -970,7 +970,7 @@
             <header class="dashboard-header">
                 <div class="header-content">
                     <h1>📊 Altcoin Strength Scanner</h1>
-                    <p>Advanced crypto market intelligence with AI-powered insights</p>
+                    <p>Fast-loading market intelligence with on-demand fundamental analysis</p>
                     <div style="margin-top: 15px;">
                         <button onclick="openCalculationModal()" style="background: var(--accent-primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
                             📖 How Scores Are Calculated
@@ -1413,8 +1413,8 @@
             </div>
             <div class="modal-body" style="line-height: 1.6;">
                 <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
-                    <h4 style="margin: 0 0 10px 0; color: #059669;">✅ Revolutionary Fundamental Analysis</h4>
-                    <p style="margin: 0;">Scores are calculated using <strong>real-time fundamental metrics</strong> fetched via Perplexity AI API. No price-based speculation - only solid fundamentals matter.</p>
+                    <h4 style="margin: 0 0 10px 0; color: #059669;">✅ Hybrid Scoring System</h4>
+                    <p style="margin: 0;">Fast loading with basic CoinMarketCap scores, then <strong>on-demand fundamental analysis</strong> via Perplexity AI when you click on specific tokens. Best of both worlds: speed + depth.</p>
                 </div>
 
                 <h3>🎯 Fundamental Score System</h3>
@@ -1895,56 +1895,36 @@
                     bsc: ['BNB', 'CAKE', 'VAI', 'XVS']
                 };
 
-                // Process tokens in batches to avoid overwhelming the API
-                const batchSize = 3;
-                for (let i = 0; i < tokens.length; i += batchSize) {
-                    const batch = tokens.slice(i, i + batchSize);
-                    
-                    // Process batch concurrently
-                    const batchPromises = batch.map(async (token) => {
-                        try {
-                            token.category = this.categorizeToken(token, narratives);
-                            token.ecosystem = this.getEcosystem(token, ecosystems);
-                            
-                            // Generate mock AI data for DISPLAY ONLY (NOT used in calculations)
-                            token.aiData = this.getEnhancedAIData(token);
-                            
-                            // Calculate fundamental scores using real Perplexity AI data
-                            const fundamentalResults = await this.calculateFundamentalScore(token);
-                            
-                            // Store fundamental scoring results
-                            token.compositeScore = fundamentalResults.compositeScore;
-                            token.individualScores = fundamentalResults.individualScores;
-                            token.fundamentalMetrics = fundamentalResults.fundamentalMetrics;
-                            
-                            // Legacy score fields for compatibility (derived from fundamental score)
-                            token.momentumScore = fundamentalResults.compositeScore;
-                            token.growthScore = fundamentalResults.compositeScore;
-                            token.sentimentScore = fundamentalResults.compositeScore;
-                            token.potentialScore = fundamentalResults.compositeScore;
-                            
-                        } catch (error) {
-                            console.warn(`Failed to enrich ${token.symbol}:`, error);
-                            token.aiData = this.getDefaultAIData();
-                            const defaultScores = this.getDefaultScores();
-                            token.compositeScore = defaultScores.compositeScore;
-                            token.individualScores = defaultScores.individualScores;
-                            token.fundamentalMetrics = null;
-                            token.momentumScore = 50;
-                            token.growthScore = 50;
-                            token.sentimentScore = 50;
-                            token.potentialScore = 50;
-                        }
-                    });
-                    
-                    // Wait for batch to complete before processing next batch
-                    await Promise.all(batchPromises);
-                    
-                    console.log(`✅ Completed fundamental analysis for batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(tokens.length/batchSize)}`);
-                    
-                    // Small delay between batches to be respectful to API
-                    if (i + batchSize < tokens.length) {
-                        await new Promise(resolve => setTimeout(resolve, 2000));
+                // Process tokens with basic categorization first (fast loading)
+                for (const token of tokens) {
+                    try {
+                        token.category = this.categorizeToken(token, narratives);
+                        token.ecosystem = this.getEcosystem(token, ecosystems);
+                        
+                        // Generate mock AI data for DISPLAY ONLY (NOT used in calculations)
+                        token.aiData = this.getEnhancedAIData(token);
+                        
+                        // Use basic scoring initially for fast loading
+                        token.compositeScore = this.calculateBasicScore(token);
+                        token.individualScores = null; // Will be populated on-demand
+                        token.fundamentalMetrics = null; // Will be populated on-demand
+                        
+                        // Legacy score fields for compatibility
+                        token.momentumScore = token.compositeScore;
+                        token.growthScore = token.compositeScore;
+                        token.sentimentScore = token.compositeScore;
+                        token.potentialScore = token.compositeScore;
+                        
+                    } catch (error) {
+                        console.warn(`Failed to enrich ${token.symbol}:`, error);
+                        token.aiData = this.getDefaultAIData();
+                        token.compositeScore = 50;
+                        token.individualScores = null;
+                        token.fundamentalMetrics = null;
+                        token.momentumScore = 50;
+                        token.growthScore = 50;
+                        token.sentimentScore = 50;
+                        token.potentialScore = 50;
                     }
                 }
             }
@@ -2005,7 +1985,45 @@
                 };
             }
 
-            // NEW FUNDAMENTAL METRICS SCORING SYSTEM
+            // BASIC SCORING FOR FAST LOADING (based on CoinMarketCap data only)
+            calculateBasicScore(token) {
+                const quote = token.quote.USD;
+                let score = 0;
+                
+                // Market cap confidence (25 points)
+                if (quote.market_cap > 50000000000) score += 25;
+                else if (quote.market_cap > 10000000000) score += 22;
+                else if (quote.market_cap > 1000000000) score += 18;
+                else if (quote.market_cap > 100000000) score += 12;
+                else score += 5;
+                
+                // Volume activity (25 points)
+                if (quote.volume_24h > 1000000000) score += 25;
+                else if (quote.volume_24h > 100000000) score += 20;
+                else if (quote.volume_24h > 10000000) score += 15;
+                else if (quote.volume_24h > 1000000) score += 8;
+                else score += 3;
+                
+                // Volume/Market Cap ratio health (25 points)
+                const volumeRatio = quote.volume_24h / quote.market_cap;
+                if (volumeRatio > 0.1) score += 25;
+                else if (volumeRatio > 0.05) score += 20;
+                else if (volumeRatio > 0.01) score += 15;
+                else if (volumeRatio > 0.005) score += 10;
+                else score += 5;
+                
+                // Stability bonus (25 points)
+                const change7d = Math.abs(quote.percent_change_7d || 0);
+                const change30d = Math.abs(quote.percent_change_30d || 0);
+                if (change7d < 10 && change30d < 30) score += 25;
+                else if (change7d < 20 && change30d < 50) score += 20;
+                else if (change7d < 30 && change30d < 70) score += 15;
+                else score += 10;
+                
+                return Math.min(100, score);
+            }
+            
+            // ADVANCED FUNDAMENTAL METRICS SCORING SYSTEM (on-demand)
             // Each metric scored 0-10, total 20 metrics = 100 points maximum
             
             async calculateFundamentalScore(token) {
@@ -3003,7 +3021,7 @@
             button.textContent = isExpanding ? 'Show Less Details' : 'Show More Details';
         }
 
-        function populateTokenModal(token) {
+        async function populateTokenModal(token) {
             const quote = token.quote.USD;
             const ai = token.aiData;
             
@@ -3011,6 +3029,22 @@
             currentAnalysisToken = token;
             console.log('🎯 Token set for analysis:', currentAnalysisToken.symbol, currentAnalysisToken.name);
             resetAnalysisSection();
+            
+            // Load fundamental analysis in background if not already available
+            if (!token.individualScores) {
+                console.log(`🔍 Loading fundamental analysis for ${token.symbol}...`);
+                try {
+                    const fundamentalResults = await dashboard.calculateFundamentalScore(token);
+                    token.compositeScore = fundamentalResults.compositeScore;
+                    token.individualScores = fundamentalResults.individualScores;
+                    token.fundamentalMetrics = fundamentalResults.fundamentalMetrics;
+                    
+                    // Update the modal with new scores
+                    populateFundamentalScores(token);
+                } catch (error) {
+                    console.warn(`Failed to load fundamental analysis for ${token.symbol}:`, error);
+                }
+            }
 
             // Header information
             document.getElementById('modalTokenSymbol').textContent = `$${token.symbol}`;
@@ -3028,46 +3062,7 @@
             document.getElementById('modalPotentialScore').textContent = Math.round(token.potentialScore);
             
             // Populate Fundamental Score Breakdown
-            if (token.individualScores) {
-                // Token Economics & Supply
-                document.getElementById('scoreTokenUnlock').textContent = `${token.individualScores.tokenUnlock}/10`;
-                document.getElementById('scoreTVL').textContent = `${token.individualScores.tvl}/10`;
-                document.getElementById('scoreSupplyDynamics').textContent = `${token.individualScores.supplyDynamics}/10`;
-                document.getElementById('scoreMarketCap').textContent = `${token.individualScores.marketCap}/10`;
-                document.getElementById('scoreTokenDistribution').textContent = `${token.individualScores.tokenDistribution}/10`;
-                
-                // Network Activity & Adoption
-                document.getElementById('scoreActiveAddresses').textContent = `${token.individualScores.activeAddresses}/10`;
-                document.getElementById('scoreTransactionVolume').textContent = `${token.individualScores.transactionVolume}/10`;
-                document.getElementById('scoreProtocolRevenue').textContent = `${token.individualScores.protocolRevenue}/10`;
-                document.getElementById('scoreUsers').textContent = `${token.individualScores.users}/10`;
-                document.getElementById('scoreFDV').textContent = `${token.individualScores.fdv}/10`;
-                
-                // Technical & Development
-                document.getElementById('scoreDevelopmentActivity').textContent = `${token.individualScores.developmentActivity}/10`;
-                document.getElementById('scoreSecurityAudits').textContent = `${token.individualScores.securityAudits}/10`;
-                document.getElementById('scoreOnChainActivity').textContent = `${token.individualScores.onChainActivity}/10`;
-                document.getElementById('scoreLiquidity').textContent = `${token.individualScores.liquidity}/10`;
-                document.getElementById('scoreTradingVolume').textContent = `${token.individualScores.tradingVolume}/10`;
-                
-                // Market & Community
-                document.getElementById('scoreCommunitySize').textContent = `${token.individualScores.communitySize}/10`;
-                document.getElementById('scorePartnerships').textContent = `${token.individualScores.partnerships}/10`;
-                document.getElementById('scoreEcosystemFlows').textContent = `${token.individualScores.ecosystemFlows}/10`;
-                document.getElementById('scorePFRatio').textContent = `${token.individualScores.pfRatio}/10`;
-                document.getElementById('scoreMcapTvlRatio').textContent = `${token.individualScores.mcapTvlRatio}/10`;
-            } else {
-                // Reset to loading state if no fundamental scores available
-                const scoreElements = [
-                    'scoreTokenUnlock', 'scoreTVL', 'scoreSupplyDynamics', 'scoreMarketCap', 'scoreTokenDistribution',
-                    'scoreActiveAddresses', 'scoreTransactionVolume', 'scoreProtocolRevenue', 'scoreUsers', 'scoreFDV',
-                    'scoreDevelopmentActivity', 'scoreSecurityAudits', 'scoreOnChainActivity', 'scoreLiquidity', 'scoreTradingVolume',
-                    'scoreCommunitySize', 'scorePartnerships', 'scoreEcosystemFlows', 'scorePFRatio', 'scoreMcapTvlRatio'
-                ];
-                scoreElements.forEach(elementId => {
-                    document.getElementById(elementId).textContent = 'Loading...';
-                });
-            }
+            populateFundamentalScores(token);
 
             // Market Metrics
             document.getElementById('modalCurrentPrice').textContent = `$${dashboard.formatNumber(quote.price)}`;
@@ -3177,6 +3172,56 @@
                 closeCalculationModal();
             }
         });
+
+        // Function to populate fundamental scores in modal
+        function populateFundamentalScores(token) {
+            if (token.individualScores) {
+                // Token Economics & Supply
+                document.getElementById('scoreTokenUnlock').textContent = `${token.individualScores.tokenUnlock}/10`;
+                document.getElementById('scoreTVL').textContent = `${token.individualScores.tvl}/10`;
+                document.getElementById('scoreSupplyDynamics').textContent = `${token.individualScores.supplyDynamics}/10`;
+                document.getElementById('scoreMarketCap').textContent = `${token.individualScores.marketCap}/10`;
+                document.getElementById('scoreTokenDistribution').textContent = `${token.individualScores.tokenDistribution}/10`;
+                
+                // Network Activity & Adoption
+                document.getElementById('scoreActiveAddresses').textContent = `${token.individualScores.activeAddresses}/10`;
+                document.getElementById('scoreTransactionVolume').textContent = `${token.individualScores.transactionVolume}/10`;
+                document.getElementById('scoreProtocolRevenue').textContent = `${token.individualScores.protocolRevenue}/10`;
+                document.getElementById('scoreUsers').textContent = `${token.individualScores.users}/10`;
+                document.getElementById('scoreFDV').textContent = `${token.individualScores.fdv}/10`;
+                
+                // Technical & Development
+                document.getElementById('scoreDevelopmentActivity').textContent = `${token.individualScores.developmentActivity}/10`;
+                document.getElementById('scoreSecurityAudits').textContent = `${token.individualScores.securityAudits}/10`;
+                document.getElementById('scoreOnChainActivity').textContent = `${token.individualScores.onChainActivity}/10`;
+                document.getElementById('scoreLiquidity').textContent = `${token.individualScores.liquidity}/10`;
+                document.getElementById('scoreTradingVolume').textContent = `${token.individualScores.tradingVolume}/10`;
+                
+                // Market & Community
+                document.getElementById('scoreCommunitySize').textContent = `${token.individualScores.communitySize}/10`;
+                document.getElementById('scorePartnerships').textContent = `${token.individualScores.partnerships}/10`;
+                document.getElementById('scoreEcosystemFlows').textContent = `${token.individualScores.ecosystemFlows}/10`;
+                document.getElementById('scorePFRatio').textContent = `${token.individualScores.pfRatio}/10`;
+                document.getElementById('scoreMcapTvlRatio').textContent = `${token.individualScores.mcapTvlRatio}/10`;
+                
+                // Update composite score display
+                document.getElementById('modalCompositeScore').textContent = token.compositeScore.toFixed(1);
+            } else {
+                // Reset to loading state if no fundamental scores available
+                const scoreElements = [
+                    'scoreTokenUnlock', 'scoreTVL', 'scoreSupplyDynamics', 'scoreMarketCap', 'scoreTokenDistribution',
+                    'scoreActiveAddresses', 'scoreTransactionVolume', 'scoreProtocolRevenue', 'scoreUsers', 'scoreFDV',
+                    'scoreDevelopmentActivity', 'scoreSecurityAudits', 'scoreOnChainActivity', 'scoreLiquidity', 'scoreTradingVolume',
+                    'scoreCommunitySize', 'scorePartnerships', 'scoreEcosystemFlows', 'scorePFRatio', 'scoreMcapTvlRatio'
+                ];
+                scoreElements.forEach(elementId => {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        element.textContent = 'Loading...';
+                    }
+                });
+            }
+        }
 
         // Initialize when page loads
         window.addEventListener('DOMContentLoaded', async () => {
