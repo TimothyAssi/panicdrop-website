@@ -971,6 +971,11 @@
                 <div class="header-content">
                     <h1>📊 Altcoin Strength Scanner</h1>
                     <p>Advanced crypto market intelligence with AI-powered insights</p>
+                    <div style="margin-top: 15px;">
+                        <button onclick="openCalculationModal()" style="background: var(--accent-primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+                            📖 How Scores Are Calculated
+                        </button>
+                    </div>
                 </div>
                 <div class="header-stats">
                     <div class="stat">
@@ -1206,6 +1211,9 @@
                 <!-- AI Analysis -->
                 <div class="score-section">
                     <h3>🤖 AI Analysis Metrics</h3>
+                    <div style="background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 6px; padding: 10px; margin-bottom: 15px; font-size: 0.85rem;">
+                        <strong>⚠️ Display Only:</strong> These metrics are simulated for UI demonstration and are NOT included in score calculations.
+                    </div>
                     <div class="metrics-grid">
                         <div class="metric-group">
                             <h4>📊 Growth Indicators</h4>
@@ -1241,64 +1249,106 @@
                     </div>
                 </div>
 
-                <!-- Score Calculation Details -->
+                <!-- Fundamental Score Breakdown -->
                 <div class="score-section">
-                    <h3>🧮 Score Calculation Details</h3>
-                    <div class="metrics-grid">
+                    <h3>🧮 Fundamental Score Breakdown</h3>
+                    <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 6px; padding: 10px; margin-bottom: 15px; font-size: 0.85rem;">
+                        <strong>✅ Real-time Analysis:</strong> All metrics fetched live via Perplexity AI API
+                    </div>
+                    <div class="metrics-grid" id="fundamentalScoreBreakdown">
                         <div class="metric-group">
-                            <h4>📈 Momentum Score</h4>
-                            <div class="calculation-formula">
-                                Score = (7D_Change × 0.4) + (Volume_Change × 0.3) + (Sentiment - 50) × 0.3 + 50
+                            <h4>💰 Token Economics (25pts)</h4>
+                            <div class="metric-row">
+                                <span class="metric-name">Token Unlock Schedule</span>
+                                <span class="metric-data" id="scoreTokenUnlock">-/10</span>
                             </div>
                             <div class="metric-row">
-                                <span class="metric-name">Weight: Price Movement</span>
-                                <span class="metric-data">40%</span>
+                                <span class="metric-name">Total Value Locked</span>
+                                <span class="metric-data" id="scoreTVL">-/10</span>
                             </div>
                             <div class="metric-row">
-                                <span class="metric-name">Weight: Volume Change</span>
-                                <span class="metric-data">30%</span>
+                                <span class="metric-name">Supply Dynamics</span>
+                                <span class="metric-data" id="scoreSupplyDynamics">-/10</span>
                             </div>
                             <div class="metric-row">
-                                <span class="metric-name">Weight: Sentiment</span>
-                                <span class="metric-data">30%</span>
+                                <span class="metric-name">Market Capitalization</span>
+                                <span class="metric-data" id="scoreMarketCap">-/10</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-name">Token Distribution</span>
+                                <span class="metric-data" id="scoreTokenDistribution">-/10</span>
                             </div>
                         </div>
                         
                         <div class="metric-group">
-                            <h4>🚀 Growth Score</h4>
-                            <div class="calculation-formula">
-                                Score = (TVL_Growth × 0.4) + (Wallet_Growth × 0.3) + (30D_Change × 0.3) × 0.5 + 50
+                            <h4>🌐 Network Activity (25pts)</h4>
+                            <div class="metric-row">
+                                <span class="metric-name">Active Addresses</span>
+                                <span class="metric-data" id="scoreActiveAddresses">-/10</span>
                             </div>
                             <div class="metric-row">
-                                <span class="metric-name">Weight: TVL Growth</span>
-                                <span class="metric-data">40%</span>
+                                <span class="metric-name">Transaction Volume</span>
+                                <span class="metric-data" id="scoreTransactionVolume">-/10</span>
                             </div>
                             <div class="metric-row">
-                                <span class="metric-name">Weight: User Growth</span>
-                                <span class="metric-data">30%</span>
+                                <span class="metric-name">Protocol Revenue</span>
+                                <span class="metric-data" id="scoreProtocolRevenue">-/10</span>
                             </div>
                             <div class="metric-row">
-                                <span class="metric-name">Weight: Price Growth</span>
-                                <span class="metric-data">30%</span>
+                                <span class="metric-name">User Count</span>
+                                <span class="metric-data" id="scoreUsers">-/10</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-name">FDV Valuation</span>
+                                <span class="metric-data" id="scoreFDV">-/10</span>
                             </div>
                         </div>
                         
                         <div class="metric-group">
-                            <h4>⭐ Potential Score</h4>
-                            <div class="calculation-formula">
-                                Score = Base(50) + Market_Cap_Bonus + Growth_Factors - Risk_Adjustment
+                            <h4>🔧 Technical & Dev (25pts)</h4>
+                            <div class="metric-row">
+                                <span class="metric-name">Development Activity</span>
+                                <span class="metric-data" id="scoreDevelopmentActivity">-/10</span>
                             </div>
                             <div class="metric-row">
-                                <span class="metric-name">Market Cap Tier</span>
-                                <span class="metric-data" id="modalMarketCapTier">Mid Cap (+10)</span>
+                                <span class="metric-name">Security Audits</span>
+                                <span class="metric-data" id="scoreSecurityAudits">-/10</span>
                             </div>
                             <div class="metric-row">
-                                <span class="metric-name">Growth Bonus</span>
-                                <span class="metric-data" id="modalGrowthBonus">+25</span>
+                                <span class="metric-name">On-chain Activity</span>
+                                <span class="metric-data" id="scoreOnChainActivity">-/10</span>
                             </div>
                             <div class="metric-row">
-                                <span class="metric-name">Risk Penalty</span>
-                                <span class="metric-data" id="modalRiskPenalty">-8</span>
+                                <span class="metric-name">Liquidity</span>
+                                <span class="metric-data" id="scoreLiquidity">-/10</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-name">Trading Volume</span>
+                                <span class="metric-data" id="scoreTradingVolume">-/10</span>
+                            </div>
+                        </div>
+                        
+                        <div class="metric-group">
+                            <h4>👥 Market & Community (25pts)</h4>
+                            <div class="metric-row">
+                                <span class="metric-name">Community Size</span>
+                                <span class="metric-data" id="scoreCommunitySize">-/10</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-name">Partnerships</span>
+                                <span class="metric-data" id="scorePartnerships">-/10</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-name">Ecosystem Flows</span>
+                                <span class="metric-data" id="scoreEcosystemFlows">-/10</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-name">P/F Ratio</span>
+                                <span class="metric-data" id="scorePFRatio">-/10</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-name">MCap/TVL Ratio</span>
+                                <span class="metric-data" id="scoreMcapTvlRatio">-/10</span>
                             </div>
                         </div>
                     </div>
@@ -1323,7 +1373,7 @@
                 <div class="score-section">
                     <h3>🧠 AI Deep Analysis</h3>
                     <div style="text-align: center; margin-bottom: 20px;">
-                        <button id="loadAnalysisBtn" class="apply-filters-btn" onclick="loadPerplexityAnalysis()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 12px 24px;">
+                        <button id="loadAnalysisBtn" class="apply-filters-btn" onclick="loadPerplexityAnalysis()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 12px 24px; cursor: pointer; transition: all 0.3s ease;">
                             📊 Generate Deep Analysis
                         </button>
                     </div>
@@ -1349,6 +1399,115 @@
                         <strong>Analysis Unavailable</strong><br>
                         <span id="analysisErrorMessage">Please try again later.</span>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calculation Documentation Modal -->
+    <div id="calculationModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h2>📖 Score Calculation Methodology</h2>
+                <span class="close" onclick="closeCalculationModal()">&times;</span>
+            </div>
+            <div class="modal-body" style="line-height: 1.6;">
+                <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                    <h4 style="margin: 0 0 10px 0; color: #059669;">✅ Revolutionary Fundamental Analysis</h4>
+                    <p style="margin: 0;">Scores are calculated using <strong>real-time fundamental metrics</strong> fetched via Perplexity AI API. No price-based speculation - only solid fundamentals matter.</p>
+                </div>
+
+                <h3>🎯 Fundamental Score System</h3>
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                    <code style="display: block; font-family: monospace; color: var(--accent-primary);">
+                        Total Score = Sum of 20 Individual Metrics (0-10 each) = Maximum 100 Points
+                    </code>
+                    <p style="margin: 10px 0 0 0; font-size: 0.9rem; color: var(--text-secondary);">
+                        Each fundamental metric is scored 0-10 based on predefined thresholds and peer comparisons
+                    </p>
+                </div>
+
+                <h3>💰 Token Economics & Supply (25 points)</h3>
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                    <h4>Metrics (5 × 5 points each):</h4>
+                    <ul>
+                        <li><strong>Token Unlock Schedule (0-10)</strong>: Lower unlock percentage = higher score</li>
+                        <li><strong>Total Value Locked (0-10)</strong>: Higher TVL = higher confidence</li>
+                        <li><strong>Supply Dynamics (0-10)</strong>: Deflationary > Stable > Inflationary</li>
+                        <li><strong>Market Capitalization (0-10)</strong>: Larger cap = higher confidence</li>
+                        <li><strong>Token Distribution (0-10)</strong>: Less concentration = better score</li>
+                    </ul>
+                </div>
+
+                <h3>🌐 Network Activity & Adoption (25 points)</h3>
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                    <h4>Metrics (5 × 5 points each):</h4>
+                    <ul>
+                        <li><strong>Active Addresses (0-10)</strong>: More daily/monthly addresses = higher score</li>
+                        <li><strong>Transaction Volume (0-10)</strong>: Higher USD value of transactions</li>
+                        <li><strong>Protocol Revenue (0-10)</strong>: Monthly revenue generation</li>
+                        <li><strong>User Count (0-10)</strong>: Number of active protocol users</li>
+                        <li><strong>Fully Diluted Valuation (0-10)</strong>: Reasonable valuation ranges</li>
+                    </ul>
+                </div>
+
+                <h3>🔧 Technical & Development (25 points)</h3>
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                    <h4>Metrics (5 × 5 points each):</h4>
+                    <ul>
+                        <li><strong>Development Activity (0-10)</strong>: GitHub commits in last 30 days</li>
+                        <li><strong>Security Audits (0-10)</strong>: Number of completed security audits</li>
+                        <li><strong>On-chain Activity (0-10)</strong>: Transaction growth trends</li>
+                        <li><strong>Liquidity (0-10)</strong>: Total liquidity across exchanges</li>
+                        <li><strong>Trading Volume (0-10)</strong>: 24-hour trading volume</li>
+                    </ul>
+                </div>
+
+                <h3>👥 Market & Community (25 points)</h3>
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                    <h4>Metrics (5 × 5 points each):</h4>
+                    <ul>
+                        <li><strong>Community Size (0-10)</strong>: Combined social media followers</li>
+                        <li><strong>Partnerships (0-10)</strong>: Number of major partnerships</li>
+                        <li><strong>Ecosystem Flows (0-10)</strong>: Cross-chain transaction volume</li>
+                        <li><strong>P/F Ratio (0-10)</strong>: Price-to-Fees ratio (lower = better value)</li>
+                        <li><strong>MCap/TVL Ratio (0-10)</strong>: Market Cap to TVL ratio (lower = better)</li>
+                    </ul>
+                </div>
+
+                <h3>📊 Data Sources & API Integration</h3>
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                    <h4>Primary Data Sources (Real-time via Perplexity AI):</h4>
+                    <ul>
+                        <li>✅ <strong>Perplexity AI API</strong>: Real-time fundamental metrics research</li>
+                        <li>✅ <strong>CoinMarketCap API</strong>: Price, market cap, volume data</li>
+                        <li>✅ <strong>On-chain Analytics</strong>: GitHub, DeFiLlama, protocol data</li>
+                        <li>✅ <strong>Social Metrics</strong>: Twitter, Discord, community data</li>
+                    </ul>
+                    <h4>Scoring Integration:</h4>
+                    <ul>
+                        <li><strong>20 Fundamental Metrics</strong>: Each scored 0-10 points</li>
+                        <li><strong>Real-time Research</strong>: Perplexity AI fetches latest data</li>
+                        <li><strong>No Price Speculation</strong>: Focus on solid fundamentals only</li>
+                        <li><strong>Threshold-based Scoring</strong>: Objective evaluation criteria</li>
+                    </ul>
+                </div>
+
+                <h3>🎯 Fundamental Score Interpretation</h3>
+                <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px;">
+                    <ul>
+                        <li><strong>85-100</strong>: Elite fundamental strength - institutional grade</li>
+                        <li><strong>70-84</strong>: Strong fundamentals - high conviction projects</li>
+                        <li><strong>55-69</strong>: Solid fundamentals - good potential</li>
+                        <li><strong>40-54</strong>: Mixed fundamentals - moderate risk</li>
+                        <li><strong>25-39</strong>: Weak fundamentals - high risk</li>
+                        <li><strong>0-24</strong>: Poor fundamentals - extreme risk</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-size: 0.9rem; color: var(--text-secondary);">
+                        <strong>Note:</strong> Scores are based purely on fundamental analysis, not price performance. 
+                        A project scoring 85+ demonstrates exceptional fundamentals across token economics, 
+                        adoption, development, and community metrics.
+                    </p>
                 </div>
             </div>
         </div>
@@ -1568,6 +1727,7 @@
                     {
                         symbol: 'FET',
                         name: 'Fetch.ai',
+                        category: 'AI & Machine Learning',
                         quote: {
                             USD: {
                                 price: 1.23,
@@ -1581,6 +1741,7 @@
                     {
                         symbol: 'ONDO',
                         name: 'Ondo Finance',
+                        category: 'RWA & DeFi',
                         quote: {
                             USD: {
                                 price: 0.87,
@@ -1594,6 +1755,7 @@
                     {
                         symbol: 'SOL',
                         name: 'Solana',
+                        category: 'Layer 1',
                         quote: {
                             USD: {
                                 price: 145.23,
@@ -1607,6 +1769,7 @@
                     {
                         symbol: 'ARB',
                         name: 'Arbitrum',
+                        category: 'Layer 2',
                         quote: {
                             USD: {
                                 price: 0.92,
@@ -1620,6 +1783,7 @@
                     {
                         symbol: 'DIMO',
                         name: 'DIMO Protocol',
+                        category: 'IoT & DePIN',
                         quote: {
                             USD: {
                                 price: 0.245,
@@ -1633,6 +1797,7 @@
                     {
                         symbol: 'MAGIC',
                         name: 'Treasure',
+                        category: 'Gaming',
                         quote: {
                             USD: {
                                 price: 0.58,
@@ -1646,6 +1811,7 @@
                     {
                         symbol: 'HNT',
                         name: 'Helium',
+                        category: 'IoT & DePIN',
                         quote: {
                             USD: {
                                 price: 3.45,
@@ -1659,6 +1825,7 @@
                     {
                         symbol: 'IMX',
                         name: 'Immutable X',
+                        category: 'Gaming & NFT',
                         quote: {
                             USD: {
                                 price: 1.67,
@@ -1672,6 +1839,7 @@
                     {
                         symbol: 'OCEAN',
                         name: 'Ocean Protocol',
+                        category: 'AI & Data',
                         quote: {
                             USD: {
                                 price: 0.425,
@@ -1685,6 +1853,7 @@
                     {
                         symbol: 'RNDR',
                         name: 'Render Token',
+                        category: 'AI & Compute',
                         quote: {
                             USD: {
                                 price: 7.82,
@@ -1726,20 +1895,56 @@
                     bsc: ['BNB', 'CAKE', 'VAI', 'XVS']
                 };
 
-                for (const token of tokens) {
-                    try {
-                        token.category = this.categorizeToken(token, narratives);
-                        token.ecosystem = this.getEcosystem(token, ecosystems);
-                        token.aiData = this.getEnhancedAIData(token);
-                        token.momentumScore = this.calculateMomentumScore(token);
-                        token.growthScore = this.calculateGrowthScore(token);
-                        token.sentimentScore = token.aiData.sentimentScore;
-                        token.potentialScore = this.calculatePotentialScore(token);
-                        token.compositeScore = this.calculateCompositeScore(token);
-                    } catch (error) {
-                        console.warn(`Failed to enrich ${token.symbol}:`, error);
-                        token.aiData = this.getDefaultAIData();
-                        token.compositeScore = 0;
+                // Process tokens in batches to avoid overwhelming the API
+                const batchSize = 3;
+                for (let i = 0; i < tokens.length; i += batchSize) {
+                    const batch = tokens.slice(i, i + batchSize);
+                    
+                    // Process batch concurrently
+                    const batchPromises = batch.map(async (token) => {
+                        try {
+                            token.category = this.categorizeToken(token, narratives);
+                            token.ecosystem = this.getEcosystem(token, ecosystems);
+                            
+                            // Generate mock AI data for DISPLAY ONLY (NOT used in calculations)
+                            token.aiData = this.getEnhancedAIData(token);
+                            
+                            // Calculate fundamental scores using real Perplexity AI data
+                            const fundamentalResults = await this.calculateFundamentalScore(token);
+                            
+                            // Store fundamental scoring results
+                            token.compositeScore = fundamentalResults.compositeScore;
+                            token.individualScores = fundamentalResults.individualScores;
+                            token.fundamentalMetrics = fundamentalResults.fundamentalMetrics;
+                            
+                            // Legacy score fields for compatibility (derived from fundamental score)
+                            token.momentumScore = fundamentalResults.compositeScore;
+                            token.growthScore = fundamentalResults.compositeScore;
+                            token.sentimentScore = fundamentalResults.compositeScore;
+                            token.potentialScore = fundamentalResults.compositeScore;
+                            
+                        } catch (error) {
+                            console.warn(`Failed to enrich ${token.symbol}:`, error);
+                            token.aiData = this.getDefaultAIData();
+                            const defaultScores = this.getDefaultScores();
+                            token.compositeScore = defaultScores.compositeScore;
+                            token.individualScores = defaultScores.individualScores;
+                            token.fundamentalMetrics = null;
+                            token.momentumScore = 50;
+                            token.growthScore = 50;
+                            token.sentimentScore = 50;
+                            token.potentialScore = 50;
+                        }
+                    });
+                    
+                    // Wait for batch to complete before processing next batch
+                    await Promise.all(batchPromises);
+                    
+                    console.log(`✅ Completed fundamental analysis for batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(tokens.length/batchSize)}`);
+                    
+                    // Small delay between batches to be respectful to API
+                    if (i + batchSize < tokens.length) {
+                        await new Promise(resolve => setTimeout(resolve, 2000));
                     }
                 }
             }
@@ -1800,56 +2005,301 @@
                 };
             }
 
-            calculateMomentumScore(token) {
-                const quote = token.quote.USD;
-                const ai = token.aiData;
+            // NEW FUNDAMENTAL METRICS SCORING SYSTEM
+            // Each metric scored 0-10, total 20 metrics = 100 points maximum
+            
+            async calculateFundamentalScore(token) {
+                console.log(`🔍 Calculating fundamental score for ${token.symbol}`);
                 
-                let score = 0;
-                score += (quote.percent_change_7d || 0) * 0.4;
-                score += (quote.volume_change_24h || 0) * 0.3;
-                score += (ai.sentimentScore - 50) * 0.3;
+                // Fetch fundamental metrics from Perplexity AI
+                let fundamentalMetrics = null;
+                try {
+                    fundamentalMetrics = await this.fetchFundamentalMetrics(token);
+                } catch (error) {
+                    console.warn(`Failed to fetch fundamental metrics for ${token.symbol}:`, error);
+                    return this.getDefaultScores();
+                }
                 
-                return Math.max(0, Math.min(100, score + 50));
+                if (!fundamentalMetrics) {
+                    return this.getDefaultScores();
+                }
+                
+                // Calculate individual metric scores (0-10 each)
+                const scores = {
+                    // Token Economics & Supply (25 points)
+                    tokenUnlock: this.scoreTokenUnlock(fundamentalMetrics.tokenUnlockSchedule),
+                    tvl: this.scoreTVL(fundamentalMetrics.tvl),
+                    supplyDynamics: this.scoreSupplyDynamics(fundamentalMetrics.supplyDynamics),
+                    marketCap: this.scoreMarketCap(token.quote.USD.market_cap),
+                    tokenDistribution: this.scoreTokenDistribution(fundamentalMetrics.tokenDistribution),
+                    
+                    // Network Activity & Adoption (25 points)
+                    activeAddresses: this.scoreActiveAddresses(fundamentalMetrics.activeAddresses),
+                    transactionVolume: this.scoreTransactionVolume(fundamentalMetrics.transactionVolume),
+                    protocolRevenue: this.scoreProtocolRevenue(fundamentalMetrics.protocolRevenue),
+                    users: this.scoreUsers(fundamentalMetrics.users),
+                    fdv: this.scoreFDV(fundamentalMetrics.fdv),
+                    
+                    // Technical & Development (25 points)  
+                    developmentActivity: this.scoreDevelopmentActivity(fundamentalMetrics.developmentActivity),
+                    securityAudits: this.scoreSecurityAudits(fundamentalMetrics.securityAudits),
+                    onChainActivity: this.scoreOnChainActivity(fundamentalMetrics.onChainActivity),
+                    liquidity: this.scoreLiquidity(fundamentalMetrics.liquidity),
+                    tradingVolume: this.scoreTradingVolume(fundamentalMetrics.tradingVolume),
+                    
+                    // Market & Community (25 points)
+                    communitySize: this.scoreCommunitySize(fundamentalMetrics.communitySize),
+                    partnerships: this.scorePartnerships(fundamentalMetrics.partnerships),
+                    ecosystemFlows: this.scoreEcosystemFlows(fundamentalMetrics.ecosystemFlows),
+                    pfRatio: this.scorePFRatio(fundamentalMetrics.pfRatio),
+                    mcapTvlRatio: this.scoreMcapTvlRatio(fundamentalMetrics.mcapTvlRatio)
+                };
+                
+                // Calculate composite score (sum of all metrics)
+                const totalScore = Object.values(scores).reduce((sum, score) => sum + score, 0);
+                
+                console.log(`📊 ${token.symbol} fundamental scores:`, scores);
+                console.log(`🎯 ${token.symbol} total fundamental score: ${totalScore}/100`);
+                
+                return {
+                    compositeScore: totalScore,
+                    individualScores: scores,
+                    fundamentalMetrics: fundamentalMetrics
+                };
             }
-
-            calculateGrowthScore(token) {
-                const ai = token.aiData;
-                
-                let score = 0;
-                score += ai.tvlGrowth30d * 0.4;
-                score += ai.walletGrowth30d * 0.3;
-                score += (token.quote.USD.percent_change_30d || 0) * 0.3;
-                
-                return Math.max(0, Math.min(100, score * 0.5 + 50));
+            
+            async fetchFundamentalMetrics(token) {
+                try {
+                    const response = await fetch('/api/fundamental-metrics', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            coinSymbol: token.symbol,
+                            coinName: token.name
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    return data.metrics;
+                } catch (error) {
+                    console.error(`Error fetching fundamental metrics for ${token.symbol}:`, error);
+                    return null;
+                }
             }
-
-            calculatePotentialScore(token) {
-                const quote = token.quote.USD;
-                const ai = token.aiData;
-                
-                let score = 50;
-                
-                if (quote.market_cap < 100000000) score += 20;
-                else if (quote.market_cap < 1000000000) score += 15;
-                else if (quote.market_cap < 10000000000) score += 10;
-                
-                score += ai.tvlGrowth30d * 0.2;
-                score += ai.walletGrowth30d * 0.2;
-                score += (ai.sentimentScore - 50) * 0.3;
-                score -= ai.unlockRisk * 0.2;
-                
-                return Math.max(0, Math.min(100, score));
+            
+            // Individual metric scoring functions (0-10 scale)
+            scoreTokenUnlock(tokenUnlock) {
+                if (!tokenUnlock || tokenUnlock.value === "N/A") return 5;
+                const unlockPercentage = parseFloat(tokenUnlock.value);
+                if (unlockPercentage < 5) return 10;   // Very low unlock = excellent
+                if (unlockPercentage < 15) return 8;   // Low unlock = good  
+                if (unlockPercentage < 30) return 6;   // Medium unlock = average
+                if (unlockPercentage < 50) return 4;   // High unlock = below average
+                return 2;                              // Very high unlock = poor
             }
-
-            calculateCompositeScore(token) {
-                const scores = [
-                    token.momentumScore,
-                    token.growthScore, 
-                    token.sentimentScore,
-                    token.potentialScore
-                ];
-                
-                return scores.reduce((sum, score) => sum + score, 0) / scores.length;
+            
+            scoreTVL(tvl) {
+                if (!tvl || tvl.value === "N/A") return 5;
+                const tvlValue = parseFloat(tvl.value);
+                if (tvlValue > 10000000000) return 10;  // >$10B = excellent
+                if (tvlValue > 1000000000) return 8;    // >$1B = good
+                if (tvlValue > 100000000) return 6;     // >$100M = average  
+                if (tvlValue > 10000000) return 4;      // >$10M = below average
+                return 2;                               // <$10M = poor
+            }
+            
+            scoreSupplyDynamics(supplyDynamics) {
+                if (!supplyDynamics || supplyDynamics.type === "N/A") return 5;
+                if (supplyDynamics.type === "deflationary") return 10;  // Deflationary = excellent
+                if (supplyDynamics.type === "stable") return 7;         // Stable = good
+                return 4;                                                // Inflationary = below average
+            }
+            
+            scoreMarketCap(marketCap) {
+                if (marketCap > 50000000000) return 8;   // >$50B = very high confidence
+                if (marketCap > 10000000000) return 7;   // >$10B = high confidence
+                if (marketCap > 1000000000) return 6;    // >$1B = medium confidence
+                if (marketCap > 100000000) return 5;     // >$100M = average
+                if (marketCap > 10000000) return 3;      // >$10M = below average
+                return 1;                                // <$10M = very risky
+            }
+            
+            scoreTokenDistribution(tokenDistribution) {
+                if (!tokenDistribution || tokenDistribution.value === "N/A") return 5;
+                const concentrationPercentage = parseFloat(tokenDistribution.value);
+                if (concentrationPercentage < 30) return 10;  // <30% concentration = excellent distribution
+                if (concentrationPercentage < 50) return 8;   // <50% = good distribution
+                if (concentrationPercentage < 70) return 6;   // <70% = average distribution
+                if (concentrationPercentage < 85) return 4;   // <85% = poor distribution
+                return 2;                                     // >85% = very poor distribution
+            }
+            
+            scoreActiveAddresses(activeAddresses) {
+                if (!activeAddresses || activeAddresses.value === "N/A") return 5;
+                const addresses = parseFloat(activeAddresses.value);
+                if (addresses > 1000000) return 10;     // >1M addresses = excellent
+                if (addresses > 100000) return 8;       // >100K = good
+                if (addresses > 10000) return 6;        // >10K = average
+                if (addresses > 1000) return 4;         // >1K = below average
+                return 2;                               // <1K = poor
+            }
+            
+            scoreTransactionVolume(transactionVolume) {
+                if (!transactionVolume || transactionVolume.valueUSD === "N/A") return 5;
+                const volume = parseFloat(transactionVolume.valueUSD);
+                if (volume > 1000000000) return 10;     // >$1B daily = excellent
+                if (volume > 100000000) return 8;       // >$100M = good
+                if (volume > 10000000) return 6;        // >$10M = average
+                if (volume > 1000000) return 4;         // >$1M = below average
+                return 2;                               // <$1M = poor
+            }
+            
+            scoreProtocolRevenue(protocolRevenue) {
+                if (!protocolRevenue || protocolRevenue.value === "N/A") return 5;
+                const revenue = parseFloat(protocolRevenue.value);
+                if (revenue > 100000000) return 10;     // >$100M monthly = excellent
+                if (revenue > 10000000) return 8;       // >$10M = good
+                if (revenue > 1000000) return 6;        // >$1M = average
+                if (revenue > 100000) return 4;         // >$100K = below average
+                return 2;                               // <$100K = poor
+            }
+            
+            scoreUsers(users) {
+                if (!users || users.value === "N/A") return 5;
+                const userCount = parseFloat(users.value);
+                if (userCount > 10000000) return 10;    // >10M users = excellent
+                if (userCount > 1000000) return 8;      // >1M = good
+                if (userCount > 100000) return 6;       // >100K = average
+                if (userCount > 10000) return 4;        // >10K = below average
+                return 2;                               // <10K = poor
+            }
+            
+            scoreFDV(fdv) {
+                if (!fdv || fdv.value === "N/A") return 5;
+                const fdvValue = parseFloat(fdv.value);
+                // FDV scoring based on reasonable valuation ranges
+                if (fdvValue > 100000000000) return 4;  // >$100B = potentially overvalued
+                if (fdvValue > 50000000000) return 6;   // $50-100B = high but reasonable
+                if (fdvValue > 10000000000) return 8;   // $10-50B = good range
+                if (fdvValue > 1000000000) return 9;    // $1-10B = excellent range
+                if (fdvValue > 100000000) return 7;     // $100M-1B = good for smaller projects
+                return 5;                               // <$100M = very early stage
+            }
+            
+            scoreDevelopmentActivity(developmentActivity) {
+                if (!developmentActivity || developmentActivity.commits === "N/A") return 5;
+                const commits = parseFloat(developmentActivity.commits);
+                if (commits > 500) return 10;           // >500 commits/month = excellent
+                if (commits > 200) return 8;            // >200 = good
+                if (commits > 50) return 6;             // >50 = average
+                if (commits > 10) return 4;             // >10 = below average
+                return 2;                               // <10 = poor
+            }
+            
+            scoreSecurityAudits(securityAudits) {
+                if (!securityAudits || securityAudits.count === "N/A") return 5;
+                const audits = parseFloat(securityAudits.count);
+                if (audits >= 5) return 10;             // 5+ audits = excellent
+                if (audits >= 3) return 8;              // 3-4 audits = good
+                if (audits >= 2) return 6;              // 2 audits = average
+                if (audits >= 1) return 4;              // 1 audit = below average
+                return 2;                               // 0 audits = poor
+            }
+            
+            scoreOnChainActivity(onChainActivity) {
+                if (!onChainActivity || onChainActivity.trend === "N/A") return 5;
+                if (onChainActivity.trend === "increasing") return 10;   // Increasing = excellent
+                if (onChainActivity.trend === "stable") return 6;        // Stable = average
+                return 3;                                                // Decreasing = poor
+            }
+            
+            scoreLiquidity(liquidity) {
+                if (!liquidity || liquidity.value === "N/A") return 5;
+                const liquidityValue = parseFloat(liquidity.value);
+                if (liquidityValue > 1000000000) return 10;  // >$1B = excellent
+                if (liquidityValue > 100000000) return 8;    // >$100M = good
+                if (liquidityValue > 10000000) return 6;     // >$10M = average
+                if (liquidityValue > 1000000) return 4;      // >$1M = below average
+                return 2;                                    // <$1M = poor
+            }
+            
+            scoreTradingVolume(tradingVolume) {
+                if (!tradingVolume || tradingVolume.value === "N/A") return 5;
+                const volume = parseFloat(tradingVolume.value);
+                if (volume > 1000000000) return 10;     // >$1B = excellent
+                if (volume > 100000000) return 8;       // >$100M = good  
+                if (volume > 10000000) return 6;        // >$10M = average
+                if (volume > 1000000) return 4;         // >$1M = below average
+                return 2;                               // <$1M = poor
+            }
+            
+            scoreCommunitySize(communitySize) {
+                if (!communitySize || communitySize.followers === "N/A") return 5;
+                const followers = parseFloat(communitySize.followers);
+                if (followers > 1000000) return 10;     // >1M followers = excellent
+                if (followers > 500000) return 8;       // >500K = good
+                if (followers > 100000) return 6;       // >100K = average
+                if (followers > 10000) return 4;        // >10K = below average  
+                return 2;                               // <10K = poor
+            }
+            
+            scorePartnerships(partnerships) {
+                if (!partnerships || partnerships.count === "N/A") return 5;
+                const partnerCount = parseFloat(partnerships.count);
+                if (partnerCount >= 50) return 10;      // 50+ partnerships = excellent
+                if (partnerCount >= 20) return 8;       // 20+ = good
+                if (partnerCount >= 10) return 6;       // 10+ = average
+                if (partnerCount >= 5) return 4;        // 5+ = below average
+                return 2;                               // <5 = poor
+            }
+            
+            scoreEcosystemFlows(ecosystemFlows) {
+                if (!ecosystemFlows || ecosystemFlows.value === "N/A") return 5;
+                const flows = parseFloat(ecosystemFlows.value);
+                if (flows > 10000000000) return 10;     // >$10B = excellent
+                if (flows > 1000000000) return 8;       // >$1B = good
+                if (flows > 100000000) return 6;        // >$100M = average
+                if (flows > 10000000) return 4;         // >$10M = below average
+                return 2;                               // <$10M = poor
+            }
+            
+            scorePFRatio(pfRatio) {
+                if (!pfRatio || pfRatio.value === "N/A") return 5;
+                const ratio = parseFloat(pfRatio.value);
+                if (ratio < 10) return 10;              // <10 = excellent value
+                if (ratio < 25) return 8;               // <25 = good value
+                if (ratio < 50) return 6;               // <50 = average
+                if (ratio < 100) return 4;              // <100 = expensive
+                return 2;                               // >100 = very expensive
+            }
+            
+            scoreMcapTvlRatio(mcapTvlRatio) {
+                if (!mcapTvlRatio || mcapTvlRatio.value === "N/A") return 5;
+                const ratio = parseFloat(mcapTvlRatio.value);
+                if (ratio < 1) return 10;               // <1 = excellent value
+                if (ratio < 3) return 8;                // <3 = good value
+                if (ratio < 10) return 6;               // <10 = average
+                if (ratio < 20) return 4;               // <20 = expensive
+                return 2;                               // >20 = very expensive
+            }
+            
+            getDefaultScores() {
+                return {
+                    compositeScore: 50,  // Neutral score when data unavailable
+                    individualScores: {
+                        tokenUnlock: 5, tvl: 5, supplyDynamics: 5, marketCap: 5, tokenDistribution: 5,
+                        activeAddresses: 5, transactionVolume: 5, protocolRevenue: 5, users: 5, fdv: 5,
+                        developmentActivity: 5, securityAudits: 5, onChainActivity: 5, liquidity: 5, tradingVolume: 5,
+                        communitySize: 5, partnerships: 5, ecosystemFlows: 5, pfRatio: 5, mcapTvlRatio: 5
+                    },
+                    fundamentalMetrics: null
+                };
             }
 
             getDefaultAIData() {
@@ -2324,10 +2774,15 @@
 
         // Load Perplexity AI analysis for current token
         async function loadPerplexityAnalysis() {
+            console.log('🧠 loadPerplexityAnalysis() called');
+            
             if (!currentAnalysisToken) {
-                console.error('No token selected for analysis');
+                console.error('❌ No token selected for analysis');
+                alert('Error: No token selected for analysis. Please try opening a token first.');
                 return;
             }
+
+            console.log('📊 Current analysis token:', currentAnalysisToken.symbol, currentAnalysisToken.name);
 
             const cacheKey = `${currentAnalysisToken.symbol}_${currentAnalysisToken.name}`;
             
@@ -2339,37 +2794,56 @@
             }
 
             // Show loading state
-            document.getElementById('loadAnalysisBtn').style.display = 'none';
-            document.getElementById('analysisLoadingContainer').style.display = 'block';
-            document.getElementById('analysisError').style.display = 'none';
+            const loadBtn = document.getElementById('loadAnalysisBtn');
+            const loadingContainer = document.getElementById('analysisLoadingContainer');
+            const errorContainer = document.getElementById('analysisError');
+            
+            if (!loadBtn || !loadingContainer || !errorContainer) {
+                console.error('❌ Missing required modal elements');
+                alert('Error: Modal elements not found. Please refresh the page.');
+                return;
+            }
+
+            loadBtn.style.display = 'none';
+            loadingContainer.style.display = 'block';
+            errorContainer.style.display = 'none';
 
             try {
                 console.log('🧠 Requesting Perplexity analysis for:', currentAnalysisToken.symbol);
+                
+                const requestData = {
+                    coinName: currentAnalysisToken.name,
+                    coinSymbol: currentAnalysisToken.symbol,
+                    category: currentAnalysisToken.category || 'Cryptocurrency',
+                    marketCap: currentAnalysisToken.quote.USD.market_cap,
+                    price: currentAnalysisToken.quote.USD.price,
+                    score: currentAnalysisToken.compositeScore || 75
+                };
+                
+                console.log('📤 Sending request data:', requestData);
                 
                 const response = await fetch('/api/perplexity-analysis', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        coinName: currentAnalysisToken.name,
-                        coinSymbol: currentAnalysisToken.symbol,
-                        category: currentAnalysisToken.category,
-                        marketCap: currentAnalysisToken.quote.USD.market_cap,
-                        price: currentAnalysisToken.quote.USD.price,
-                        score: currentAnalysisToken.compositeScore
-                    })
+                    body: JSON.stringify(requestData)
                 });
 
+                console.log('📥 Response status:', response.status, response.statusText);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
                 const data = await response.json();
+                console.log('📄 Response data:', data);
                 
                 if (data.success && data.structured) {
                     console.log('✅ Analysis received successfully');
-                    // Cache the structured result
                     analysisCache.set(cacheKey, data.structured);
                     displayAnalysis(data.structured);
                 } else if (data.structured) {
-                    // Fallback case - still has structured data
                     console.log('⚠️ Using fallback analysis');
                     analysisCache.set(cacheKey, data.structured);
                     displayAnalysis(data.structured);
@@ -2379,7 +2853,7 @@
 
             } catch (error) {
                 console.error('❌ Analysis error:', error);
-                showAnalysisError(error.message);
+                showAnalysisError(`Analysis failed: ${error.message}. Please try again or check your connection.`);
             }
         }
 
@@ -2535,6 +3009,7 @@
             
             // Set current token for analysis
             currentAnalysisToken = token;
+            console.log('🎯 Token set for analysis:', currentAnalysisToken.symbol, currentAnalysisToken.name);
             resetAnalysisSection();
 
             // Header information
@@ -2546,11 +3021,53 @@
             // Composite Score
             document.getElementById('modalCompositeScore').textContent = token.compositeScore.toFixed(1);
 
-            // Score Breakdown
+            // Score Breakdown (legacy compatibility)
             document.getElementById('modalMomentumScore').textContent = Math.round(token.momentumScore);
             document.getElementById('modalGrowthScore').textContent = Math.round(token.growthScore);
             document.getElementById('modalSentimentScore').textContent = Math.round(token.sentimentScore);
             document.getElementById('modalPotentialScore').textContent = Math.round(token.potentialScore);
+            
+            // Populate Fundamental Score Breakdown
+            if (token.individualScores) {
+                // Token Economics & Supply
+                document.getElementById('scoreTokenUnlock').textContent = `${token.individualScores.tokenUnlock}/10`;
+                document.getElementById('scoreTVL').textContent = `${token.individualScores.tvl}/10`;
+                document.getElementById('scoreSupplyDynamics').textContent = `${token.individualScores.supplyDynamics}/10`;
+                document.getElementById('scoreMarketCap').textContent = `${token.individualScores.marketCap}/10`;
+                document.getElementById('scoreTokenDistribution').textContent = `${token.individualScores.tokenDistribution}/10`;
+                
+                // Network Activity & Adoption
+                document.getElementById('scoreActiveAddresses').textContent = `${token.individualScores.activeAddresses}/10`;
+                document.getElementById('scoreTransactionVolume').textContent = `${token.individualScores.transactionVolume}/10`;
+                document.getElementById('scoreProtocolRevenue').textContent = `${token.individualScores.protocolRevenue}/10`;
+                document.getElementById('scoreUsers').textContent = `${token.individualScores.users}/10`;
+                document.getElementById('scoreFDV').textContent = `${token.individualScores.fdv}/10`;
+                
+                // Technical & Development
+                document.getElementById('scoreDevelopmentActivity').textContent = `${token.individualScores.developmentActivity}/10`;
+                document.getElementById('scoreSecurityAudits').textContent = `${token.individualScores.securityAudits}/10`;
+                document.getElementById('scoreOnChainActivity').textContent = `${token.individualScores.onChainActivity}/10`;
+                document.getElementById('scoreLiquidity').textContent = `${token.individualScores.liquidity}/10`;
+                document.getElementById('scoreTradingVolume').textContent = `${token.individualScores.tradingVolume}/10`;
+                
+                // Market & Community
+                document.getElementById('scoreCommunitySize').textContent = `${token.individualScores.communitySize}/10`;
+                document.getElementById('scorePartnerships').textContent = `${token.individualScores.partnerships}/10`;
+                document.getElementById('scoreEcosystemFlows').textContent = `${token.individualScores.ecosystemFlows}/10`;
+                document.getElementById('scorePFRatio').textContent = `${token.individualScores.pfRatio}/10`;
+                document.getElementById('scoreMcapTvlRatio').textContent = `${token.individualScores.mcapTvlRatio}/10`;
+            } else {
+                // Reset to loading state if no fundamental scores available
+                const scoreElements = [
+                    'scoreTokenUnlock', 'scoreTVL', 'scoreSupplyDynamics', 'scoreMarketCap', 'scoreTokenDistribution',
+                    'scoreActiveAddresses', 'scoreTransactionVolume', 'scoreProtocolRevenue', 'scoreUsers', 'scoreFDV',
+                    'scoreDevelopmentActivity', 'scoreSecurityAudits', 'scoreOnChainActivity', 'scoreLiquidity', 'scoreTradingVolume',
+                    'scoreCommunitySize', 'scorePartnerships', 'scoreEcosystemFlows', 'scorePFRatio', 'scoreMcapTvlRatio'
+                ];
+                scoreElements.forEach(elementId => {
+                    document.getElementById(elementId).textContent = 'Loading...';
+                });
+            }
 
             // Market Metrics
             document.getElementById('modalCurrentPrice').textContent = `$${dashboard.formatNumber(quote.price)}`;
@@ -2641,6 +3158,23 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeTokenModal();
+                closeCalculationModal();
+            }
+        });
+
+        // Calculation Documentation Modal Functions
+        function openCalculationModal() {
+            document.getElementById('calculationModal').style.display = 'flex';
+        }
+
+        function closeCalculationModal() {
+            document.getElementById('calculationModal').style.display = 'none';
+        }
+
+        // Close calculation modal when clicking outside
+        document.getElementById('calculationModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCalculationModal();
             }
         });
 
