@@ -87,24 +87,27 @@ Please provide detailed, factual analysis based on current market data and proje
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 45000); // 45 second timeout for comprehensive analysis
     
+    const requestHeaders = {
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json"
+    };
+
     const requestBody = {
-      model: 'llama-3.1-sonar-small-128k-online', // Updated to working model
-      messages: [{ 
-        role: 'user', 
-        content: prompt 
-      }],
-      temperature: 0.2,
-      max_tokens: 4000
+      "model": "llama-3-sonar-small-32k-online",
+      "messages": [
+        {
+          "role": "user",
+          "content": prompt
+        }
+      ]
     };
     
-    console.log('📤 Request body:', JSON.stringify(requestBody, null, 2));
+    console.log('📋 Full Request Headers:', JSON.stringify(requestHeaders, null, 2));
+    console.log('📤 Full Request Body:', JSON.stringify(requestBody, null, 2));
     
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      },
+      headers: requestHeaders,
       body: JSON.stringify(requestBody),
       signal: controller.signal
     });

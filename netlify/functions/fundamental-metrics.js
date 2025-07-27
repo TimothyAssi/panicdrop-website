@@ -106,21 +106,28 @@ Provide only factual, verifiable data. Use "N/A" for any metrics that cannot be 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout for comprehensive data
     
+    const requestHeaders = {
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json"
+    };
+
+    const requestBody = {
+      "model": "llama-3-sonar-small-32k-online",
+      "messages": [
+        {
+          "role": "user",
+          "content": prompt
+        }
+      ]
+    };
+
+    console.log('📋 Fundamental Request Headers:', JSON.stringify(requestHeaders, null, 2));
+    console.log('📤 Fundamental Request Body:', JSON.stringify(requestBody, null, 2));
+    
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'llama-3.1-sonar-large-128k-online',
-        messages: [{ 
-          role: 'user', 
-          content: prompt 
-        }],
-        temperature: 0.1,
-        max_tokens: 4000
-      }),
+      headers: requestHeaders,
+      body: JSON.stringify(requestBody),
       signal: controller.signal
     });
 

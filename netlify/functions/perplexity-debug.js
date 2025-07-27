@@ -40,21 +40,28 @@ exports.handler = async function(event, context) {
     // Test basic API call
     console.log('🧪 Testing basic Perplexity API call...');
     
+    const testHeaders = {
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json"
+    };
+
+    const testBody = {
+      "model": "llama-3-sonar-small-32k-online",
+      "messages": [
+        {
+          "role": "user",
+          "content": "What is Ethereum? Please provide a very brief 1-sentence answer."
+        }
+      ]
+    };
+
+    console.log('🔍 Test Request Headers:', JSON.stringify(testHeaders, null, 2));
+    console.log('🔍 Test Request Body:', JSON.stringify(testBody, null, 2));
+    
     const testResponse = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'llama-3.1-sonar-small-128k-online',
-        messages: [{
-          role: 'user',
-          content: 'What is Ethereum? Please provide a very brief 1-sentence answer.'
-        }],
-        temperature: 0.1,
-        max_tokens: 100
-      })
+      headers: testHeaders,
+      body: JSON.stringify(testBody)
     });
 
     console.log('📨 Test response status:', testResponse.status);
