@@ -10,127 +10,59 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* Enhanced Design Inspired by Professional Trading Platforms */
-        :root {
-            --scanner-primary: #0C63FF;
-            --scanner-gold: #D4AF37;
-            --scanner-bg-dark: #1a1a1a;
-            --scanner-bg-light: #f9f9f9;
-            --scanner-card-bg: #ffffff;
-            --scanner-text-dark: #333333;
-            --scanner-text-light: #ffffff;
-            --scanner-border: #e1e5e9;
-            --scanner-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --scanner-shadow-hover: 0 8px 32px rgba(12, 99, 255, 0.15);
-            --scanner-gradient: linear-gradient(135deg, #0C63FF 0%, #1a73e8 100%);
-            --scanner-success: #00D4AA;
-            --scanner-warning: #FFB020;
-            --scanner-danger: #FF6B6B;
-        }
-
         /* API Status Indicator */
         .api-status {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-size: 0.875rem;
+            top: 10px;
+            right: 10px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
             font-weight: 600;
             z-index: 1000;
-            box-shadow: var(--scanner-shadow);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
         }
         
         .api-status.live {
-            background: var(--scanner-success);
+            background: var(--accent-success);
             color: white;
         }
         
         .api-status.demo {
-            background: var(--scanner-warning);
-            color: var(--scanner-bg-dark);
+            background: var(--accent-primary);
+            color: var(--primary-bg);
         }
         
         .api-status.error {
-            background: var(--scanner-danger);
+            background: var(--accent-danger);
             color: white;
         }
 
-        /* Main Container */
-        .scanner-container {
-            min-height: 100vh;
-            background: var(--scanner-bg-light);
-            padding-top: 80px;
-        }
-
-        /* Hero Section */
-        .scanner-hero {
-            background: var(--scanner-bg-dark);
-            padding: 60px 0;
+        /* Tool Hero Section - Match existing tools */
+        .tool-hero {
+            padding: 80px 20px 50px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
+            background: var(--primary-bg);
+            color: var(--text-primary);
         }
-
-        .scanner-hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(12, 99, 255, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
-            z-index: 1;
+        
+        .tool-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-weight: 800;
         }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        
+        .tool-hero h1 i {
+            color: var(--accent-primary);
+            margin-right: 15px;
         }
-
-        .hero-title {
-            font-size: 48px;
-            font-weight: 700;
-            color: var(--scanner-text-light);
-            margin-bottom: 20px;
-            letter-spacing: -0.5px;
-        }
-
-        .hero-subtitle {
-            font-size: 20px;
-            color: #B8C6DB;
-            margin-bottom: 30px;
+        
+        .tool-hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
             max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.5;
-        }
-
-        .hero-features {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 40px;
-            flex-wrap: wrap;
-        }
-
-        .hero-feature {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--scanner-text-light);
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        .hero-feature i {
-            color: var(--scanner-gold);
-            font-size: 18px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
 
         /* Main Content */
@@ -142,12 +74,12 @@
 
         /* Control Panel */
         .control-panel {
-            background: var(--scanner-card-bg);
-            border-radius: 15px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
             padding: 30px;
             margin-bottom: 30px;
-            box-shadow: var(--scanner-shadow);
-            border: 1px solid var(--scanner-border);
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-color);
         }
 
         .control-header {
@@ -160,17 +92,17 @@
         }
 
         .control-title {
-            font-size: 24px;
+            font-size: 1.5rem;
             font-weight: 700;
-            color: var(--scanner-text-dark);
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
         .control-title i {
-            color: var(--scanner-primary);
-            font-size: 28px;
+            color: var(--accent-primary);
+            font-size: 1.5rem;
         }
 
         .control-actions {
@@ -194,24 +126,25 @@
         }
 
         .btn-primary {
-            background: var(--scanner-gradient);
-            color: white;
+            background: var(--accent-primary);
+            color: var(--primary-bg);
+            font-weight: 600;
         }
 
         .btn-primary:hover {
+            background: var(--accent-secondary);
             transform: translateY(-2px);
-            box-shadow: var(--scanner-shadow-hover);
         }
 
         .btn-secondary {
             background: transparent;
-            color: var(--scanner-text-dark);
-            border: 2px solid var(--scanner-border);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
         }
 
         .btn-secondary:hover {
-            border-color: var(--scanner-primary);
-            color: var(--scanner-primary);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
         }
 
         /* Stats Overview */
@@ -223,46 +156,46 @@
         }
 
         .stat-card {
-            background: var(--scanner-card-bg);
-            border-radius: 12px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
             padding: 25px;
             text-align: center;
-            box-shadow: var(--scanner-shadow);
-            border: 1px solid var(--scanner-border);
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-color);
             transition: all 0.3s ease;
         }
 
         .stat-card:hover {
             transform: translateY(-4px);
-            box-shadow: var(--scanner-shadow-hover);
+            box-shadow: var(--shadow-heavy);
         }
 
         .stat-icon {
-            font-size: 32px;
-            color: var(--scanner-primary);
+            font-size: 2rem;
+            color: var(--accent-primary);
             margin-bottom: 15px;
         }
 
         .stat-value {
-            font-size: 28px;
+            font-size: 1.75rem;
             font-weight: 700;
-            color: var(--scanner-text-dark);
+            color: var(--text-primary);
             margin-bottom: 8px;
         }
 
         .stat-label {
-            font-size: 14px;
-            color: #666;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
             font-weight: 500;
         }
 
         /* Dashboard */
         .dashboard-section {
-            background: var(--scanner-card-bg);
-            border-radius: 15px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
             padding: 30px;
-            box-shadow: var(--scanner-shadow);
-            border: 1px solid var(--scanner-border);
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-color);
             margin-bottom: 30px;
         }
 
@@ -276,17 +209,17 @@
         }
 
         .dashboard-title {
-            font-size: 22px;
+            font-size: 1.375rem;
             font-weight: 700;
-            color: var(--scanner-text-dark);
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
         .last-update {
-            font-size: 14px;
-            color: #666;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
             display: flex;
             align-items: center;
             gap: 8px;
@@ -299,7 +232,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(26, 26, 26, 0.9);
+            background: rgba(15, 15, 35, 0.9);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -309,14 +242,14 @@
 
         .loading-content {
             text-align: center;
-            color: var(--scanner-text-light);
+            color: var(--text-primary);
         }
 
         .loading-spinner {
             width: 50px;
             height: 50px;
             border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid var(--scanner-primary);
+            border-top: 3px solid var(--accent-primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
@@ -328,14 +261,14 @@
         }
 
         .loading-text {
-            font-size: 18px;
+            font-size: 1.125rem;
             font-weight: 600;
             margin-bottom: 10px;
         }
 
         .loading-status {
-            font-size: 14px;
-            color: #B8C6DB;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
         }
 
         /* Token Grid */
@@ -346,10 +279,10 @@
         }
 
         .token-card {
-            background: var(--scanner-card-bg);
-            border-radius: 12px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
             padding: 20px;
-            border: 1px solid var(--scanner-border);
+            border: 1px solid var(--border-color);
             transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
@@ -358,8 +291,8 @@
 
         .token-card:hover {
             transform: translateY(-2px);
-            box-shadow: var(--scanner-shadow-hover);
-            border-color: var(--scanner-primary);
+            box-shadow: var(--shadow-heavy);
+            border-color: var(--accent-primary);
         }
 
         .token-header {
@@ -376,24 +309,24 @@
         }
 
         .token-symbol {
-            font-size: 18px;
+            font-size: 1.125rem;
             font-weight: 700;
-            color: var(--scanner-text-dark);
+            color: var(--text-primary);
         }
 
         .token-name {
-            font-size: 14px;
-            color: #666;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
             font-weight: 500;
         }
 
         .token-score {
-            font-size: 24px;
+            font-size: 1.5rem;
             font-weight: 700;
-            color: var(--scanner-primary);
+            color: var(--accent-primary);
             padding: 8px 12px;
-            background: rgba(12, 99, 255, 0.1);
-            border-radius: 8px;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: var(--border-radius);
         }
 
         .token-metrics {
@@ -407,25 +340,25 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 14px;
+            font-size: 0.875rem;
         }
 
         .metric-label {
-            color: #666;
+            color: var(--text-secondary);
             font-weight: 500;
         }
 
         .metric-value {
             font-weight: 600;
-            color: var(--scanner-text-dark);
+            color: var(--text-primary);
         }
 
         .metric-value.positive {
-            color: var(--scanner-success);
+            color: var(--accent-success);
         }
 
         .metric-value.negative {
-            color: var(--scanner-danger);
+            color: var(--accent-danger);
         }
 
         /* Modals */
@@ -445,27 +378,27 @@
         }
 
         .modal-content {
-            background: var(--scanner-card-bg);
-            border-radius: 15px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
             max-width: 800px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--shadow-heavy);
         }
 
         .modal-header {
             padding: 25px 30px;
-            border-bottom: 1px solid var(--scanner-border);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .modal-title {
-            font-size: 22px;
+            font-size: 1.375rem;
             font-weight: 700;
-            color: var(--scanner-text-dark);
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -474,17 +407,17 @@
         .modal-close {
             background: none;
             border: none;
-            font-size: 24px;
-            color: #666;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
             cursor: pointer;
             padding: 5px;
-            border-radius: 5px;
+            border-radius: var(--border-radius);
             transition: all 0.3s ease;
         }
 
         .modal-close:hover {
-            background: #f5f5f5;
-            color: var(--scanner-text-dark);
+            background: var(--secondary-bg);
+            color: var(--text-primary);
         }
 
         .modal-body {
@@ -545,22 +478,190 @@
 
         /* Additional Professional Styling */
         .professional-badge {
-            background: var(--scanner-gradient);
-            color: white;
+            background: var(--accent-primary);
+            color: var(--primary-bg);
             padding: 6px 12px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .analysis-section {
-            background: var(--scanner-card-bg);
-            border-radius: 12px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
             padding: 25px;
             margin-top: 20px;
-            border: 1px solid var(--scanner-border);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Narrative and Top Performers Sections - Match Homepage Style */
+        .narrative-section,
+        .top-performers-section {
+            padding: 80px 0;
+            background: var(--primary-bg);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .section-title i {
+            color: var(--accent-primary);
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .highlights-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .highlights-title i {
+            color: var(--accent-primary);
+        }
+
+        .token-highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .token-highlight-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .token-highlight-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-heavy);
+            border-color: var(--accent-primary);
+        }
+
+        .token-highlight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .token-highlight-info h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .token-highlight-info p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .token-highlight-score {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            background: rgba(212, 175, 55, 0.1);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+        }
+
+        .token-highlight-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .highlight-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+
+        .highlight-metric-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .highlight-metric-value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .token-highlight-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-highlight {
+            flex: 1;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-highlight-primary {
+            background: var(--accent-primary);
+            color: var(--primary-bg);
+        }
+
+        .btn-highlight-primary:hover {
+            background: var(--accent-secondary);
+        }
+
+        .btn-highlight-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-highlight-secondary:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
         }
 
         .analysis-header {
@@ -571,9 +672,9 @@
         }
 
         .analysis-title {
-            font-size: 18px;
+            font-size: 1.125rem;
             font-weight: 700;
-            color: var(--scanner-text-dark);
+            color: var(--text-primary);
         }
 
         .fundamental-scores {
@@ -588,21 +689,21 @@
             justify-content: space-between;
             align-items: center;
             padding: 12px 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid var(--scanner-primary);
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent-primary);
         }
 
         .score-label {
-            font-size: 14px;
+            font-size: 0.875rem;
             font-weight: 500;
-            color: var(--scanner-text-dark);
+            color: var(--text-primary);
         }
 
         .score-value {
-            font-size: 16px;
+            font-size: 1rem;
             font-weight: 700;
-            color: var(--scanner-primary);
+            color: var(--accent-primary);
         }
     </style>
 </head>
@@ -648,42 +749,66 @@
         </div>
     </div>
 
-    <!-- Main Container -->
-    <div class="scanner-container">
-        <!-- Hero Section -->
-        <section class="scanner-hero">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    <i class="fas fa-search"></i>
-                    Altcoin Strength Scanner
-                </h1>
-                <p class="hero-subtitle">
-                    Advanced cryptocurrency market intelligence powered by AI-driven fundamental analysis. 
-                    Discover high-potential altcoins with comprehensive scoring based on 20 key metrics.
+    <!-- Hero Section -->
+    <section class="tool-hero">
+        <h1>
+            <i class="fas fa-search"></i>
+            Altcoin Strength Scanner
+        </h1>
+        <p>
+            Advanced cryptocurrency market intelligence powered by AI-driven fundamental analysis. 
+            Discover high-potential altcoins with comprehensive scoring based on 20 key metrics.
+        </p>
+        <div style="margin-top: 30px;">
+            <span class="professional-badge">By Timothy Assi - eToro Elite Popular Investor</span>
+        </div>
+    </section>
+
+    <!-- Top Narrative Section -->
+    <section class="narrative-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Market Intelligence Overview</h2>
+                <p class="section-subtitle">
+                    Real-time analysis of high-potential small-cap altcoins using advanced AI-powered fundamental metrics.
                 </p>
-                <div class="hero-features">
-                    <div class="hero-feature">
-                        <i class="fas fa-brain"></i>
-                        AI-Powered Analysis
-                    </div>
-                    <div class="hero-feature">
-                        <i class="fas fa-chart-line"></i>
-                        Real-Time Data
-                    </div>
-                    <div class="hero-feature">
-                        <i class="fas fa-trophy"></i>
-                        Professional Grade
-                    </div>
-                </div>
-                <div style="margin-top: 30px;">
-                    <span class="professional-badge">By Timothy Assi - eToro Elite Popular Investor</span>
+            </div>
+            
+            <!-- Small Cap Highlights -->
+            <div class="small-cap-highlights">
+                <h3 class="highlights-title">
+                    <i class="fas fa-gem"></i>
+                    Small Cap Opportunities
+                </h3>
+                <div id="smallCapTokens" class="token-highlights-grid">
+                    <!-- Small cap tokens will be populated here -->
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Main Content -->
-        <main class="scanner-main">
-            <!-- Control Panel -->
+    <!-- Top Performers Section -->
+    <section class="top-performers-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-trophy"></i>
+                    Top Performers
+                </h2>
+                <p class="section-subtitle">
+                    Highest-scoring cryptocurrencies based on comprehensive fundamental analysis.
+                </p>
+            </div>
+            
+            <div id="topPerformersTokens" class="token-highlights-grid">
+                <!-- Top performers will be populated here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="scanner-main">
+        <!-- Control Panel -->
             <div class="control-panel">
                 <div class="control-header">
                     <h2 class="control-title">
@@ -758,7 +883,6 @@
                 </div>
             </div>
         </main>
-    </div>
 
     <!-- Token Details Modal -->
     <div id="tokenModal" class="modal">
@@ -988,6 +1112,7 @@
                     
                     this.updateLastUpdate();
                     this.updateStats();
+                    this.renderHighlights();
                     this.renderTokens();
                     this.hideLoading();
                     
@@ -1084,6 +1209,198 @@
                                 percent_change_30d: 15.67,
                                 market_cap: 8234567000,
                                 volume_24h: 234567000
+                            }
+                        }
+                    },
+                    {
+                        id: 4,
+                        name: "Solana",
+                        symbol: "SOL",
+                        category: "Smart Contract Platform",
+                        quote: {
+                            USD: {
+                                price: 98.45,
+                                percent_change_24h: 3.21,
+                                percent_change_7d: 8.76,
+                                percent_change_30d: 22.34,
+                                market_cap: 43567890000,
+                                volume_24h: 2345678000
+                            }
+                        }
+                    },
+                    {
+                        id: 5,
+                        name: "Avalanche",
+                        symbol: "AVAX",
+                        category: "Smart Contract Platform",
+                        quote: {
+                            USD: {
+                                price: 34.56,
+                                percent_change_24h: -2.11,
+                                percent_change_7d: 5.43,
+                                percent_change_30d: 18.90,
+                                market_cap: 13456789000,
+                                volume_24h: 456789000
+                            }
+                        }
+                    },
+                    {
+                        id: 6,
+                        name: "Uniswap",
+                        symbol: "UNI",
+                        category: "DeFi",
+                        quote: {
+                            USD: {
+                                price: 6.78,
+                                percent_change_24h: 4.32,
+                                percent_change_7d: -2.15,
+                                percent_change_30d: 12.67,
+                                market_cap: 4567890000,
+                                volume_24h: 234567000
+                            }
+                        }
+                    },
+                    {
+                        id: 7,
+                        name: "The Graph",
+                        symbol: "GRT",
+                        category: "Infrastructure",
+                        quote: {
+                            USD: {
+                                price: 0.156,
+                                percent_change_24h: 6.78,
+                                percent_change_7d: 15.23,
+                                percent_change_30d: 28.45,
+                                market_cap: 1456789000,
+                                volume_24h: 123456000
+                            }
+                        }
+                    },
+                    {
+                        id: 8,
+                        name: "Render Token",
+                        symbol: "RNDR",
+                        category: "AI & Computing",
+                        quote: {
+                            USD: {
+                                price: 7.89,
+                                percent_change_24h: 12.34,
+                                percent_change_7d: 23.45,
+                                percent_change_30d: 45.67,
+                                market_cap: 2987654000,
+                                volume_24h: 189234000
+                            }
+                        }
+                    },
+                    {
+                        id: 9,
+                        name: "Injective",
+                        symbol: "INJ",
+                        category: "DeFi",
+                        quote: {
+                            USD: {
+                                price: 24.56,
+                                percent_change_24h: 8.90,
+                                percent_change_7d: 18.23,
+                                percent_change_30d: 34.56,
+                                market_cap: 2234567000,
+                                volume_24h: 234567000
+                            }
+                        }
+                    },
+                    {
+                        id: 10,
+                        name: "Fetch.ai",
+                        symbol: "FET",
+                        category: "AI & Machine Learning",
+                        quote: {
+                            USD: {
+                                price: 1.23,
+                                percent_change_24h: 9.87,
+                                percent_change_7d: 21.45,
+                                percent_change_30d: 67.89,
+                                market_cap: 987654321,
+                                volume_24h: 98765432
+                            }
+                        }
+                    },
+                    {
+                        id: 11,
+                        name: "Ocean Protocol",
+                        symbol: "OCEAN",
+                        category: "AI & Data",
+                        quote: {
+                            USD: {
+                                price: 0.456,
+                                percent_change_24h: 7.65,
+                                percent_change_7d: 19.87,
+                                percent_change_30d: 52.34,
+                                market_cap: 345678901,
+                                volume_24h: 45678901
+                            }
+                        }
+                    },
+                    {
+                        id: 12,
+                        name: "SingularityNET",
+                        symbol: "AGIX",
+                        category: "AI & Machine Learning",
+                        quote: {
+                            USD: {
+                                price: 0.789,
+                                percent_change_24h: 11.23,
+                                percent_change_7d: 25.67,
+                                percent_change_30d: 78.90,
+                                market_cap: 456789012,
+                                volume_24h: 56789012
+                            }
+                        }
+                    },
+                    {
+                        id: 13,
+                        name: "Kaspa",
+                        symbol: "KAS",
+                        category: "Infrastructure",
+                        quote: {
+                            USD: {
+                                price: 0.134,
+                                percent_change_24h: 13.45,
+                                percent_change_7d: 32.10,
+                                percent_change_30d: 89.23,
+                                market_cap: 3234567890,
+                                volume_24h: 234567890
+                            }
+                        }
+                    },
+                    {
+                        id: 14,
+                        name: "Arbitrum",
+                        symbol: "ARB",
+                        category: "Layer 2",
+                        quote: {
+                            USD: {
+                                price: 1.89,
+                                percent_change_24h: 4.56,
+                                percent_change_7d: 12.34,
+                                percent_change_30d: 28.90,
+                                market_cap: 7567890123,
+                                volume_24h: 456789123
+                            }
+                        }
+                    },
+                    {
+                        id: 15,
+                        name: "Optimism",
+                        symbol: "OP",
+                        category: "Layer 2",
+                        quote: {
+                            USD: {
+                                price: 2.34,
+                                percent_change_24h: 6.78,
+                                percent_change_7d: 15.67,
+                                percent_change_30d: 35.42,
+                                market_cap: 2345678901,
+                                volume_24h: 123456789
                             }
                         }
                     }
@@ -1445,6 +1762,88 @@
                 if (ratio <= 10) return 6;
                 if (ratio <= 20) return 4;
                 return 2;                                // Overvalued
+            }
+
+            renderHighlights() {
+                this.renderSmallCapHighlights();
+                this.renderTopPerformers();
+            }
+
+            renderSmallCapHighlights() {
+                const container = document.getElementById('smallCapTokens');
+                if (!container) return;
+
+                // Filter for small cap tokens (market cap < $500M)
+                const smallCapTokens = this.allTokens
+                    .filter(token => token.quote.USD.market_cap < 500000000)
+                    .sort((a, b) => b.compositeScore - a.compositeScore)
+                    .slice(0, 3);
+
+                container.innerHTML = smallCapTokens.map(token => this.createHighlightCard(token)).join('');
+            }
+
+            renderTopPerformers() {
+                const container = document.getElementById('topPerformersTokens');
+                if (!container) return;
+
+                // Get top 3 performers by composite score
+                const topPerformers = [...this.allTokens]
+                    .sort((a, b) => b.compositeScore - a.compositeScore)
+                    .slice(0, 3);
+
+                container.innerHTML = topPerformers.map(token => this.createHighlightCard(token)).join('');
+            }
+
+            createHighlightCard(token) {
+                const quote = token.quote.USD;
+                const change7d = quote.percent_change_7d || 0;
+                const change30d = quote.percent_change_30d || 0;
+                
+                return `
+                    <div class="token-highlight-card" onclick="openTokenModal('${token.symbol}')">
+                        <div class="token-highlight-header">
+                            <div class="token-highlight-info">
+                                <h4>${token.name} (${token.symbol})</h4>
+                                <p>${token.category || 'Cryptocurrency'}</p>
+                            </div>
+                            <div class="token-highlight-score">${token.compositeScore.toFixed(1)}</div>
+                        </div>
+                        
+                        <div class="token-highlight-metrics">
+                            <div class="highlight-metric">
+                                <span class="highlight-metric-label">Price</span>
+                                <span class="highlight-metric-value">$${this.formatNumber(quote.price)}</span>
+                            </div>
+                            <div class="highlight-metric">
+                                <span class="highlight-metric-label">Market Cap</span>
+                                <span class="highlight-metric-value">$${this.formatMarketCap(quote.market_cap)}</span>
+                            </div>
+                            <div class="highlight-metric">
+                                <span class="highlight-metric-label">7d Change</span>
+                                <span class="highlight-metric-value ${change7d >= 0 ? 'positive' : 'negative'}">
+                                    ${change7d >= 0 ? '+' : ''}${change7d.toFixed(1)}%
+                                </span>
+                            </div>
+                            <div class="highlight-metric">
+                                <span class="highlight-metric-label">30d Change</span>
+                                <span class="highlight-metric-value ${change30d >= 0 ? 'positive' : 'negative'}">
+                                    ${change30d >= 0 ? '+' : ''}${change30d.toFixed(1)}%
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="token-highlight-actions">
+                            <button class="btn-highlight btn-highlight-primary" onclick="event.stopPropagation(); openTokenModal('${token.symbol}')">
+                                <i class="fas fa-chart-line"></i>
+                                View Summary
+                            </button>
+                            <button class="btn-highlight btn-highlight-secondary" onclick="event.stopPropagation(); openTokenModal('${token.symbol}'); setTimeout(() => loadPerplexityAnalysis(), 500);">
+                                <i class="fas fa-brain"></i>
+                                Deep Dive
+                            </button>
+                        </div>
+                    </div>
+                `;
             }
 
             renderTokens() {
