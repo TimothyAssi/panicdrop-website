@@ -2764,17 +2764,25 @@
 
         // Modal Functions
         function openTokenModal(symbol) {
+            console.log('🎯 Opening modal for symbol:', symbol);
             const token = dashboard.allTokens.find(t => t.symbol === symbol);
-            if (!token) return;
+            if (!token) {
+                console.error('❌ Token not found:', symbol);
+                return;
+            }
 
+            console.log('✅ Token found:', token.symbol, token.name);
             populateTokenModal(token);
             document.getElementById('tokenModal').style.display = 'flex';
+            console.log('🔍 Token modal opened, currentAnalysisToken should be set to:', token.symbol);
         }
 
         function closeTokenModal() {
             document.getElementById('tokenModal').style.display = 'none';
             // Reset analysis section when closing modal
             resetAnalysisSection();
+            // Clear current analysis token when modal closes
+            currentAnalysisToken = null;
         }
 
         // Global variable to track current token for analysis
@@ -2787,16 +2795,18 @@
             document.getElementById('analysisLoadingContainer').style.display = 'none';
             document.getElementById('analysisContainer').style.display = 'none';
             document.getElementById('analysisError').style.display = 'none';
-            currentAnalysisToken = null;
+            // DO NOT reset currentAnalysisToken here - it's needed for the analysis
         }
 
         // Load Perplexity AI analysis for current token
         async function loadPerplexityAnalysis() {
             console.log('🧠 loadPerplexityAnalysis() called');
+            console.log('🔍 Current analysis token state:', currentAnalysisToken);
             
             if (!currentAnalysisToken) {
                 console.error('❌ No token selected for analysis');
-                alert('Error: No token selected for analysis. Please try opening a token first.');
+                console.log('🔍 Debugging - All available tokens:', dashboard?.allTokens?.map(t => t.symbol));
+                alert('Error: No token selected for analysis. Please try closing and reopening the token modal.');
                 return;
             }
 
@@ -3021,29 +3031,30 @@
             button.textContent = isExpanding ? 'Show Less Details' : 'Show More Details';
         }
 
-        async function populateTokenModal(token) {
+        function populateTokenModal(token) {
             const quote = token.quote.USD;
             const ai = token.aiData;
             
-            // Set current token for analysis
+            // CRITICAL: Set current token for analysis immediately
             currentAnalysisToken = token;
-            console.log('🎯 Token set for analysis:', currentAnalysisToken.symbol, currentAnalysisToken.name);
+            console.log('🎯 Token set for analysis:', currentAnalysisToken?.symbol, currentAnalysisToken?.name);
             resetAnalysisSection();
             
-            // Load fundamental analysis in background if not already available
+            // Load fundamental analysis in background if not already available (non-blocking)
             if (!token.individualScores) {
                 console.log(`🔍 Loading fundamental analysis for ${token.symbol}...`);
-                try {
-                    const fundamentalResults = await dashboard.calculateFundamentalScore(token);
+                dashboard.calculateFundamentalScore(token).then(fundamentalResults => {
                     token.compositeScore = fundamentalResults.compositeScore;
                     token.individualScores = fundamentalResults.individualScores;
                     token.fundamentalMetrics = fundamentalResults.fundamentalMetrics;
                     
-                    // Update the modal with new scores
-                    populateFundamentalScores(token);
-                } catch (error) {
+                    // Update the modal with new scores if still open
+                    if (currentAnalysisToken && currentAnalysisToken.symbol === token.symbol) {
+                        populateFundamentalScores(token);
+                    }
+                }).catch(error => {
                     console.warn(`Failed to load fundamental analysis for ${token.symbol}:`, error);
-                }
+                });
             }
 
             // Header information
