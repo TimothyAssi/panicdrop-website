@@ -2363,11 +2363,16 @@
 
                 const data = await response.json();
                 
-                if (data.success && data.result) {
+                if (data.success && data.structured) {
                     console.log('✅ Analysis received successfully');
-                    // Cache the result
-                    analysisCache.set(cacheKey, data.result);
-                    displayAnalysis(data.result);
+                    // Cache the structured result
+                    analysisCache.set(cacheKey, data.structured);
+                    displayAnalysis(data.structured);
+                } else if (data.structured) {
+                    // Fallback case - still has structured data
+                    console.log('⚠️ Using fallback analysis');
+                    analysisCache.set(cacheKey, data.structured);
+                    displayAnalysis(data.structured);
                 } else {
                     throw new Error(data.error || 'Failed to get analysis');
                 }
@@ -2379,12 +2384,22 @@
         }
 
         // Display the analysis content with collapsible sections
-        function displayAnalysis(analysisText) {
+        function displayAnalysis(analysisData) {
             document.getElementById('analysisLoadingContainer').style.display = 'none';
             document.getElementById('analysisContainer').style.display = 'block';
             
-            // Convert markdown-like text to HTML with collapsible sections
-            const formattedAnalysis = formatAnalysisToHTML(analysisText);
+            // Check if we have structured data or need to parse text
+            let structuredData;
+            if (typeof analysisData === 'object' && analysisData.structured) {
+                structuredData = analysisData.structured;
+            } else if (typeof analysisData === 'string') {
+                structuredData = parseAnalysisText(analysisData);
+            } else {
+                structuredData = analysisData;
+            }
+            
+            // Convert structured data to HTML with collapsible sections
+            const formattedAnalysis = formatStructuredAnalysisToHTML(structuredData);
             document.getElementById('analysisContent').innerHTML = formattedAnalysis;
         }
 
@@ -2396,37 +2411,83 @@
             document.getElementById('loadAnalysisBtn').style.display = 'block';
         }
 
-        // Format analysis text to HTML with collapsible sections
-        function formatAnalysisToHTML(text) {
-            const sections = text.split('##').filter(section => section.trim());
+        // Format structured analysis data to HTML with collapsible sections
+        function formatStructuredAnalysisToHTML(structuredData) {
+            const sectionConfig = [
+                { key: 'overview', title: '📊 Overview', icon: '📊', expanded: false },
+                { key: 'useCase', title: '🎯 Use Case & Value Proposition', icon: '🎯', expanded: false },
+                { key: 'tokenomics', title: '💰 Tokenomics', icon: '💰', expanded: false },
+                { key: 'investors', title: '🏦 Investors & Backers', icon: '🏦', expanded: false },
+                { key: 'competitors', title: '⚔️ Competitors & Market Position', icon: '⚔️', expanded: false },
+                { key: 'developments', title: '📈 Recent Developments', icon: '📈', expanded: false },
+                { key: 'scoreExplanation', title: '🏆 Strength Score Explanation', icon: '🏆', expanded: false },
+                { key: 'risks', title: '⚠️ Risks / Weaknesses', icon: '⚠️', expanded: false },
+                { key: 'summary', title: '✅ Summary Verdict', icon: '✅', expanded: true }, // Summary open by default
+                { key: 'whyMatters', title: '🌟 Why This Coin Matters', icon: '🌟', expanded: true }
+            ];
+            
             let html = '';
             
-            sections.forEach((section, index) => {
-                const lines = section.trim().split('\n');
-                const title = lines[0].trim();
-                const content = lines.slice(1).join('\n').trim();
+            sectionConfig.forEach((config, index) => {
+                const content = structuredData[config.key] || 'No data available for this section.';
+                const sectionId = `analysis-section-${config.key}`;
                 
-                if (title && content) {
-                    const sectionId = `analysis-section-${index}`;
-                    const isExpanded = index < 2; // First 2 sections expanded by default
-                    
-                    html += `
-                        <div style="margin-bottom: 20px; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
-                            <div style="background: var(--secondary-bg); padding: 15px; cursor: pointer; border-bottom: 1px solid var(--border-color);" onclick="toggleSection('${sectionId}')">
-                                <h4 style="margin: 0; display: flex; align-items: center; justify-content: space-between; font-size: 1.1rem; color: var(--text-primary);">
-                                    ${title}
-                                    <span id="${sectionId}-arrow" style="transition: transform 0.3s ease; transform: rotate(${isExpanded ? '90' : '0'}deg);">▶</span>
-                                </h4>
-                            </div>
-                            <div id="${sectionId}" style="display: ${isExpanded ? 'block' : 'none'}; padding: 20px; background: var(--card-bg);">
-                                <div style="white-space: pre-wrap; line-height: 1.6;">${content}</div>
-                            </div>
+                html += `
+                    <div style="margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <div style="background: linear-gradient(135deg, var(--secondary-bg) 0%, var(--card-bg) 100%); padding: 16px; cursor: pointer; border-bottom: 1px solid var(--border-color); transition: all 0.3s ease;" onclick="toggleSection('${sectionId}')" onmouseover="this.style.background='var(--border-color)'" onmouseout="this.style.background='linear-gradient(135deg, var(--secondary-bg) 0%, var(--card-bg) 100%)'">
+                            <h4 style="margin: 0; display: flex; align-items: center; justify-content: space-between; font-size: 1.1rem; color: var(--text-primary); font-weight: 600;">
+                                <span style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="font-size: 1.2rem;">${config.icon}</span>
+                                    ${config.title}
+                                </span>
+                                <span id="${sectionId}-arrow" style="transition: transform 0.3s ease; transform: rotate(${config.expanded ? '90' : '0'}deg); color: var(--accent-primary); font-size: 1.2rem;">▶</span>
+                            </h4>
                         </div>
-                    `;
-                }
+                        <div id="${sectionId}" style="display: ${config.expanded ? 'block' : 'none'}; padding: 20px; background: var(--card-bg); line-height: 1.7;">
+                            <div style="white-space: pre-wrap; color: var(--text-primary);">${content}</div>
+                        </div>
+                    </div>
+                `;
             });
             
             return html;
+        }
+
+        // Parse text-based analysis into structured format (fallback)
+        function parseAnalysisText(text) {
+            const sections = {
+                overview: '',
+                useCase: '',
+                tokenomics: '',
+                investors: '',
+                competitors: '',
+                developments: '',
+                scoreExplanation: '',
+                risks: '',
+                summary: '',
+                whyMatters: ''
+            };
+
+            const sectionMarkers = text.split('##').filter(section => section.trim());
+            
+            sectionMarkers.forEach(section => {
+                const lines = section.trim().split('\n');
+                const title = lines[0].trim().toLowerCase();
+                const content = lines.slice(1).join('\n').trim();
+                
+                if (title.includes('overview')) sections.overview = content;
+                else if (title.includes('use case') || title.includes('value proposition')) sections.useCase = content;
+                else if (title.includes('tokenomics')) sections.tokenomics = content;
+                else if (title.includes('investors') || title.includes('backers')) sections.investors = content;
+                else if (title.includes('competitors') || title.includes('market position')) sections.competitors = content;
+                else if (title.includes('developments') || title.includes('catalysts')) sections.developments = content;
+                else if (title.includes('score') || title.includes('explanation')) sections.scoreExplanation = content;
+                else if (title.includes('risks') || title.includes('weaknesses')) sections.risks = content;
+                else if (title.includes('summary') || title.includes('verdict')) sections.summary = content;
+                else if (title.includes('why') && title.includes('matters')) sections.whyMatters = content;
+            });
+
+            return sections;
         }
 
         // Toggle individual analysis section
@@ -2452,11 +2513,17 @@
             const isExpanding = button.textContent.includes('Show More');
             
             allSections.forEach(section => {
-                section.style.display = isExpanding ? 'block' : 'none';
+                // Skip summary and whyMatters sections - keep them always visible
+                if (!section.id.includes('summary') && !section.id.includes('whyMatters')) {
+                    section.style.display = isExpanding ? 'block' : 'none';
+                }
             });
             
             allArrows.forEach(arrow => {
-                arrow.style.transform = `rotate(${isExpanding ? '90' : '0'}deg)`;
+                // Skip summary and whyMatters arrows
+                if (!arrow.id.includes('summary') && !arrow.id.includes('whyMatters')) {
+                    arrow.style.transform = `rotate(${isExpanding ? '90' : '0'}deg)`;
+                }
             });
             
             button.textContent = isExpanding ? 'Show Less Details' : 'Show More Details';

@@ -15,7 +15,8 @@
       "Bash(sudo npm install -g netlify-cli)",
       "Bash(npx netlify:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ],
     "deny": []
   }

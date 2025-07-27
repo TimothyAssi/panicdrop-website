@@ -36,59 +36,68 @@ exports.handler = async function(event, context) {
 
     console.log(`📊 Analyzing ${coinName} (${coinSymbol}) in ${category} category`);
 
-    // Create detailed analysis prompt
-    const prompt = `
-As an expert crypto analyst, provide a comprehensive deep-dive analysis for the cryptocurrency "${coinName}" (${coinSymbol}), which is categorized under "${category}". 
+    // Secure API key access from environment
+    const apiKey = process.env.PPLX_API_KEY;
+    
+    if (!apiKey) {
+      throw new Error('PPLX_API_KEY environment variable not set');
+    }
 
-The coin currently has:
-- Market Cap: $${marketCap || 'Unknown'}
-- Price: $${price || 'Unknown'} 
-- Strength Score: ${score || 'Unknown'}/100
+    // Enhanced research prompt for comprehensive analysis
+    const prompt = `Provide an in-depth fundamental analysis of the ${coinName} (${coinSymbol}) cryptocurrency project. Include its use case, tokenomics, key investors, competitors, network activity, and reasons for recent price movement. Also explain if it's worth watching right now.
 
-Please provide a structured analysis with the following sections:
+Please structure your response with these specific sections:
 
-## 🔍 Project Overview
-What does ${coinName} do and how does it work? Explain the core technology and use case.
+## Overview
+Brief introduction to ${coinName} and what makes it unique in the crypto space.
 
-## 🚀 Competitive Advantage & Roadmap
-What makes ${coinName} unique? What are their key partnerships and future plans?
+## Use Case & Value Proposition  
+What problem does ${coinName} solve? What is its core value proposition and target market?
 
-## ⚠️ Risks & Challenges
-What are the main risks, regulatory concerns, and technical challenges?
+## Tokenomics
+Token supply, distribution, staking mechanisms, burn mechanisms, and economic incentives.
 
-## 💰 Tokenomics & Economics
-Token supply, distribution, staking mechanisms, and economic model.
+## Investors & Backers
+Key institutional investors, venture capital firms, and notable backers supporting the project.
 
-## 👥 Community & Development
-Developer activity, community size, social presence, and ecosystem growth.
+## Competitors & Market Position
+Main competitors and how ${coinName} differentiates itself in the market.
 
-## 📈 Score Justification
-Why ${coinName} received its current strength score of ${score || 'this'}/100 based on market performance, technology, and fundamentals.
+## Recent Developments or Catalysts
+Recent news, partnerships, updates, or events that could impact price and adoption.
 
-## ✅ Key Summary Points
-3-5 bullet points summarizing the most important investment considerations.
+## Strength Score Explanation
+Based on the current market data showing a strength score of ${score}/100, explain why this score makes sense given the project's fundamentals, market performance, and technical indicators.
 
-Structure your response with clear headers and detailed explanations for each section. Focus on factual, actionable insights.
-`;
+## ⚠️ Risks / Weaknesses
+Key risks, challenges, regulatory concerns, and potential weaknesses investors should be aware of.
 
-    // Call Perplexity API with native fetch
+## ✅ Summary Verdict
+Overall assessment: Is ${coinName} worth watching? Investment potential rating and key reasons.
+
+## Why This Coin Matters
+**Bold summary in 1-2 bullet points explaining the most important reasons why ${coinName} stands out in the current market.**
+
+Please provide detailed, factual analysis based on current market data and project fundamentals.`;
+
+    // Call Perplexity API with secure key
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 45000); // 45 second timeout for comprehensive analysis
     
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.PPLX_API_KEY || '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'}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'llama-3.1-sonar-small-128k-online',
+        model: 'llama-3.1-sonar-large-128k-online',
         messages: [{ 
           role: 'user', 
           content: prompt 
         }],
-        temperature: 0.3,
-        max_tokens: 2000
+        temperature: 0.2,
+        max_tokens: 4000
       }),
       signal: controller.signal
     });
@@ -108,6 +117,9 @@ Structure your response with clear headers and detailed explanations for each se
       throw new Error('No analysis content received from Perplexity API');
     }
 
+    // Parse and structure the analysis response
+    const structuredAnalysis = parseAnalysisIntoSections(analysis);
+
     return {
       statusCode: 200,
       headers: {
@@ -118,6 +130,7 @@ Structure your response with clear headers and detailed explanations for each se
       body: JSON.stringify({ 
         success: true,
         result: analysis,
+        structured: structuredAnalysis,
         coin: {
           name: coinName,
           symbol: coinSymbol,
@@ -133,22 +146,8 @@ Structure your response with clear headers and detailed explanations for each se
   } catch (error) {
     console.error('❌ Perplexity Analysis Error:', error.message);
     
-    // Return fallback analysis
-    const fallbackAnalysis = `
-## 🔍 Project Overview
-${event.body ? JSON.parse(event.body).coinName : 'This cryptocurrency'} is a digital asset in the ${event.body ? JSON.parse(event.body).category : 'crypto'} sector. Due to technical limitations, we cannot provide a live analysis at this moment.
-
-## 📊 Current Status
-- Analysis service temporarily unavailable
-- Please try again later or check external sources
-- Error: ${error.message}
-
-## ✅ Key Summary Points
-• Live analysis temporarily unavailable
-• Check coin's official documentation
-• Monitor market trends and community updates
-• Consider multiple sources for investment decisions
-`;
+    // Return structured fallback analysis
+    const fallbackAnalysis = generateFallbackAnalysis(event.body ? JSON.parse(event.body) : {});
 
     return {
       statusCode: 200, // Return 200 so frontend gets fallback
@@ -159,7 +158,8 @@ ${event.body ? JSON.parse(event.body).coinName : 'This cryptocurrency'} is a dig
       },
       body: JSON.stringify({
         success: false,
-        result: fallbackAnalysis,
+        result: fallbackAnalysis.raw,
+        structured: fallbackAnalysis.structured,
         error: error.message,
         fallback: true,
         timestamp: new Date().toISOString()
@@ -167,3 +167,75 @@ ${event.body ? JSON.parse(event.body).coinName : 'This cryptocurrency'} is a dig
     };
   }
 };
+
+// Parse analysis text into structured sections
+function parseAnalysisIntoSections(analysisText) {
+  const sections = {
+    overview: '',
+    useCase: '',
+    tokenomics: '',
+    investors: '',
+    competitors: '',
+    developments: '',
+    scoreExplanation: '',
+    risks: '',
+    summary: '',
+    whyMatters: ''
+  };
+
+  const sectionMap = {
+    'overview': ['## Overview', '## Introduction'],
+    'useCase': ['## Use Case & Value Proposition', '## Use Case', '## Value Proposition'],
+    'tokenomics': ['## Tokenomics', '## Token Economics'],
+    'investors': ['## Investors & Backers', '## Investors', '## Backers'],
+    'competitors': ['## Competitors & Market Position', '## Competitors', '## Market Position'],
+    'developments': ['## Recent Developments or Catalysts', '## Recent Developments', '## Catalysts'],
+    'scoreExplanation': ['## Strength Score Explanation', '## Score Explanation'],
+    'risks': ['## ⚠️ Risks / Weaknesses', '## Risks', '## Weaknesses'],
+    'summary': ['## ✅ Summary Verdict', '## Summary', '## Verdict'],
+    'whyMatters': ['## Why This Coin Matters', '## Why Important']
+  };
+
+  // Split by sections and map content
+  const allSections = analysisText.split('##').filter(section => section.trim());
+  
+  allSections.forEach(section => {
+    const lines = section.trim().split('\n');
+    const title = lines[0].trim().toLowerCase();
+    const content = lines.slice(1).join('\n').trim();
+    
+    // Find matching section
+    for (const [key, patterns] of Object.entries(sectionMap)) {
+      if (patterns.some(pattern => title.includes(pattern.replace('## ', '').toLowerCase()))) {
+        sections[key] = content;
+        break;
+      }
+    }
+  });
+
+  return sections;
+}
+
+// Generate fallback analysis when API fails
+function generateFallbackAnalysis(coinData) {
+  const { coinName = 'This cryptocurrency', coinSymbol = 'CRYPTO', category = 'crypto' } = coinData;
+  
+  const structured = {
+    overview: `${coinName} is a digital asset in the ${category} sector. Due to technical limitations, we cannot provide a live analysis at this moment.`,
+    useCase: 'Live analysis temporarily unavailable. Please check the project\'s official documentation for use case details.',
+    tokenomics: 'Token economics data unavailable. Refer to official project documentation.',
+    investors: 'Investor information unavailable at this time.',
+    competitors: 'Competitive analysis unavailable. Research similar projects in the market.',
+    developments: 'Recent developments data unavailable. Check official project channels.',
+    scoreExplanation: 'Score explanation unavailable due to technical limitations.',
+    risks: 'Risk assessment unavailable. Always conduct thorough research before investing.',
+    summary: '⚠️ Live analysis temporarily unavailable. Please try again later or consult multiple sources for investment decisions.',
+    whyMatters: '**Analysis service temporarily down**\n• Check official project documentation\n• Consult multiple research sources'
+  };
+
+  const raw = Object.entries(structured)
+    .map(([key, content]) => `## ${key.charAt(0).toUpperCase() + key.slice(1)}\n${content}`)
+    .join('\n\n');
+
+  return { structured, raw };
+}
