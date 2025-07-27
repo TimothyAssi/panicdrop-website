@@ -15,6 +15,11 @@ exports.handler = async (event, context) => {
   }
 
   try {
+    // Check if API key is available
+    if (!process.env.CMC_API_KEY) {
+      throw new Error('CMC_API_KEY environment variable not set');
+    }
+
     console.log('📡 Fetching data from CoinMarketCap API...');
     
     // Use native fetch() - no require needed
@@ -23,7 +28,7 @@ exports.handler = async (event, context) => {
     
     const response = await fetch('https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?limit=100&sort=market_cap&convert=USD', {
       headers: {
-        'X-CMC_PRO_API_KEY': process.env.CMC_API_KEY || '2606af60-3adf-4ccc-8fd1-5ae9529b6a1a',
+        'X-CMC_PRO_API_KEY': process.env.CMC_API_KEY,
         'Accept': 'application/json'
       },
       signal: controller.signal

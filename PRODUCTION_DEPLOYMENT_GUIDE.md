@@ -122,7 +122,7 @@ Test these URLs immediately after deployment:
 
 ### **❌ If CoinMarketCap API Fails:**
 - Check Netlify function logs for API errors
-- Verify CMC API key is working: `2606af60-3adf-4ccc-8fd1-5ae9529b6a1a`
+- Verify CMC_API_KEY environment variable is set in Netlify dashboard
 - Check API rate limits (1000 calls/month for free tier)
 
 ### **❌ If CORS Errors Occur:**
