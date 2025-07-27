@@ -27,6 +27,11 @@ from = "/api/fundamental-metrics"
 to = "/.netlify/functions/fundamental-metrics"
 status = 200
 
+[[redirects]]
+from = "/api/perplexity-debug"
+to = "/.netlify/functions/perplexity-debug"
+status = 200
+
 [[headers]]
 for = "/.netlify/functions/*"
 [headers.values]

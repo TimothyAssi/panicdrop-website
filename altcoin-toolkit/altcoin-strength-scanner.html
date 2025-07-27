@@ -2908,6 +2908,7 @@
                 };
                 
                 console.log('📤 Sending request data:', requestData);
+                console.log("🚀 Perplexity API request triggered");
                 
                 const response = await fetch('/api/perplexity-analysis', {
                     method: 'POST',
@@ -2918,6 +2919,7 @@
                 });
 
                 console.log('📥 Response status:', response.status, response.statusText);
+                console.log("📨 Response:", response);
 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -2926,17 +2928,33 @@
                 const data = await response.json();
                 console.log('📄 Response data:', data);
                 
+                // Enhanced content parsing with multiple fallbacks
+                let analysisContent = null;
+                
                 if (data.success && data.structured) {
-                    console.log('✅ Analysis received successfully');
-                    analysisCache.set(cacheKey, data.structured);
-                    displayAnalysis(data.structured);
+                    console.log('✅ Analysis received successfully with structured data');
+                    analysisContent = data.structured;
                 } else if (data.structured) {
-                    console.log('⚠️ Using fallback analysis');
-                    analysisCache.set(cacheKey, data.structured);
-                    displayAnalysis(data.structured);
+                    console.log('⚠️ Using fallback structured analysis');
+                    analysisContent = data.structured;
+                } else if (data.result) {
+                    console.log('📄 Using raw result content');
+                    analysisContent = data.result;
+                } else if (data.choices && data.choices[0] && data.choices[0].message) {
+                    console.log('🔄 Parsing direct API response format');
+                    analysisContent = data.choices[0].message.content;
                 } else {
-                    throw new Error(data.error || 'Failed to get analysis');
+                    console.error('❌ No valid content found in response:', data);
+                    throw new Error(data.error || 'No analysis content received from API');
                 }
+
+                if (!analysisContent) {
+                    throw new Error('Analysis content is empty or undefined');
+                }
+
+                console.log('📊 Final analysis content type:', typeof analysisContent);
+                analysisCache.set(cacheKey, analysisContent);
+                displayAnalysis(analysisContent);
 
             } catch (error) {
                 console.error('❌ Analysis error:', error);
@@ -2946,26 +2964,64 @@
 
         // Display the analysis content with collapsible sections
         function displayAnalysis(analysisData) {
+            console.log('🖼️ displayAnalysis called with:', typeof analysisData, analysisData);
+            
             const analysisLoadingEl = document.getElementById('analysisLoadingContainer');
             if (analysisLoadingEl) analysisLoadingEl.style.display = 'none';
             
             const analysisContainerEl = document.getElementById('analysisContainer');
             if (analysisContainerEl) analysisContainerEl.style.display = 'block';
             
-            // Check if we have structured data or need to parse text
+            // Enhanced data validation and parsing
             let structuredData;
-            if (typeof analysisData === 'object' && analysisData.structured) {
+            
+            if (!analysisData) {
+                console.warn('⚠️ No analysis data provided');
+                structuredData = {
+                    summary: 'Data temporarily unavailable. Please try again later.',
+                    overview: 'Analysis content could not be loaded.',
+                    risks: 'Unable to assess risks at this time.'
+                };
+            } else if (typeof analysisData === 'object' && analysisData.structured) {
+                console.log('📊 Using pre-structured data');
                 structuredData = analysisData.structured;
             } else if (typeof analysisData === 'string') {
+                console.log('📝 Parsing text analysis');
                 structuredData = parseAnalysisText(analysisData);
-            } else {
+            } else if (typeof analysisData === 'object') {
+                console.log('🔄 Using object data directly');
                 structuredData = analysisData;
+            } else {
+                console.warn('⚠️ Unexpected data format, creating fallback');
+                structuredData = {
+                    summary: 'Analysis data received in unexpected format.',
+                    overview: String(analysisData) || 'Unable to display analysis content.'
+                };
+            }
+            
+            // Validate that we have some content
+            const hasContent = structuredData && Object.values(structuredData).some(value => 
+                value && typeof value === 'string' && value.trim().length > 0
+            );
+            
+            if (!hasContent) {
+                console.warn('⚠️ No valid content found in structured data');
+                structuredData = {
+                    summary: 'Analysis temporarily unavailable.',
+                    overview: 'Please try refreshing the analysis or check back later.',
+                    risks: 'Unable to assess risks without analysis data.'
+                };
             }
             
             // Convert structured data to HTML with collapsible sections
             const formattedAnalysis = formatStructuredAnalysisToHTML(structuredData);
             const analysisContentEl = document.getElementById('analysisContent');
-            if (analysisContentEl) analysisContentEl.innerHTML = formattedAnalysis;
+            if (analysisContentEl) {
+                analysisContentEl.innerHTML = formattedAnalysis;
+                console.log('✅ Analysis content updated in DOM');
+            } else {
+                console.error('❌ analysisContent element not found in DOM');
+            }
         }
 
         // Show analysis error
@@ -3394,6 +3450,21 @@
                 });
             }
         }
+
+        // Debug function for Perplexity API
+        window.debugPerplexity = async () => {
+            try {
+                console.log('🔧 Running Perplexity debug...');
+                const res = await fetch('/api/perplexity-debug');
+                const json = await res.json();
+                console.log('🔍 Perplexity Debug Response:', json);
+                alert(`Debug result: ${json.success ? 'SUCCESS' : 'FAILED'}\nMessage: ${json.message || json.error}\nCheck console for details.`);
+                return json;
+            } catch (error) {
+                console.error('❌ Debug function error:', error);
+                alert(`Debug function failed: ${error.message}`);
+            }
+        };
 
         // Initialize when page loads
         window.addEventListener('DOMContentLoaded', async () => {

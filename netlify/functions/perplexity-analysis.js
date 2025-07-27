@@ -81,8 +81,23 @@ Overall assessment: Is ${coinName} worth watching? Investment potential rating a
 Please provide detailed, factual analysis based on current market data and project fundamentals.`;
 
     // Call Perplexity API with secure key
+    console.log('🚀 Perplexity API request triggered');
+    console.log('🔑 Using API key:', apiKey ? `${apiKey.substring(0, 10)}...` : 'NOT SET');
+    
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 45000); // 45 second timeout for comprehensive analysis
+    
+    const requestBody = {
+      model: 'llama-3.1-sonar-small-128k-online', // Updated to working model
+      messages: [{ 
+        role: 'user', 
+        content: prompt 
+      }],
+      temperature: 0.2,
+      max_tokens: 4000
+    };
+    
+    console.log('📤 Request body:', JSON.stringify(requestBody, null, 2));
     
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
@@ -90,26 +105,24 @@ Please provide detailed, factual analysis based on current market data and proje
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        model: 'llama-3.1-sonar-large-128k-online',
-        messages: [{ 
-          role: 'user', 
-          content: prompt 
-        }],
-        temperature: 0.2,
-        max_tokens: 4000
-      }),
+      body: JSON.stringify(requestBody),
       signal: controller.signal
     });
 
     clearTimeout(timeoutId);
 
+    console.log('📨 Response status:', response.status, response.statusText);
+    console.log('📨 Response headers:', Object.fromEntries(response.headers.entries()));
+
     if (!response.ok) {
-      throw new Error(`Perplexity API error! status: ${response.status}, statusText: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('❌ API Error Response:', errorText);
+      throw new Error(`Perplexity API error! status: ${response.status}, statusText: ${response.statusText}, body: ${errorText}`);
     }
 
     const data = await response.json();
     console.log('✅ Perplexity analysis completed successfully');
+    console.log('📄 Full response data:', JSON.stringify(data, null, 2));
     
     const analysis = data.choices?.[0]?.message?.content;
     
