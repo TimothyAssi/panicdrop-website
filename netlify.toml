@@ -1,0 +1,24 @@
+[build]
+functions = "netlify/functions"
+publish = "."
+
+[[redirects]]
+from = "/api/crypto/listings"
+to = "/.netlify/functions/crypto-listings"
+status = 200
+
+[[redirects]]
+from = "/api/test-connection"
+to = "/.netlify/functions/test-connection"
+status = 200
+
+[[redirects]]
+from = "/api/health"
+to = "/.netlify/functions/health"
+status = 200
+
+[[headers]]
+for = "/.netlify/functions/*"
+[headers.values]
+  Access-Control-Allow-Origin = "*"
+  Access-Control-Allow-Headers = "*"

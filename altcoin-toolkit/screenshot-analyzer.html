@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screenshot Analyzer - Panic Drop | Trading Tool</title>
+    <meta name="description" content="Analyze your trading charts with AI-powered insights by Timothy Assi.">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        .tool-hero {
+            padding: 80px 20px 50px;
+            text-align: center;
+            background: var(--primary-bg);
+        }
+        
+        .tool-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-weight: 800;
+        }
+        
+        .tool-hero h1 i {
+            color: #D4AF37;
+            margin-right: 15px;
+        }
+        
+        .tool-hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+        }
+        
+        .tool-section {
+            padding: 40px 20px;
+            background: var(--secondary-bg);
+        }
+        
+        .analyzer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            border-bottom: 3px solid #D4AF37;
+            padding: 30px;
+        }
+        
+        .analyzer-container h2 {
+            color: #D4AF37;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            background: var(--secondary-bg);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .upload-area:hover {
+            border-color: #D4AF37;
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .upload-area.dragover {
+            border-color: #D4AF37;
+            background: rgba(212, 175, 55, 0.2);
+        }
+        
+        .upload-content h3 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .upload-content p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #D4AF37;
+        }
+        
+        .upload-btn, .analyze-btn {
+            background: #D4AF37;
+            color: #0F0F23;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-btn:hover, .analyze-btn:hover {
+            background: #B8941F;
+            transform: translateY(-2px);
+        }
+        
+        .strategy-section, .preview-section, .results-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .strategy-section h3, .preview-section h3, .results-section h3 {
+            color: #D4AF37;
+            margin-bottom: 1rem;
+        }
+        
+        .strategy-dropdown {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        
+        .strategy-dropdown:focus {
+            border-color: #D4AF37;
+            outline: none;
+        }
+        
+        .strategy-description {
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 10px;
+        }
+        
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .remove-btn {
+            background: var(--accent-danger);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+        
+        .paste-hint {
+            text-align: center;
+            color: var(--text-secondary);
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+        
+        .paste-hint kbd {
+            background: var(--card-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            font-family: monospace;
+        }
+        
+        .results-content {
+            background: var(--card-bg);
+            padding: 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .analysis-header {
+            background: #D4AF37;
+            color: #0F0F23;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .analysis-body {
+            padding: 20px;
+        }
+        
+        .analysis-section {
+            margin-bottom: 25px;
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: rgba(212, 175, 55, 0.1);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-header h4 {
+            color: #D4AF37;
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        
+        .section-content {
+            padding: 20px;
+        }
+        
+        .trading-levels {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .level-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .level-card.entry {
+            border-left: 4px solid #00D4AA;
+        }
+        
+        .level-card.stop {
+            border-left: 4px solid #FF6B6B;
+        }
+        
+        .level-card.target {
+            border-left: 4px solid #D4AF37;
+        }
+        
+        .level-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        
+        .level-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .risk-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .metric-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+        
+        .metric-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #D4AF37;
+        }
+        
+        .strategy-badge {
+            display: inline-block;
+            background: #D4AF37;
+            color: #0F0F23;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .key-points {
+            margin: 15px 0;
+        }
+        
+        .key-points ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .key-points li {
+            background: var(--card-bg);
+            margin-bottom: 8px;
+            padding: 12px 15px;
+            border-radius: 6px;
+            border-left: 3px solid #D4AF37;
+            color: var(--text-secondary);
+        }
+        
+        .key-points li::before {
+            content: "✓";
+            color: #00D4AA;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .alert-box {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid #FF6B6B;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .alert-box h5 {
+            color: #FF6B6B;
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .alert-box p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .confidence-meter {
+            background: var(--secondary-bg);
+            border-radius: 10px;
+            height: 20px;
+            margin: 10px 0;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF6B6B 0%, #D4AF37 50%, #00D4AA 100%);
+            transition: width 0.3s ease;
+        }
+        
+        .confidence-label {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+        
+        .detailed-analysis {
+            background: var(--secondary-bg);
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            line-height: 1.6;
+        }
+        
+        .detailed-analysis h3 {
+            color: #D4AF37;
+            font-size: 1.1rem;
+            margin: 20px 0 10px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .detailed-analysis h3:first-child {
+            margin-top: 0;
+        }
+        
+        .detailed-analysis p {
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+        
+        .detailed-analysis ul, .detailed-analysis ol {
+            color: var(--text-secondary);
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .detailed-analysis li {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .upload-area.has-file {
+            display: none;
+        }
+        
+        .btn-loader {
+            display: none;
+        }
+        
+        .analyze-btn.loading .btn-text {
+            display: none;
+        }
+        
+        .analyze-btn.loading .btn-loader {
+            display: inline;
+        }
+        
+        .history-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .clear-history-btn {
+            background: var(--accent-danger);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        
+        .social-proof {
+            display: flex;
+            justify-content: space-around;
+            margin: 40px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 0 20px;
+        }
+        
+        .badge {
+            padding: 15px 20px;
+            background: #D4AF37;
+            color: #0F0F23;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .badge i {
+            margin-right: 8px;
+        }
+        
+        .final-cta {
+            padding: 40px 20px;
+            background: var(--primary-bg);
+            text-align: center;
+        }
+        
+        .final-cta h2 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .final-cta p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .tool-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .analyzer-container {
+                margin: 0 10px;
+                padding: 20px;
+            }
+            
+            .upload-area {
+                padding: 30px 20px;
+            }
+            
+            .upload-icon {
+                font-size: 2.5rem;
+            }
+            
+            .upload-content h3 {
+                font-size: 1.1rem;
+            }
+            
+            .analysis-results {
+                margin: 0 10px;
+            }
+            
+            .trading-levels {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .risk-metrics {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .level-value {
+                font-size: 1.1rem;
+            }
+            
+            .analysis-section {
+                margin-bottom: 20px;
+            }
+            
+            .section-content {
+                padding: 15px;
+            }
+            
+            .social-proof {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../index.html">
+                    <img src="../images/logo.png" alt="Panic Drop Logo" onerror="this.style.display='none'">
+                    <span class="logo-text">Panic Drop</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../course.html" class="nav-link">Course</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../blog.html" class="nav-link">Blog</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <div class="nav-link dropdown-toggle">
+                        <a href="#" class="main-link">Tools</a>
+                        <span class="toggle-arrow"></span>
+                    </div>
+                    <div class="dropdown-content">
+                        <a href="position-calculator.html">Position Calculator</a>
+                        <a href="trade-journal.html">Trade Journal</a>
+                        <a href="screenshot-analyzer.html" class="active">Screenshot Analyzer</a>
+                        <a href="altcoin-strength-scanner.html">Altcoin Strength Scanner</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="../contact.html" class="nav-link">Contact</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="tool-hero">
+        <div class="container">
+            <h1><i class="fas fa-chart-line"></i>Screenshot Analyzer</h1>
+            <p>Upload your trading charts and get AI-powered analysis based on the Altcoin Profit Toolkit strategies.</p>
+        </div>
+    </section>
+
+    <!-- Tool Section -->
+    <section class="tool-section">
+        <div class="analyzer-container">
+            <h2><i class="fas fa-upload"></i> Chart Analysis Tool</h2>
+            
+            <!-- File Upload Section -->
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-content">
+                    <div class="upload-icon">📊</div>
+                    <h3>Drop your chart screenshot here</h3>
+                    <p>or click to browse files • <strong>Ctrl+V to paste from clipboard</strong></p>
+                    <input type="file" id="fileInput" accept="image/*" hidden>
+                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                        Choose File
+                    </button>
+                </div>
+            </div>
+            <div class="paste-hint" id="pasteHint">
+                <span>💡 Pro tip: Copy any chart screenshot and press <kbd>Ctrl+V</kbd> anywhere on this page!</span>
+            </div>
+            <div class="file-info" id="fileInfo" style="display: none;">
+                <span id="fileName"></span>
+                <button class="remove-btn" id="removeFile">✕</button>
+            </div>
+
+            <!-- Strategy Selection Section -->
+            <div class="strategy-section" id="strategySection" style="display: none;">
+                <h3>🔥 Strategy Selection</h3>
+                <div class="strategy-selector">
+                    <label for="strategySelect">Choose your analysis strategy:</label>
+                    <select id="strategySelect" class="strategy-dropdown">
+                        <option value="auto">Auto Detect (Recommended)</option>
+                        <option value="breakout-retest">Breakout Retest</option>
+                        <option value="dip-uptrend">Dip in Uptrend</option>
+                        <option value="swing-low-reversal">Swing Low Reversal</option>
+                    </select>
+                    <div class="strategy-description" id="strategyDescription">
+                        <p>Auto Detect will test all 3 strategies and return the first valid match with proper trigger candle and trade plan.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Preview Section -->
+            <div class="preview-section" id="previewSection" style="display: none;">
+                <h3>📈 Chart Preview</h3>
+                <div class="image-container">
+                    <img id="previewImage" alt="Chart preview">
+                </div>
+                <button class="analyze-btn" id="analyzeBtn">
+                    <span class="btn-text">Analyze Chart</span>
+                    <span class="btn-loader" style="display: none;">🔄 Analyzing...</span>
+                </button>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <h3>📊 Analysis Results</h3>
+                <div class="results-content" id="resultsContent">
+                    <!-- Results will be populated here -->
+                </div>
+            </div>
+
+            <!-- Previous Analyses Section -->
+            <div class="history-section" id="historySection" style="display: none;">
+                <h3>📝 Recent Analyses</h3>
+                <div class="history-content" id="historyContent">
+                    <!-- Previous analyses will be shown here -->
+                </div>
+                <button class="clear-history-btn" id="clearHistoryBtn">Clear History</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="social-proof">
+        <div class="badge">
+            <i class="fas fa-users"></i>
+            9,000+ Followers on eToro
+        </div>
+        <div class="badge">
+            <i class="fas fa-star"></i>
+            eToro Elite Popular Investor Since 2021
+        </div>
+        <div class="badge">
+            <i class="fas fa-copy"></i>
+            320+ Active Copiers
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+        <div class="container">
+            <h2>Master Altcoin Trading with the Complete System</h2>
+            <p>This analyzer is part of the complete Altcoin Profit Toolkit. Get 8 modules, exclusive bonuses, and lifetime access for €350.</p>
+            <button class="cta-button primary large" onclick="window.location.href='https://panicdrop.thrivecart.com/apt/';">
+                <i class="fas fa-rocket"></i>
+                Get Course Access
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-text">
+                    <p>&copy; 2024 Timothy Assi - Panic Drop. All rights reserved.</p>
+                    <p>Professional crypto investment education and insights.</p>
+                    <p class="disclaimer">This tool is for educational purposes only and does not constitute financial advice.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="../index.html">Home</a>
+                    <a href="../course.html">Course</a>
+                    <a href="../blog.html">Blog</a>
+                    <a href="../contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/script.js"></script>
+    <script>
+        // Configuration - Note: In production, API key should be secured server-side
+        const CONFIG = {
+            API_KEY: 'YOUR_OPENAI_API_KEY',
+            API_URL: 'https://api.openai.com/v1/chat/completions',
+            STORAGE_KEY: 'altcoin_analyses_history',
+            MAX_HISTORY: 3
+        };
+
+        // Global variables
+        let currentFile = null;
+        let analysisHistory = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY) || '[]');
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEventListeners();
+            updateHistoryDisplay();
+        });
+
+        function initializeEventListeners() {
+            const fileInput = document.getElementById('fileInput');
+            const uploadArea = document.getElementById('uploadArea');
+            const removeFile = document.getElementById('removeFile');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const strategySelect = document.getElementById('strategySelect');
+            const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+
+            // File input change
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // Drag and drop
+            uploadArea.addEventListener('dragover', handleDragOver);
+            uploadArea.addEventListener('dragleave', handleDragLeave);
+            uploadArea.addEventListener('drop', handleDrop);
+
+            // Paste functionality
+            document.addEventListener('paste', handlePaste);
+
+            // Remove file
+            removeFile.addEventListener('click', clearFile);
+
+            // Analyze button
+            analyzeBtn.addEventListener('click', analyzeChart);
+
+            // Strategy selection
+            strategySelect.addEventListener('change', updateStrategyDescription);
+
+            // Clear history
+            clearHistoryBtn.addEventListener('click', clearHistory);
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                loadFile(file);
+            }
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.currentTarget.classList.add('dragover');
+        }
+
+        function handleDragLeave(event) {
+            event.currentTarget.classList.remove('dragover');
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            event.currentTarget.classList.remove('dragover');
+            
+            const files = event.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('image/')) {
+                loadFile(files[0]);
+            }
+        }
+
+        function handlePaste(event) {
+            const items = event.clipboardData.items;
+            for (let item of items) {
+                if (item.type.startsWith('image/')) {
+                    const file = item.getAsFile();
+                    loadFile(file);
+                    break;
+                }
+            }
+        }
+
+        function loadFile(file) {
+            currentFile = file;
+            
+            // Hide upload area and show file info
+            document.getElementById('uploadArea').classList.add('has-file');
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileInfo').style.display = 'flex';
+            
+            // Show strategy section
+            document.getElementById('strategySection').style.display = 'block';
+            
+            // Create preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewImg = document.getElementById('previewImage');
+                previewImg.src = e.target.result;
+                document.getElementById('previewSection').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearFile() {
+            currentFile = null;
+            document.getElementById('uploadArea').classList.remove('has-file');
+            document.getElementById('fileInfo').style.display = 'none';
+            document.getElementById('strategySection').style.display = 'none';
+            document.getElementById('previewSection').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('fileInput').value = '';
+        }
+
+        function updateStrategyDescription() {
+            const strategy = document.getElementById('strategySelect').value;
+            const descriptions = {
+                'auto': 'Auto Detect will test all 3 strategies and return the first valid match with proper trigger candle and trade plan.',
+                'breakout-retest': 'Looks for price breaking above resistance and retesting it as new support.',
+                'dip-uptrend': 'Identifies buying opportunities during temporary pullbacks in an uptrend.',
+                'swing-low-reversal': 'Spots potential reversal points at swing lows with confirmation signals.'
+            };
+            document.getElementById('strategyDescription').innerHTML = `<p>${descriptions[strategy]}</p>`;
+        }
+
+        async function analyzeChart() {
+            if (!currentFile) return;
+
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            analyzeBtn.classList.add('loading');
+
+            try {
+                const base64Image = await fileToBase64(currentFile);
+                const strategy = document.getElementById('strategySelect').value;
+                
+                const result = await callOpenAIAPI(base64Image, strategy);
+                displayResults(result);
+                saveToHistory(result, currentFile.name, strategy);
+                
+            } catch (error) {
+                displayError(error.message);
+            } finally {
+                analyzeBtn.classList.remove('loading');
+            }
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function callOpenAIAPI(base64Image, strategy) {
+            const prompt = generatePrompt(strategy);
+            
+            const response = await fetch(CONFIG.API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${CONFIG.API_KEY}`
+                },
+                body: JSON.stringify({
+                    model: "gpt-4o",
+                    messages: [{
+                        role: "user",
+                        content: [
+                            { type: "text", text: prompt },
+                            { type: "image_url", image_url: { url: `data:image/jpeg;base64,${base64Image}` } }
+                        ]
+                    }],
+                    max_tokens: 1000
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('API request failed');
+            }
+
+            const data = await response.json();
+            return data.choices[0].message.content;
+        }
+
+        function generatePrompt(strategy) {
+            const basePrompt = "Analyze this altcoin chart using the Altcoin Profit Toolkit methodology. Please provide a structured analysis with the following format (do not use ** markdown symbols in your response):\n\n";
+            
+            const structuredFormat = `
+            STRATEGY: [Name of strategy identified]
+            ENTRY: [Specific price level]
+            STOP LOSS: [Specific price level]
+            TAKE PROFIT: [Specific price level]
+            RISK:REWARD: [Ratio like 1:3]
+            
+            KEY POINTS:
+            - [Point 1]
+            - [Point 2]
+            - [Point 3]
+            
+            RISK CONSIDERATIONS:
+            - [Risk factor 1]
+            - [Risk factor 2]
+            
+            ### Setup Analysis
+            [Detailed explanation of the setup]
+            
+            ### Entry Strategy
+            [How and when to enter]
+            
+            ### Risk Management
+            [Risk management approach]
+            
+            ### Market Context
+            [Additional market considerations]`;
+            
+            if (strategy === 'auto') {
+                return basePrompt + structuredFormat + "\n\nTest for these 3 strategies in order: 1) Breakout Retest, 2) Dip in Uptrend, 3) Swing Low Reversal. Return analysis for the first valid setup found with specific entry/exit levels. Use clear section headers and avoid markdown symbols.";
+            }
+            
+            const strategies = {
+                'breakout-retest': 'Focus on breakout retest setups where price breaks resistance and retests as support. Look for clear resistance levels that have been broken and potential retest zones.',
+                'dip-uptrend': 'Look for dip buying opportunities in established uptrends. Identify the main uptrend and potential pullback entry points.',
+                'swing-low-reversal': 'Identify swing low reversal patterns with confirmation signals. Look for oversold conditions and reversal candlestick patterns.'
+            };
+            
+            return basePrompt + structuredFormat + "\n\n" + strategies[strategy] + " Provide specific entry, stop loss, take profit levels and comprehensive risk assessment with exact price points. Use clear section headers and avoid markdown symbols like asterisks.";
+        }
+
+        function displayResults(results) {
+            const formattedResults = formatAnalysisResults(results);
+            document.getElementById('resultsContent').innerHTML = formattedResults;
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+        
+        function formatAnalysisResults(rawResults) {
+            // Try to parse structured data from the AI response
+            const sections = parseAnalysisData(rawResults);
+            
+            return `
+                <div class="analysis-header">
+                    <i class="fas fa-chart-line"></i> Trading Analysis Results
+                </div>
+                <div class="analysis-body">
+                    ${sections.strategy ? `
+                        <div class="analysis-section">
+                            <div class="section-header">
+                                <i class="fas fa-bullseye"></i>
+                                <h4>Strategy Identified</h4>
+                            </div>
+                            <div class="section-content">
+                                <div class="strategy-badge">${sections.strategy}</div>
+                                ${sections.confidence ? `
+                                    <div class="confidence-meter">
+                                        <div class="confidence-fill" style="width: ${sections.confidence}%"></div>
+                                    </div>
+                                    <div class="confidence-label">Confidence: ${sections.confidence}%</div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    ${sections.levels ? `
+                        <div class="analysis-section">
+                            <div class="section-header">
+                                <i class="fas fa-crosshairs"></i>
+                                <h4>Trading Levels</h4>
+                            </div>
+                            <div class="section-content">
+                                <div class="trading-levels">
+                                    ${sections.levels.entry ? `
+                                        <div class="level-card entry">
+                                            <div class="level-label">Entry</div>
+                                            <div class="level-value">${sections.levels.entry}</div>
+                                        </div>
+                                    ` : ''}
+                                    ${sections.levels.stopLoss ? `
+                                        <div class="level-card stop">
+                                            <div class="level-label">Stop Loss</div>
+                                            <div class="level-value">${sections.levels.stopLoss}</div>
+                                        </div>
+                                    ` : ''}
+                                    ${sections.levels.takeProfit ? `
+                                        <div class="level-card target">
+                                            <div class="level-label">Take Profit</div>
+                                            <div class="level-value">${sections.levels.takeProfit}</div>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    ${sections.metrics ? `
+                        <div class="analysis-section">
+                            <div class="section-header">
+                                <i class="fas fa-calculator"></i>
+                                <h4>Risk Metrics</h4>
+                            </div>
+                            <div class="section-content">
+                                <div class="risk-metrics">
+                                    ${sections.metrics.riskReward ? `
+                                        <div class="metric-card">
+                                            <div class="metric-label">Risk:Reward</div>
+                                            <div class="metric-value">${sections.metrics.riskReward}</div>
+                                        </div>
+                                    ` : ''}
+                                    ${sections.metrics.riskPercentage ? `
+                                        <div class="metric-card">
+                                            <div class="metric-label">Risk %</div>
+                                            <div class="metric-value">${sections.metrics.riskPercentage}</div>
+                                        </div>
+                                    ` : ''}
+                                    ${sections.metrics.positionSize ? `
+                                        <div class="metric-card">
+                                            <div class="metric-label">Position Size</div>
+                                            <div class="metric-value">${sections.metrics.positionSize}</div>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    ${sections.keyPoints && sections.keyPoints.length > 0 ? `
+                        <div class="analysis-section">
+                            <div class="section-header">
+                                <i class="fas fa-key"></i>
+                                <h4>Key Points</h4>
+                            </div>
+                            <div class="section-content">
+                                <div class="key-points">
+                                    <ul>
+                                        ${sections.keyPoints.map(point => `<li>${point}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    ${sections.risks && sections.risks.length > 0 ? `
+                        <div class="analysis-section">
+                            <div class="alert-box">
+                                <h5><i class="fas fa-exclamation-triangle"></i> Risk Considerations</h5>
+                                ${sections.risks.map(risk => `<p>• ${risk}</p>`).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="analysis-section">
+                        <div class="section-header">
+                            <i class="fas fa-file-alt"></i>
+                            <h4>Detailed Analysis</h4>
+                        </div>
+                        <div class="section-content">
+                            <div class="detailed-analysis">
+                                ${formatDetailedAnalysis(rawResults)}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function parseAnalysisData(text) {
+            const sections = {
+                strategy: null,
+                confidence: null,
+                levels: {},
+                metrics: {},
+                keyPoints: [],
+                risks: []
+            };
+            
+            // Extract strategy
+            const strategyMatch = text.match(/(?:strategy|setup).*?:(.*?)(?:\n|$)/i);
+            if (strategyMatch) {
+                sections.strategy = strategyMatch[1].trim();
+            } else if (text.toLowerCase().includes('breakout retest')) {
+                sections.strategy = 'Breakout Retest';
+            } else if (text.toLowerCase().includes('dip in uptrend')) {
+                sections.strategy = 'Dip in Uptrend';
+            } else if (text.toLowerCase().includes('swing low')) {
+                sections.strategy = 'Swing Low Reversal';
+            }
+            
+            // Extract levels with improved regex
+            const entryMatch = text.match(/entry.*?(?:around|at|near)?\s*([\d.,]+)/i);
+            if (entryMatch) sections.levels.entry = `$${entryMatch[1]}`;
+            
+            const stopMatch = text.match(/stop\s*loss.*?(?:around|at|near|below)?\s*([\d.,]+)/i);
+            if (stopMatch) sections.levels.stopLoss = `$${stopMatch[1]}`;
+            
+            const profitMatch = text.match(/(?:take\s*profit|target).*?(?:around|at|near)?\s*([\d.,]+)/i);
+            if (profitMatch) sections.levels.takeProfit = `$${profitMatch[1]}`;
+            
+            // Extract risk-reward ratio
+            const rrMatch = text.match(/(?:risk.{0,20}reward|r.{0,5}r).*?(\d+:\d+)/i);
+            if (rrMatch) sections.metrics.riskReward = rrMatch[1];
+            
+            // Extract key points from bullet points or numbered lists
+            const bulletPoints = text.match(/^\s*[•\-\*]\s*(.+)$/gm);
+            if (bulletPoints) {
+                sections.keyPoints = bulletPoints.map(point => point.replace(/^\s*[•\-\*]\s*/, '').trim());
+            }
+            
+            // Extract numbered points
+            const numberedPoints = text.match(/^\s*\d+\.\s*(.+)$/gm);
+            if (numberedPoints && sections.keyPoints.length === 0) {
+                sections.keyPoints = numberedPoints.map(point => point.replace(/^\s*\d+\.\s*/, '').trim());
+            }
+            
+            // Extract risk considerations
+            const riskSection = text.match(/risk.*?considerations?:([\s\S]*?)(?=###|$)/i);
+            if (riskSection) {
+                const riskPoints = riskSection[1].match(/^\s*[•\-\*]\s*(.+)$/gm);
+                if (riskPoints) {
+                    sections.risks = riskPoints.map(point => point.replace(/^\s*[•\-\*]\s*/, '').trim());
+                }
+            }
+            
+            // Add confidence based on completeness
+            let confidence = 50;
+            if (sections.levels.entry) confidence += 15;
+            if (sections.levels.stopLoss) confidence += 15;
+            if (sections.levels.takeProfit) confidence += 10;
+            if (sections.metrics.riskReward) confidence += 10;
+            sections.confidence = Math.min(confidence, 95);
+            
+            return sections;
+        }
+        
+        function formatDetailedAnalysis(text) {
+            // Remove markdown symbols and format for better readability
+            let formatted = text
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>') // Bold text
+                .replace(/\*([^*]+)\*/g, '<em>$1</em>') // Italic text
+                .replace(/### ([^\n]+)/g, '<h3>$1</h3>') // H3 headers
+                .replace(/## ([^\n]+)/g, '<h3>$1</h3>') // H2 as H3
+                .replace(/# ([^\n]+)/g, '<h3>$1</h3>') // H1 as H3
+                .replace(/^- (.+)$/gm, '<li>$1</li>') // List items
+                .replace(/^\d+\. (.+)$/gm, '<li>$1</li>') // Numbered list items
+                .replace(/\n\n/g, '</p><p>') // Paragraphs
+                .replace(/^(?!<[hlu])/gm, '<p>') // Start paragraphs
+                .replace(/(?<!>)$/gm, '</p>'); // End paragraphs
+            
+            // Wrap consecutive list items in ul tags
+            formatted = formatted.replace(/(<li>.*?<\/li>)+/gs, function(match) {
+                return '<ul>' + match + '</ul>';
+            });
+            
+            // Clean up empty paragraphs and fix formatting
+            formatted = formatted
+                .replace(/<p><\/p>/g, '')
+                .replace(/<p>(<h3>)/g, '$1')
+                .replace(/(<\/h3>)<\/p>/g, '$1')
+                .replace(/<p>(<ul>)/g, '$1')
+                .replace(/(<\/ul>)<\/p>/g, '$1')
+                .replace(/<p><strong>/g, '<p><strong>')
+                .replace(/<\/strong><\/p>/g, '</strong></p>');
+            
+            return formatted;
+        }
+
+        function displayError(message) {
+            document.getElementById('resultsContent').innerHTML = `<p style="color: var(--accent-danger);">Error: ${message}</p>`;
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        function saveToHistory(analysis, filename, strategy) {
+            const entry = {
+                timestamp: new Date().toISOString(),
+                filename,
+                strategy,
+                analysis: analysis.substring(0, 200) + '...'
+            };
+            
+            analysisHistory.unshift(entry);
+            if (analysisHistory.length > CONFIG.MAX_HISTORY) {
+                analysisHistory = analysisHistory.slice(0, CONFIG.MAX_HISTORY);
+            }
+            
+            localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(analysisHistory));
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            if (analysisHistory.length === 0) return;
+            
+            const historyContent = document.getElementById('historyContent');
+            historyContent.innerHTML = analysisHistory.map(entry => `
+                <div style="margin-bottom: 15px; padding: 15px; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color);">
+                    <strong style="color: var(--text-primary);">${entry.filename}</strong> 
+                    <span style="color: var(--text-secondary);">(${entry.strategy})</span>
+                    <br>
+                    <small style="color: var(--text-muted);">${new Date(entry.timestamp).toLocaleString()}</small>
+                    <p style="color: var(--text-secondary); margin-top: 10px;">${entry.analysis}</p>
+                </div>
+            `).join('');
+            
+            document.getElementById('historySection').style.display = 'block';
+        }
+
+        function clearHistory() {
+            analysisHistory = [];
+            localStorage.removeItem(CONFIG.STORAGE_KEY);
+            document.getElementById('historySection').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

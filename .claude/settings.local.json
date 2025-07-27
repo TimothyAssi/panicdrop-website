@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(rm:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(python3:*)",
+      "Bash(chmod:*)",
+      "Bash(./prepare-netlify-deployment.sh:*)",
+      "Bash(tree:*)",
+      "Bash(npm install:*)",
+      "Bash(sudo npm install -g netlify-cli)",
+      "Bash(npx netlify:*)"
+    ],
+    "deny": []
+  }
+}
