@@ -1520,7 +1520,31 @@
         Server handles API calls to avoid CORS restrictions
         */
         
+        // Global variables
         let dashboard = null;
+        window.dashboard = null;
+        
+        // Debug function to test modal opening
+        window.testModal = function() {
+            console.log('🧪 Testing modal...');
+            const modalElement = document.getElementById('tokenModal');
+            if (modalElement) {
+                modalElement.style.display = 'flex';
+                modalElement.style.zIndex = '10000';
+                console.log('✅ Modal should be visible now');
+            } else {
+                console.error('❌ Modal element not found');
+            }
+        };
+        
+        // Debug function to close modal
+        window.closeModal = function() {
+            const modalElement = document.getElementById('tokenModal');
+            if (modalElement) {
+                modalElement.style.display = 'none';
+                console.log('✅ Modal closed');
+            }
+        };
 
         // Test API connectivity via backend server
         async function testApiConnectivity() {
@@ -2449,7 +2473,7 @@
                 const changeClass = priceChange7d >= 0 ? 'positive' : 'negative';
                 
                 return `
-                    <div class="token-card" onclick="openTokenModal('${token.symbol}')">
+                    <div class="token-card" onclick="console.log('Token card clicked:', '${token.symbol}'); openTokenModal('${token.symbol}');" style="cursor: pointer;">
                         <div class="token-header">
                             <div class="token-main-info">
                                 <div class="token-symbol">$${token.symbol}</div>
@@ -2501,7 +2525,7 @@
                 const reason = this.generateRankingReason(token, rank);
                 
                 return `
-                    <div class="top3-card" onclick="openTokenModal('${token.symbol}')">
+                    <div class="top3-card" onclick="console.log('Top3 card clicked:', '${token.symbol}'); openTokenModal('${token.symbol}');" style="cursor: pointer;">
                         <div class="rank-badge">${rank}</div>
                         <div class="top3-token-info">
                             <div class="top3-symbol">$${token.symbol}</div>
@@ -2765,16 +2789,38 @@
         // Modal Functions
         function openTokenModal(symbol) {
             console.log('🎯 Opening modal for symbol:', symbol);
+            console.log('🔍 Dashboard state:', dashboard);
+            console.log('🔍 All tokens available:', dashboard?.allTokens?.length);
+            
+            if (!dashboard || !dashboard.allTokens) {
+                console.error('❌ Dashboard or tokens not available');
+                alert('Error: Dashboard not initialized. Please refresh the page.');
+                return;
+            }
+            
             const token = dashboard.allTokens.find(t => t.symbol === symbol);
             if (!token) {
                 console.error('❌ Token not found:', symbol);
+                console.log('🔍 Available token symbols:', dashboard.allTokens.map(t => t.symbol));
+                alert(`Error: Token ${symbol} not found in dataset.`);
                 return;
             }
 
             console.log('✅ Token found:', token.symbol, token.name);
+            
+            // Check if modal element exists
+            const modalElement = document.getElementById('tokenModal');
+            if (!modalElement) {
+                console.error('❌ Modal element not found');
+                alert('Error: Modal element not found. Please refresh the page.');
+                return;
+            }
+            
             populateTokenModal(token);
-            document.getElementById('tokenModal').style.display = 'flex';
+            modalElement.style.display = 'flex';
+            modalElement.style.zIndex = '10000';
             console.log('🔍 Token modal opened, currentAnalysisToken should be set to:', token.symbol);
+            console.log('🔍 Modal display style:', modalElement.style.display);
         }
 
         function closeTokenModal() {
@@ -3236,8 +3282,11 @@
 
         // Initialize when page loads
         window.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Initializing dashboard...');
             const apiConnected = await testApiConnectivity();
-            dashboard = new CryptoDashboard(apiConnected);
+            window.dashboard = new CryptoDashboard(apiConnected);
+            dashboard = window.dashboard; // Ensure global access
+            console.log('✅ Dashboard initialized:', dashboard);
         });
     </script>
 
