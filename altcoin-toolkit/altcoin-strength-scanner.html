@@ -1549,8 +1549,10 @@
         // Test API connectivity via backend server
         async function testApiConnectivity() {
             const statusEl = document.getElementById('apiStatus');
-            statusEl.textContent = '🔄 Testing API...';
-            statusEl.className = 'api-status demo';
+            if (statusEl) {
+                statusEl.textContent = '🔄 Testing API...';
+                statusEl.className = 'api-status demo';
+            }
             
             try {
                 console.log('🔍 Testing backend server connectivity...');
@@ -1559,8 +1561,10 @@
                 if (response.ok) {
                     const data = await response.json();
                     console.log('✅ Backend server connected successfully:', data);
-                    statusEl.textContent = '🟢 LIVE DATA';
-                    statusEl.className = 'api-status live';
+                    if (statusEl) {
+                        statusEl.textContent = '🟢 LIVE DATA';
+                        statusEl.className = 'api-status live';
+                    }
                     return true;
                 }
             } catch (error) {
@@ -1568,8 +1572,10 @@
             }
 
             console.warn('⚠️ Backend server unavailable, using demo data');
-            statusEl.textContent = '🔴 API ERROR - Using Demo';
-            statusEl.className = 'api-status demo';
+            if (statusEl) {
+                statusEl.textContent = '🔴 API ERROR - Using Demo';
+                statusEl.className = 'api-status demo';
+            }
             return false;
         }
 
@@ -1704,8 +1710,10 @@
                     
                     // Update status to show demo mode
                     const statusEl = document.getElementById('apiStatus');
-                    statusEl.textContent = '🔴 API ERROR - Using Demo';
-                    statusEl.className = 'api-status demo';
+                    if (statusEl) {
+                        statusEl.textContent = '🔴 API ERROR - Using Demo';
+                        statusEl.className = 'api-status demo';
+                    }
                     
                     await this.loadDemoData();
                     return;
@@ -2599,16 +2607,21 @@
 
             updateLastUpdate() {
                 this.lastUpdate = new Date();
-                document.getElementById('lastUpdate').textContent = this.lastUpdate.toLocaleString();
+                const lastUpdateEl = document.getElementById('lastUpdate');
+                if (lastUpdateEl) lastUpdateEl.textContent = this.lastUpdate.toLocaleString();
             }
 
             showLoading(status) {
-                document.getElementById('loadingOverlay').style.display = 'flex';
-                document.getElementById('loadingStatus').textContent = status;
+                const loadingOverlayEl = document.getElementById('loadingOverlay');
+                if (loadingOverlayEl) loadingOverlayEl.style.display = 'flex';
+                
+                const loadingStatusEl = document.getElementById('loadingStatus');
+                if (loadingStatusEl) loadingStatusEl.textContent = status;
             }
 
             hideLoading() {
-                document.getElementById('loadingOverlay').style.display = 'none';
+                const loadingOverlayEl = document.getElementById('loadingOverlay');
+                if (loadingOverlayEl) loadingOverlayEl.style.display = 'none';
             }
 
             async refreshData() {
@@ -2933,8 +2946,11 @@
 
         // Display the analysis content with collapsible sections
         function displayAnalysis(analysisData) {
-            document.getElementById('analysisLoadingContainer').style.display = 'none';
-            document.getElementById('analysisContainer').style.display = 'block';
+            const analysisLoadingEl = document.getElementById('analysisLoadingContainer');
+            if (analysisLoadingEl) analysisLoadingEl.style.display = 'none';
+            
+            const analysisContainerEl = document.getElementById('analysisContainer');
+            if (analysisContainerEl) analysisContainerEl.style.display = 'block';
             
             // Check if we have structured data or need to parse text
             let structuredData;
@@ -2948,15 +2964,23 @@
             
             // Convert structured data to HTML with collapsible sections
             const formattedAnalysis = formatStructuredAnalysisToHTML(structuredData);
-            document.getElementById('analysisContent').innerHTML = formattedAnalysis;
+            const analysisContentEl = document.getElementById('analysisContent');
+            if (analysisContentEl) analysisContentEl.innerHTML = formattedAnalysis;
         }
 
         // Show analysis error
         function showAnalysisError(errorMessage) {
-            document.getElementById('analysisLoadingContainer').style.display = 'none';
-            document.getElementById('analysisError').style.display = 'block';
-            document.getElementById('analysisErrorMessage').textContent = errorMessage;
-            document.getElementById('loadAnalysisBtn').style.display = 'block';
+            const analysisLoadingEl = document.getElementById('analysisLoadingContainer');
+            if (analysisLoadingEl) analysisLoadingEl.style.display = 'none';
+            
+            const analysisErrorEl = document.getElementById('analysisError');
+            if (analysisErrorEl) analysisErrorEl.style.display = 'block';
+            
+            const analysisErrorMessageEl = document.getElementById('analysisErrorMessage');
+            if (analysisErrorMessageEl) analysisErrorMessageEl.textContent = errorMessage;
+            
+            const loadAnalysisBtnEl = document.getElementById('loadAnalysisBtn');
+            if (loadAnalysisBtnEl) loadAnalysisBtnEl.style.display = 'block';
         }
 
         // Format structured analysis data to HTML with collapsible sections
@@ -3078,6 +3102,15 @@
         }
 
         function populateTokenModal(token) {
+            console.log('🔄 Starting populateTokenModal for:', token.symbol);
+            
+            // Verify modal exists in DOM
+            const modalElement = document.getElementById('tokenModal');
+            if (!modalElement) {
+                console.error('❌ Token modal not present in DOM');
+                return;
+            }
+            
             const quote = token.quote.USD;
             const ai = token.aiData;
             
@@ -3103,56 +3136,94 @@
                 });
             }
 
-            // Header information
-            document.getElementById('modalTokenSymbol').textContent = `$${token.symbol}`;
-            document.getElementById('modalTokenName').textContent = token.name;
-            document.getElementById('modalTokenCategory').textContent = token.category;
-            document.getElementById('modalTokenPrice').textContent = `$${dashboard.formatNumber(quote.price)}`;
+            // Header information with null checks
+            const symbolEl = document.getElementById('modalTokenSymbol');
+            if (symbolEl) symbolEl.textContent = `$${token.symbol}`;
+            
+            const nameEl = document.getElementById('modalTokenName');
+            if (nameEl) nameEl.textContent = token.name;
+            
+            const categoryEl = document.getElementById('modalTokenCategory');
+            if (categoryEl) categoryEl.textContent = token.category;
+            
+            const priceEl = document.getElementById('modalTokenPrice');
+            if (priceEl) priceEl.textContent = `$${dashboard.formatNumber(quote.price)}`;
 
-            // Composite Score
-            document.getElementById('modalCompositeScore').textContent = token.compositeScore.toFixed(1);
+            // Composite Score with null check
+            const compositeEl = document.getElementById('modalCompositeScore');
+            if (compositeEl) compositeEl.textContent = token.compositeScore.toFixed(1);
 
-            // Score Breakdown (legacy compatibility)
-            document.getElementById('modalMomentumScore').textContent = Math.round(token.momentumScore);
-            document.getElementById('modalGrowthScore').textContent = Math.round(token.growthScore);
-            document.getElementById('modalSentimentScore').textContent = Math.round(token.sentimentScore);
-            document.getElementById('modalPotentialScore').textContent = Math.round(token.potentialScore);
+            // Score Breakdown (legacy compatibility) with null checks
+            const momentumEl = document.getElementById('modalMomentumScore');
+            if (momentumEl) momentumEl.textContent = Math.round(token.momentumScore);
+            
+            const growthEl = document.getElementById('modalGrowthScore');
+            if (growthEl) growthEl.textContent = Math.round(token.growthScore);
+            
+            const sentimentEl = document.getElementById('modalSentimentScore');
+            if (sentimentEl) sentimentEl.textContent = Math.round(token.sentimentScore);
+            
+            const potentialEl = document.getElementById('modalPotentialScore');
+            if (potentialEl) potentialEl.textContent = Math.round(token.potentialScore);
             
             // Populate Fundamental Score Breakdown
             populateFundamentalScores(token);
 
-            // Market Metrics
-            document.getElementById('modalCurrentPrice').textContent = `$${dashboard.formatNumber(quote.price)}`;
+            // Market Metrics with null checks
+            const currentPriceEl = document.getElementById('modalCurrentPrice');
+            if (currentPriceEl) currentPriceEl.textContent = `$${dashboard.formatNumber(quote.price)}`;
             
             const change7d = quote.percent_change_7d || 0;
             const change7dEl = document.getElementById('modal7dChange');
-            change7dEl.textContent = `${change7d >= 0 ? '+' : ''}${change7d.toFixed(1)}%`;
-            change7dEl.className = `metric-data ${change7d >= 0 ? 'positive' : 'negative'}`;
+            if (change7dEl) {
+                change7dEl.textContent = `${change7d >= 0 ? '+' : ''}${change7d.toFixed(1)}%`;
+                change7dEl.className = `metric-data ${change7d >= 0 ? 'positive' : 'negative'}`;
+            }
             
             const change30d = quote.percent_change_30d || 0;
             const change30dEl = document.getElementById('modal30dChange');
-            change30dEl.textContent = `${change30d >= 0 ? '+' : ''}${change30d.toFixed(1)}%`;
-            change30dEl.className = `metric-data ${change30d >= 0 ? 'positive' : 'negative'}`;
+            if (change30dEl) {
+                change30dEl.textContent = `${change30d >= 0 ? '+' : ''}${change30d.toFixed(1)}%`;
+                change30dEl.className = `metric-data ${change30d >= 0 ? 'positive' : 'negative'}`;
+            }
 
-            document.getElementById('modalMarketCap').textContent = `$${dashboard.formatMarketCap(quote.market_cap)}`;
-            document.getElementById('modalVolume').textContent = `$${dashboard.formatMarketCap(quote.volume_24h)}`;
-            document.getElementById('modalEcosystem').textContent = token.ecosystem.charAt(0).toUpperCase() + token.ecosystem.slice(1);
+            const marketCapEl = document.getElementById('modalMarketCap');
+            if (marketCapEl) marketCapEl.textContent = `$${dashboard.formatMarketCap(quote.market_cap)}`;
+            
+            const volumeEl = document.getElementById('modalVolume');
+            if (volumeEl) volumeEl.textContent = `$${dashboard.formatMarketCap(quote.volume_24h)}`;
+            
+            const ecosystemEl = document.getElementById('modalEcosystem');
+            if (ecosystemEl && token.ecosystem) {
+                ecosystemEl.textContent = token.ecosystem.charAt(0).toUpperCase() + token.ecosystem.slice(1);
+            }
 
-            // AI Analysis Metrics
+            // AI Analysis Metrics with null checks
             const tvlGrowthEl = document.getElementById('modalTvlGrowth');
-            tvlGrowthEl.textContent = `${ai.tvlGrowth30d >= 0 ? '+' : ''}${ai.tvlGrowth30d.toFixed(1)}%`;
-            tvlGrowthEl.className = `metric-data ${ai.tvlGrowth30d >= 0 ? 'positive' : 'negative'}`;
+            if (tvlGrowthEl) {
+                tvlGrowthEl.textContent = `${ai.tvlGrowth30d >= 0 ? '+' : ''}${ai.tvlGrowth30d.toFixed(1)}%`;
+                tvlGrowthEl.className = `metric-data ${ai.tvlGrowth30d >= 0 ? 'positive' : 'negative'}`;
+            }
 
             const walletGrowthEl = document.getElementById('modalWalletGrowth');
-            walletGrowthEl.textContent = `${ai.walletGrowth30d >= 0 ? '+' : ''}${ai.walletGrowth30d.toFixed(1)}%`;
-            walletGrowthEl.className = `metric-data ${ai.walletGrowth30d >= 0 ? 'positive' : 'negative'}`;
+            if (walletGrowthEl) {
+                walletGrowthEl.textContent = `${ai.walletGrowth30d >= 0 ? '+' : ''}${ai.walletGrowth30d.toFixed(1)}%`;
+                walletGrowthEl.className = `metric-data ${ai.walletGrowth30d >= 0 ? 'positive' : 'negative'}`;
+            }
 
-            document.getElementById('modalDevelopmentScore').textContent = `${ai.developmentScore}/100`;
-            document.getElementById('modalAdoptionScore').textContent = `${ai.adoptionScore}/100`;
-            document.getElementById('modalEcosystemStrength').textContent = `${ai.ecosystemStrength}/100`;
-            document.getElementById('modalNarrativeFit').textContent = `${ai.narrativeFit}/100`;
+            const devScoreEl = document.getElementById('modalDevelopmentScore');
+            if (devScoreEl) devScoreEl.textContent = `${ai.developmentScore}/100`;
+            
+            const adoptionScoreEl = document.getElementById('modalAdoptionScore');
+            if (adoptionScoreEl) adoptionScoreEl.textContent = `${ai.adoptionScore}/100`;
+            
+            const ecosystemStrengthEl = document.getElementById('modalEcosystemStrength');
+            if (ecosystemStrengthEl) ecosystemStrengthEl.textContent = `${ai.ecosystemStrength}/100`;
+            
+            const narrativeFitEl = document.getElementById('modalNarrativeFit');
+            if (narrativeFitEl) narrativeFitEl.textContent = `${ai.narrativeFit}/100`;
 
-            // Market Cap Tier for Potential Score
+            // Market Cap Tier for Potential Score with null check
             let marketCapTier = '';
             if (quote.market_cap < 100000000) {
                 marketCapTier = 'Micro Cap (+20)';
@@ -3163,20 +3234,24 @@
             } else {
                 marketCapTier = 'Large Cap (+5)';
             }
-            document.getElementById('modalMarketCapTier').textContent = marketCapTier;
+            const marketCapTierEl = document.getElementById('modalMarketCapTier');
+            if (marketCapTierEl) marketCapTierEl.textContent = marketCapTier;
 
-            // Growth Bonus Calculation
+            // Growth Bonus Calculation with null check
             const growthBonus = Math.round((ai.tvlGrowth30d * 0.2) + (ai.walletGrowth30d * 0.2) + ((ai.sentimentScore - 50) * 0.3));
-            document.getElementById('modalGrowthBonus').textContent = `+${Math.max(0, growthBonus)}`;
+            const growthBonusEl = document.getElementById('modalGrowthBonus');
+            if (growthBonusEl) growthBonusEl.textContent = `+${Math.max(0, growthBonus)}`;
 
-            // Risk Penalty
+            // Risk Penalty with null check
             const riskPenalty = Math.round(ai.unlockRisk * 0.2);
-            document.getElementById('modalRiskPenalty').textContent = `-${riskPenalty}`;
+            const riskPenaltyEl = document.getElementById('modalRiskPenalty');
+            if (riskPenaltyEl) riskPenaltyEl.textContent = `-${riskPenalty}`;
 
-            // Risk Assessment
-            document.getElementById('modalUnlockRisk').textContent = `${ai.unlockRisk}/100`;
+            // Risk Assessment with null check
+            const unlockRiskEl = document.getElementById('modalUnlockRisk');
+            if (unlockRiskEl) unlockRiskEl.textContent = `${ai.unlockRisk}/100`;
 
-            // Risk Indicators
+            // Risk Indicators with null check
             const riskIndicators = [];
             if (ai.unlockRisk < 30) {
                 riskIndicators.push('<span class="risk-badge risk-low">✅ Low Unlock Risk</span>');
@@ -3196,7 +3271,10 @@
                 riskIndicators.push('<span class="risk-badge risk-high">📉 Weak Sentiment</span>');
             }
 
-            document.getElementById('modalRiskIndicators').innerHTML = riskIndicators.join('');
+            const riskIndicatorsEl = document.getElementById('modalRiskIndicators');
+            if (riskIndicatorsEl) riskIndicatorsEl.innerHTML = riskIndicators.join('');
+            
+            console.log('✅ populateTokenModal completed successfully for:', token.symbol);
         }
 
         // Close modal when clicking outside
@@ -3233,36 +3311,73 @@
         // Function to populate fundamental scores in modal
         function populateFundamentalScores(token) {
             if (token.individualScores) {
-                // Token Economics & Supply
-                document.getElementById('scoreTokenUnlock').textContent = `${token.individualScores.tokenUnlock}/10`;
-                document.getElementById('scoreTVL').textContent = `${token.individualScores.tvl}/10`;
-                document.getElementById('scoreSupplyDynamics').textContent = `${token.individualScores.supplyDynamics}/10`;
-                document.getElementById('scoreMarketCap').textContent = `${token.individualScores.marketCap}/10`;
-                document.getElementById('scoreTokenDistribution').textContent = `${token.individualScores.tokenDistribution}/10`;
+                // Token Economics & Supply - with null checks
+                const scoreTokenUnlockEl = document.getElementById('scoreTokenUnlock');
+                if (scoreTokenUnlockEl) scoreTokenUnlockEl.textContent = `${token.individualScores.tokenUnlock}/10`;
                 
-                // Network Activity & Adoption
-                document.getElementById('scoreActiveAddresses').textContent = `${token.individualScores.activeAddresses}/10`;
-                document.getElementById('scoreTransactionVolume').textContent = `${token.individualScores.transactionVolume}/10`;
-                document.getElementById('scoreProtocolRevenue').textContent = `${token.individualScores.protocolRevenue}/10`;
-                document.getElementById('scoreUsers').textContent = `${token.individualScores.users}/10`;
-                document.getElementById('scoreFDV').textContent = `${token.individualScores.fdv}/10`;
+                const scoreTVLEl = document.getElementById('scoreTVL');
+                if (scoreTVLEl) scoreTVLEl.textContent = `${token.individualScores.tvl}/10`;
                 
-                // Technical & Development
-                document.getElementById('scoreDevelopmentActivity').textContent = `${token.individualScores.developmentActivity}/10`;
-                document.getElementById('scoreSecurityAudits').textContent = `${token.individualScores.securityAudits}/10`;
-                document.getElementById('scoreOnChainActivity').textContent = `${token.individualScores.onChainActivity}/10`;
-                document.getElementById('scoreLiquidity').textContent = `${token.individualScores.liquidity}/10`;
-                document.getElementById('scoreTradingVolume').textContent = `${token.individualScores.tradingVolume}/10`;
+                const scoreSupplyDynamicsEl = document.getElementById('scoreSupplyDynamics');
+                if (scoreSupplyDynamicsEl) scoreSupplyDynamicsEl.textContent = `${token.individualScores.supplyDynamics}/10`;
                 
-                // Market & Community
-                document.getElementById('scoreCommunitySize').textContent = `${token.individualScores.communitySize}/10`;
-                document.getElementById('scorePartnerships').textContent = `${token.individualScores.partnerships}/10`;
-                document.getElementById('scoreEcosystemFlows').textContent = `${token.individualScores.ecosystemFlows}/10`;
-                document.getElementById('scorePFRatio').textContent = `${token.individualScores.pfRatio}/10`;
-                document.getElementById('scoreMcapTvlRatio').textContent = `${token.individualScores.mcapTvlRatio}/10`;
+                const scoreMarketCapEl = document.getElementById('scoreMarketCap');
+                if (scoreMarketCapEl) scoreMarketCapEl.textContent = `${token.individualScores.marketCap}/10`;
                 
-                // Update composite score display
-                document.getElementById('modalCompositeScore').textContent = token.compositeScore.toFixed(1);
+                const scoreTokenDistributionEl = document.getElementById('scoreTokenDistribution');
+                if (scoreTokenDistributionEl) scoreTokenDistributionEl.textContent = `${token.individualScores.tokenDistribution}/10`;
+                
+                // Network Activity & Adoption - with null checks
+                const scoreActiveAddressesEl = document.getElementById('scoreActiveAddresses');
+                if (scoreActiveAddressesEl) scoreActiveAddressesEl.textContent = `${token.individualScores.activeAddresses}/10`;
+                
+                const scoreTransactionVolumeEl = document.getElementById('scoreTransactionVolume');
+                if (scoreTransactionVolumeEl) scoreTransactionVolumeEl.textContent = `${token.individualScores.transactionVolume}/10`;
+                
+                const scoreProtocolRevenueEl = document.getElementById('scoreProtocolRevenue');
+                if (scoreProtocolRevenueEl) scoreProtocolRevenueEl.textContent = `${token.individualScores.protocolRevenue}/10`;
+                
+                const scoreUsersEl = document.getElementById('scoreUsers');
+                if (scoreUsersEl) scoreUsersEl.textContent = `${token.individualScores.users}/10`;
+                
+                const scoreFDVEl = document.getElementById('scoreFDV');
+                if (scoreFDVEl) scoreFDVEl.textContent = `${token.individualScores.fdv}/10`;
+                
+                // Technical & Development - with null checks
+                const scoreDevelopmentActivityEl = document.getElementById('scoreDevelopmentActivity');
+                if (scoreDevelopmentActivityEl) scoreDevelopmentActivityEl.textContent = `${token.individualScores.developmentActivity}/10`;
+                
+                const scoreSecurityAuditsEl = document.getElementById('scoreSecurityAudits');
+                if (scoreSecurityAuditsEl) scoreSecurityAuditsEl.textContent = `${token.individualScores.securityAudits}/10`;
+                
+                const scoreOnChainActivityEl = document.getElementById('scoreOnChainActivity');
+                if (scoreOnChainActivityEl) scoreOnChainActivityEl.textContent = `${token.individualScores.onChainActivity}/10`;
+                
+                const scoreLiquidityEl = document.getElementById('scoreLiquidity');
+                if (scoreLiquidityEl) scoreLiquidityEl.textContent = `${token.individualScores.liquidity}/10`;
+                
+                const scoreTradingVolumeEl = document.getElementById('scoreTradingVolume');
+                if (scoreTradingVolumeEl) scoreTradingVolumeEl.textContent = `${token.individualScores.tradingVolume}/10`;
+                
+                // Market & Community - with null checks
+                const scoreCommunitySizeEl = document.getElementById('scoreCommunitySize');
+                if (scoreCommunitySizeEl) scoreCommunitySizeEl.textContent = `${token.individualScores.communitySize}/10`;
+                
+                const scorePartnershipsEl = document.getElementById('scorePartnerships');
+                if (scorePartnershipsEl) scorePartnershipsEl.textContent = `${token.individualScores.partnerships}/10`;
+                
+                const scoreEcosystemFlowsEl = document.getElementById('scoreEcosystemFlows');
+                if (scoreEcosystemFlowsEl) scoreEcosystemFlowsEl.textContent = `${token.individualScores.ecosystemFlows}/10`;
+                
+                const scorePFRatioEl = document.getElementById('scorePFRatio');
+                if (scorePFRatioEl) scorePFRatioEl.textContent = `${token.individualScores.pfRatio}/10`;
+                
+                const scoreMcapTvlRatioEl = document.getElementById('scoreMcapTvlRatio');
+                if (scoreMcapTvlRatioEl) scoreMcapTvlRatioEl.textContent = `${token.individualScores.mcapTvlRatio}/10`;
+                
+                // Update composite score display - with null check
+                const modalCompositeScoreEl = document.getElementById('modalCompositeScore');
+                if (modalCompositeScoreEl) modalCompositeScoreEl.textContent = token.compositeScore.toFixed(1);
             } else {
                 // Reset to loading state if no fundamental scores available
                 const scoreElements = [
