@@ -47,134 +47,62 @@ exports.handler = async function(event, context) {
       "Content-Type": "application/json"
     };
 
-    // Try multiple API formats with current Perplexity models
-    const testFormats = [
-      {
-        name: "Format 1: llama-3.1-sonar-small-128k-online",
-        body: {
-          "model": "llama-3.1-sonar-small-128k-online",
-          "messages": [
-            {
-              "role": "user",
-              "content": "What is Ethereum?"
-            }
-          ]
+    // Test sonar-pro model
+    const testBody = {
+      "model": "sonar-pro",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Test: What is Ethereum?"
         }
-      },
-      {
-        name: "Format 2: llama-3.1-sonar-large-128k-online",
-        body: {
-          "model": "llama-3.1-sonar-large-128k-online",
-          "messages": [
-            {
-              "role": "user",
-              "content": "What is Ethereum?"
-            }
-          ]
-        }
-      },
-      {
-        name: "Format 3: llama-3.1-sonar-huge-128k-online",
-        body: {
-          "model": "llama-3.1-sonar-huge-128k-online",
-          "messages": [
-            {
-              "role": "user",
-              "content": "What is Ethereum?"
-            }
-          ]
-        }
-      },
-      {
-        name: "Format 4: sonar-small-chat",
-        body: {
-          "model": "sonar-small-chat",
-          "messages": [
-            {
-              "role": "user",
-              "content": "What is Ethereum?"
-            }
-          ]
-        }
-      },
-      {
-        name: "Format 5: sonar-medium-chat",
-        body: {
-          "model": "sonar-medium-chat",
-          "messages": [
-            {
-              "role": "user",
-              "content": "What is Ethereum?"
-            }
-          ]
-        }
-      }
-    ];
+      ]
+    };
 
-    let testResults = [];
+    console.log("🔁 Sending to Perplexity:", testBody);
+    console.log("📋 Headers:", testHeaders);
+    console.log("🧠 Prompt:", testBody.messages[0].content);
+    console.log("✅ Model:", testBody.model);
 
-    for (const format of testFormats) {
-      console.log(`🧪 Testing ${format.name}...`);
-      console.log('🔍 Request Body:', JSON.stringify(format.body, null, 2));
+    const response = await fetch("https://api.perplexity.ai/chat/completions", {
+      method: "POST",
+      headers: testHeaders,
+      body: JSON.stringify(testBody)
+    });
+
+    console.log('📨 Response status:', response.status, response.statusText);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ API call failed:', errorText);
+      console.error('📋 Failed Request Headers:', JSON.stringify(testHeaders, null, 2));
+      console.error('📤 Failed Request Body:', JSON.stringify(testBody, null, 2));
       
-      try {
-        const formatResponse = await fetch('https://api.perplexity.ai/chat/completions', {
-          method: 'POST',
-          headers: testHeaders,
-          body: JSON.stringify(format.body)
-        });
-
-        console.log(`📨 ${format.name} response status:`, formatResponse.status);
-        
-        if (formatResponse.ok) {
-          const formatData = await formatResponse.json();
-          testResults.push({
-            format: format.name,
-            success: true,
-            status: formatResponse.status,
-            content: formatData.choices?.[0]?.message?.content || 'No content'
-          });
-          console.log(`✅ ${format.name} SUCCESS!`);
-          break; // Use the first working format
-        } else {
-          const errorText = await formatResponse.text();
-          console.error(`❌ ${format.name} failed with status ${formatResponse.status}`);
-          console.error(`📄 Error response:`, errorText);
-          console.error(`📋 Response headers:`, Object.fromEntries(formatResponse.headers.entries()));
-          
-          testResults.push({
-            format: format.name,
-            success: false,
-            status: formatResponse.status,
-            statusText: formatResponse.statusText,
-            error: errorText,
-            responseHeaders: Object.fromEntries(formatResponse.headers.entries())
-          });
-        }
-      } catch (error) {
-        testResults.push({
-          format: format.name,
+      return {
+        statusCode: 200,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
           success: false,
-          error: error.message
-        });
-        console.error(`💥 ${format.name} threw error:`, error.message);
-      }
+          error: `API test failed: ${response.status} ${response.statusText}`,
+          debug: {
+            status: response.status,
+            statusText: response.statusText,
+            errorBody: errorText,
+            hasApiKey: true,
+            apiKeyPrefix: apiKey.substring(0, 10),
+            requestHeaders: testHeaders,
+            requestBody: testBody,
+            responseHeaders: Object.fromEntries(response.headers.entries())
+          }
+        })
+      };
     }
 
-    const testBody = testFormats[0].body; // Keep original for response format
+    const data = await response.json();
+    console.log('✅ API call successful:', data);
 
-    console.log('🔍 Test Request Headers:', JSON.stringify(testHeaders, null, 2));
-    console.log('🔍 Test Request Body:', JSON.stringify(testBody, null, 2));
-    
-    // Check if any format succeeded
-    const successfulTest = testResults.find(result => result.success);
-    
-    if (successfulTest) {
-      console.log('✅ Found working API format!', successfulTest.format);
-    } else {
-      console.error('❌ All API formats failed');
-    }
-    
     return {
       statusCode: 200,
       headers: {
@@ -182,14 +110,16 @@ exports.handler = async function(event, context) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        success: successfulTest ? true : false,
-        message: successfulTest ? `Perplexity API working with ${successfulTest.format}` : 'All API formats failed',
+        success: true,
+        message: 'Perplexity API working with sonar-pro model',
         debug: {
           hasApiKey: true,
           apiKeyPrefix: apiKey.substring(0, 10),
-          testResults: testResults,
-          workingFormat: successfulTest || null,
-          requestHeaders: testHeaders
+          model: testBody.model,
+          response: {
+            status: response.status,
+            content: data.choices?.[0]?.message?.content || 'No content'
+          }
         },
         timestamp: new Date().toISOString()
       })

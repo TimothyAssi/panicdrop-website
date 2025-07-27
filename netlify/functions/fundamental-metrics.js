@@ -112,7 +112,7 @@ Provide only factual, verifiable data. Use "N/A" for any metrics that cannot be 
     };
 
     const requestBody = {
-      "model": "llama-3-sonar-small-32k-online",
+      "model": "sonar-pro",
       "messages": [
         {
           "role": "user",
@@ -121,8 +121,10 @@ Provide only factual, verifiable data. Use "N/A" for any metrics that cannot be 
       ]
     };
 
-    console.log('📋 Fundamental Request Headers:', JSON.stringify(requestHeaders, null, 2));
-    console.log('📤 Fundamental Request Body:', JSON.stringify(requestBody, null, 2));
+    console.log("🔁 Sending to Perplexity:", requestBody);
+    console.log("📋 Headers:", requestHeaders);
+    console.log("🧠 Prompt:", prompt);
+    console.log("✅ Model:", requestBody.model);
     
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',

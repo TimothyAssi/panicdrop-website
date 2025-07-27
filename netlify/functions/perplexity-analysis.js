@@ -93,7 +93,7 @@ Please provide detailed, factual analysis based on current market data and proje
     };
 
     const requestBody = {
-      "model": "llama-3-sonar-small-32k-online",
+      "model": "sonar-pro",
       "messages": [
         {
           "role": "user",
@@ -102,8 +102,10 @@ Please provide detailed, factual analysis based on current market data and proje
       ]
     };
     
-    console.log('📋 Full Request Headers:', JSON.stringify(requestHeaders, null, 2));
-    console.log('📤 Full Request Body:', JSON.stringify(requestBody, null, 2));
+    console.log("🔁 Sending to Perplexity:", requestBody);
+    console.log("📋 Headers:", requestHeaders);
+    console.log("🧠 Prompt:", prompt);
+    console.log("✅ Model:", requestBody.model);
     
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
