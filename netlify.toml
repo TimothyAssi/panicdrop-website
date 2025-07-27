@@ -17,6 +17,11 @@ from = "/api/health"
 to = "/.netlify/functions/health"
 status = 200
 
+[[redirects]]
+from = "/api/perplexity-analysis"
+to = "/.netlify/functions/perplexity-analysis"
+status = 200
+
 [[headers]]
 for = "/.netlify/functions/*"
 [headers.values]

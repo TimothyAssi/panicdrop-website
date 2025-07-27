@@ -1318,6 +1318,38 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- AI Deep Analysis -->
+                <div class="score-section">
+                    <h3>🧠 AI Deep Analysis</h3>
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <button id="loadAnalysisBtn" class="apply-filters-btn" onclick="loadPerplexityAnalysis()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 12px 24px;">
+                            📊 Generate Deep Analysis
+                        </button>
+                    </div>
+                    
+                    <div id="analysisLoadingContainer" style="display: none; text-align: center; padding: 30px;">
+                        <div class="spinner" style="margin: 0 auto 15px;"></div>
+                        <p style="color: var(--text-secondary);">Analyzing with Perplexity AI...</p>
+                    </div>
+                    
+                    <div id="analysisContainer" style="display: none;">
+                        <div id="analysisContent" style="line-height: 1.6; color: var(--text-primary);">
+                            <!-- Analysis content will be populated here -->
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border-color);">
+                            <button onclick="toggleAnalysisExpansion()" id="toggleAnalysisBtn" style="background: var(--secondary-bg); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 6px; color: var(--text-primary); cursor: pointer;">
+                                Show Less Details
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="analysisError" style="display: none; padding: 15px; background: rgba(220, 53, 69, 0.1); border: 1px solid rgba(220, 53, 69, 0.2); border-radius: 8px; color: #dc3545;">
+                        <strong>Analysis Unavailable</strong><br>
+                        <span id="analysisErrorMessage">Please try again later.</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -2273,11 +2305,170 @@
 
         function closeTokenModal() {
             document.getElementById('tokenModal').style.display = 'none';
+            // Reset analysis section when closing modal
+            resetAnalysisSection();
+        }
+
+        // Global variable to track current token for analysis
+        let currentAnalysisToken = null;
+        let analysisCache = new Map(); // Cache for analysis results
+
+        // Reset analysis section to initial state
+        function resetAnalysisSection() {
+            document.getElementById('loadAnalysisBtn').style.display = 'block';
+            document.getElementById('analysisLoadingContainer').style.display = 'none';
+            document.getElementById('analysisContainer').style.display = 'none';
+            document.getElementById('analysisError').style.display = 'none';
+            currentAnalysisToken = null;
+        }
+
+        // Load Perplexity AI analysis for current token
+        async function loadPerplexityAnalysis() {
+            if (!currentAnalysisToken) {
+                console.error('No token selected for analysis');
+                return;
+            }
+
+            const cacheKey = `${currentAnalysisToken.symbol}_${currentAnalysisToken.name}`;
+            
+            // Check cache first
+            if (analysisCache.has(cacheKey)) {
+                console.log('📦 Loading cached analysis');
+                displayAnalysis(analysisCache.get(cacheKey));
+                return;
+            }
+
+            // Show loading state
+            document.getElementById('loadAnalysisBtn').style.display = 'none';
+            document.getElementById('analysisLoadingContainer').style.display = 'block';
+            document.getElementById('analysisError').style.display = 'none';
+
+            try {
+                console.log('🧠 Requesting Perplexity analysis for:', currentAnalysisToken.symbol);
+                
+                const response = await fetch('/api/perplexity-analysis', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        coinName: currentAnalysisToken.name,
+                        coinSymbol: currentAnalysisToken.symbol,
+                        category: currentAnalysisToken.category,
+                        marketCap: currentAnalysisToken.quote.USD.market_cap,
+                        price: currentAnalysisToken.quote.USD.price,
+                        score: currentAnalysisToken.compositeScore
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success && data.result) {
+                    console.log('✅ Analysis received successfully');
+                    // Cache the result
+                    analysisCache.set(cacheKey, data.result);
+                    displayAnalysis(data.result);
+                } else {
+                    throw new Error(data.error || 'Failed to get analysis');
+                }
+
+            } catch (error) {
+                console.error('❌ Analysis error:', error);
+                showAnalysisError(error.message);
+            }
+        }
+
+        // Display the analysis content with collapsible sections
+        function displayAnalysis(analysisText) {
+            document.getElementById('analysisLoadingContainer').style.display = 'none';
+            document.getElementById('analysisContainer').style.display = 'block';
+            
+            // Convert markdown-like text to HTML with collapsible sections
+            const formattedAnalysis = formatAnalysisToHTML(analysisText);
+            document.getElementById('analysisContent').innerHTML = formattedAnalysis;
+        }
+
+        // Show analysis error
+        function showAnalysisError(errorMessage) {
+            document.getElementById('analysisLoadingContainer').style.display = 'none';
+            document.getElementById('analysisError').style.display = 'block';
+            document.getElementById('analysisErrorMessage').textContent = errorMessage;
+            document.getElementById('loadAnalysisBtn').style.display = 'block';
+        }
+
+        // Format analysis text to HTML with collapsible sections
+        function formatAnalysisToHTML(text) {
+            const sections = text.split('##').filter(section => section.trim());
+            let html = '';
+            
+            sections.forEach((section, index) => {
+                const lines = section.trim().split('\n');
+                const title = lines[0].trim();
+                const content = lines.slice(1).join('\n').trim();
+                
+                if (title && content) {
+                    const sectionId = `analysis-section-${index}`;
+                    const isExpanded = index < 2; // First 2 sections expanded by default
+                    
+                    html += `
+                        <div style="margin-bottom: 20px; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+                            <div style="background: var(--secondary-bg); padding: 15px; cursor: pointer; border-bottom: 1px solid var(--border-color);" onclick="toggleSection('${sectionId}')">
+                                <h4 style="margin: 0; display: flex; align-items: center; justify-content: space-between; font-size: 1.1rem; color: var(--text-primary);">
+                                    ${title}
+                                    <span id="${sectionId}-arrow" style="transition: transform 0.3s ease; transform: rotate(${isExpanded ? '90' : '0'}deg);">▶</span>
+                                </h4>
+                            </div>
+                            <div id="${sectionId}" style="display: ${isExpanded ? 'block' : 'none'}; padding: 20px; background: var(--card-bg);">
+                                <div style="white-space: pre-wrap; line-height: 1.6;">${content}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            return html;
+        }
+
+        // Toggle individual analysis section
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const arrow = document.getElementById(sectionId + '-arrow');
+            
+            if (section.style.display === 'none') {
+                section.style.display = 'block';
+                arrow.style.transform = 'rotate(90deg)';
+            } else {
+                section.style.display = 'none';
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Toggle all sections expanded/collapsed
+        function toggleAnalysisExpansion() {
+            const button = document.getElementById('toggleAnalysisBtn');
+            const allSections = document.querySelectorAll('[id^="analysis-section-"]');
+            const allArrows = document.querySelectorAll('[id$="-arrow"]');
+            
+            const isExpanding = button.textContent.includes('Show More');
+            
+            allSections.forEach(section => {
+                section.style.display = isExpanding ? 'block' : 'none';
+            });
+            
+            allArrows.forEach(arrow => {
+                arrow.style.transform = `rotate(${isExpanding ? '90' : '0'}deg)`;
+            });
+            
+            button.textContent = isExpanding ? 'Show Less Details' : 'Show More Details';
         }
 
         function populateTokenModal(token) {
             const quote = token.quote.USD;
             const ai = token.aiData;
+            
+            // Set current token for analysis
+            currentAnalysisToken = token;
+            resetAnalysisSection();
 
             // Header information
             document.getElementById('modalTokenSymbol').textContent = `$${token.symbol}`;
