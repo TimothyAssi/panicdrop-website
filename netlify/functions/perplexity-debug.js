@@ -18,6 +18,8 @@ exports.handler = async function(event, context) {
     // Check API key
     const apiKey = process.env.PPLX_API_KEY;
     console.log('🔑 API Key check:', apiKey ? `${apiKey.substring(0, 10)}...` : 'NOT SET');
+    console.log('🔑 Full API Key length:', apiKey ? apiKey.length : 0);
+    console.log('🔑 API Key starts with pplx-:', apiKey ? apiKey.startsWith('pplx-') : 'N/A');
     
     if (!apiKey) {
       return {
@@ -45,12 +47,12 @@ exports.handler = async function(event, context) {
       "Content-Type": "application/json"
     };
 
-    // Try multiple API formats to find the working one
+    // Try multiple API formats with current Perplexity models
     const testFormats = [
       {
-        name: "Format 1: Basic",
+        name: "Format 1: llama-3.1-sonar-small-128k-online",
         body: {
-          "model": "llama-3-sonar-small-32k-online",
+          "model": "llama-3.1-sonar-small-128k-online",
           "messages": [
             {
               "role": "user",
@@ -60,29 +62,51 @@ exports.handler = async function(event, context) {
         }
       },
       {
-        name: "Format 2: With stream false",
+        name: "Format 2: llama-3.1-sonar-large-128k-online",
         body: {
-          "model": "llama-3-sonar-small-32k-online",
+          "model": "llama-3.1-sonar-large-128k-online",
           "messages": [
             {
               "role": "user",
               "content": "What is Ethereum?"
             }
-          ],
-          "stream": false
+          ]
         }
       },
       {
-        name: "Format 3: pplx-7b-chat model",
+        name: "Format 3: llama-3.1-sonar-huge-128k-online",
         body: {
-          "model": "pplx-7b-chat",
+          "model": "llama-3.1-sonar-huge-128k-online",
           "messages": [
             {
               "role": "user",
               "content": "What is Ethereum?"
             }
-          ],
-          "stream": false
+          ]
+        }
+      },
+      {
+        name: "Format 4: sonar-small-chat",
+        body: {
+          "model": "sonar-small-chat",
+          "messages": [
+            {
+              "role": "user",
+              "content": "What is Ethereum?"
+            }
+          ]
+        }
+      },
+      {
+        name: "Format 5: sonar-medium-chat",
+        body: {
+          "model": "sonar-medium-chat",
+          "messages": [
+            {
+              "role": "user",
+              "content": "What is Ethereum?"
+            }
+          ]
         }
       }
     ];
@@ -114,13 +138,18 @@ exports.handler = async function(event, context) {
           break; // Use the first working format
         } else {
           const errorText = await formatResponse.text();
+          console.error(`❌ ${format.name} failed with status ${formatResponse.status}`);
+          console.error(`📄 Error response:`, errorText);
+          console.error(`📋 Response headers:`, Object.fromEntries(formatResponse.headers.entries()));
+          
           testResults.push({
             format: format.name,
             success: false,
             status: formatResponse.status,
-            error: errorText
+            statusText: formatResponse.statusText,
+            error: errorText,
+            responseHeaders: Object.fromEntries(formatResponse.headers.entries())
           });
-          console.error(`❌ ${format.name} failed:`, errorText);
         }
       } catch (error) {
         testResults.push({
