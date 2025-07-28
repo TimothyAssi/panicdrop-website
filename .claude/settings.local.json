@@ -18,7 +18,11 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(rg:*)",
-      "WebFetch(domain:www.piranhaprofits.com)"
+      "WebFetch(domain:www.piranhaprofits.com)",
+      "Bash(python:*)",
+      "WebFetch(domain:intellectia.ai)",
+      "Bash(true)",
+      "Bash(sed:*)"
     ],
     "deny": []
   }

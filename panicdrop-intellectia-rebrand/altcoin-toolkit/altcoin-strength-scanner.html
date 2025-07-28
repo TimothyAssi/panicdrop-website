@@ -1,0 +1,2557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Altcoin Strength Scanner - Panic Drop | Trading Tool</title>
+    <meta name="description" content="Advanced crypto market intelligence and strength analysis tool by Timothy Assi, eToro Elite Popular Investor.">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/intellectia-rebrand.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* API Status Indicator */
+        .api-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 1000;
+        }
+        
+        .api-status.live {
+            background: var(--accent-success);
+            color: white;
+        }
+        
+        .api-status.demo {
+            background: var(--accent-primary);
+            color: var(--primary-bg);
+        }
+        
+        .api-status.error {
+            background: var(--accent-danger);
+            color: white;
+        }
+
+        /* Tool Hero Section - Match existing tools */
+        .tool-hero {
+            padding: 80px 20px 50px;
+            text-align: center;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+        }
+        
+        .tool-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-weight: 800;
+        }
+        
+        .tool-hero h1 i {
+            color: var(--accent-primary);
+            margin-right: 15px;
+        }
+        
+        .tool-hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Main Content */
+        .scanner-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-color);
+        }
+
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .control-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .control-title i {
+            color: var(--accent-primary);
+            font-size: 1.5rem;
+        }
+
+        .control-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: var(--primary-bg);
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        /* Stats Overview */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 25px;
+            text-align: center;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Dashboard */
+        .dashboard-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .dashboard-title {
+            font-size: 1.375rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .last-update {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Loading States */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 15, 35, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+        }
+
+        .loading-content {
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .loading-status {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Token Grid */
+        .tokens-grid {
+            display: grid;
+            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+
+        .token-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .token-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-heavy);
+            border-color: var(--accent-primary);
+        }
+
+        .token-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .token-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .token-symbol {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .token-name {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .token-score {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            padding: 8px 12px;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: var(--border-radius);
+        }
+
+        .token-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .metric-value.positive {
+            color: var(--accent-success);
+        }
+
+        .metric-value.negative {
+            color: var(--accent-danger);
+        }
+
+        /* Modals */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .modal-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.375rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 5px;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 36px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+            }
+
+            .hero-features {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .control-panel,
+            .dashboard-section {
+                padding: 20px;
+            }
+
+            .control-header,
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .tokens-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .scanner-main {
+                padding: 20px 15px;
+            }
+
+            .control-actions {
+                width: 100%;
+                justify-content: stretch;
+            }
+
+            .btn {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+
+        /* Additional Professional Styling */
+        .professional-badge {
+            background: var(--accent-primary);
+            color: var(--primary-bg);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .analysis-section {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 25px;
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Narrative and Top Performers Sections - Match Homepage Style */
+        .narrative-section,
+        .top-performers-section {
+            padding: 80px 0;
+            background: var(--primary-bg);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .section-title i {
+            color: var(--accent-primary);
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .highlights-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .highlights-title i {
+            color: var(--accent-primary);
+        }
+
+        .token-highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .token-highlight-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .token-highlight-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-heavy);
+            border-color: var(--accent-primary);
+        }
+
+        .token-highlight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .token-highlight-info h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .token-highlight-info p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .token-highlight-score {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            background: rgba(212, 175, 55, 0.1);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+        }
+
+        .token-highlight-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .highlight-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+
+        .highlight-metric-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .highlight-metric-value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .token-highlight-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-highlight {
+            flex: 1;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-highlight-primary {
+            background: var(--accent-primary);
+            color: var(--primary-bg);
+        }
+
+        .btn-highlight-primary:hover {
+            background: var(--accent-secondary);
+        }
+
+        .btn-highlight-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-highlight-secondary:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .analysis-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .analysis-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .fundamental-scores {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        .score-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .score-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="../images/logo.png" alt="Panic Drop">
+                <span class="logo-text">Panic Drop</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../course.html" class="nav-link">Course</a></li>
+                <li><a href="#" class="nav-link dropdown-toggle">Tools <i class="fas fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="altcoin-strength-scanner.html" class="dropdown-link active">Altcoin Strength Scanner</a></li>
+                        <li><a href="position-calculator.html" class="dropdown-link">Position Size Calculator</a></li>
+                        <li><a href="trade-journal.html" class="dropdown-link">Trade Journal</a></li>
+                        <li><a href="screenshot-analyzer.html" class="dropdown-link">Screenshot Analyzer</a></li>
+                    </ul>
+                </li>
+                <li><a href="../blog.html" class="nav-link">Blog</a></li>
+                <li><a href="../contact.html" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- API Status -->
+    <div id="apiStatus" class="api-status demo">🔄 Initializing...</div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading Market Data</div>
+            <div id="loadingStatus" class="loading-status">Initializing scanner...</div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="tool-hero">
+        <h1>
+            <i class="fas fa-search"></i>
+            Altcoin Strength Scanner
+        </h1>
+        <p>
+            Advanced cryptocurrency market intelligence powered by AI-driven fundamental analysis. 
+            Discover high-potential altcoins with comprehensive scoring based on 20 key metrics.
+        </p>
+        <div style="margin-top: 30px;">
+            <span class="professional-badge">By Timothy Assi - eToro Elite Popular Investor</span>
+        </div>
+    </section>
+
+    <!-- Top Narrative Section -->
+    <section class="narrative-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Market Intelligence Overview</h2>
+                <p class="section-subtitle">
+                    Real-time analysis of high-potential small-cap altcoins using advanced AI-powered fundamental metrics.
+                </p>
+            </div>
+            
+            <!-- Small Cap Highlights -->
+            <div class="small-cap-highlights">
+                <h3 class="highlights-title">
+                    <i class="fas fa-gem"></i>
+                    Small Cap Opportunities
+                </h3>
+                <div id="smallCapTokens" class="token-highlights-grid">
+                    <!-- Small cap tokens will be populated here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Performers Section -->
+    <section class="top-performers-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-trophy"></i>
+                    Top Performers
+                </h2>
+                <p class="section-subtitle">
+                    Highest-scoring cryptocurrencies based on comprehensive fundamental analysis.
+                </p>
+            </div>
+            
+            <div id="topPerformersTokens" class="token-highlights-grid">
+                <!-- Top performers will be populated here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="scanner-main">
+        <!-- Control Panel -->
+            <div class="control-panel">
+                <div class="control-header">
+                    <h2 class="control-title">
+                        <i class="fas fa-cog"></i>
+                        Scanner Controls
+                    </h2>
+                    <div class="control-actions">
+                        <button id="refreshBtn" class="btn btn-primary">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh Data
+                        </button>
+                        <button id="settingsBtn" class="btn btn-secondary">
+                            <i class="fas fa-sliders-h"></i>
+                            Settings
+                        </button>
+                        <button id="exportBtn" class="btn btn-secondary">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div id="totalTokens" class="stat-value">-</div>
+                    <div class="stat-label">Tokens Analyzed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div id="topScore" class="stat-value">-</div>
+                    <div class="stat-label">Highest Score</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div id="avgScore" class="stat-value">-</div>
+                    <div class="stat-label">Average Score</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div id="lastUpdateStat" class="stat-value">-</div>
+                    <div class="stat-label">Last Update</div>
+                </div>
+            </div>
+
+            <!-- Dashboard -->
+            <div class="dashboard-section">
+                <div class="dashboard-header">
+                    <h3 class="dashboard-title">
+                        <i class="fas fa-chart-area"></i>
+                        Market Analysis Dashboard
+                    </h3>
+                    <div class="last-update">
+                        <i class="fas fa-clock"></i>
+                        <span>Last updated: <span id="lastUpdate">Never</span></span>
+                    </div>
+                </div>
+
+                <!-- Tokens Grid -->
+                <div id="tokensContainer" class="tokens-grid">
+                    <!-- Token cards will be dynamically generated here -->
+                </div>
+            </div>
+        </main>
+
+    <!-- Token Details Modal -->
+    <div id="tokenModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <i class="fas fa-info-circle"></i>
+                    <span id="modalTokenSymbol">Token Details</span>
+                </h4>
+                <button class="modal-close" onclick="closeTokenModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Token information will be populated here -->
+                <div class="token-details">
+                    <!-- Header Info -->
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h3 id="modalTokenName" style="margin-bottom: 10px;">Token Name</h3>
+                        <p id="modalTokenCategory" style="color: #666; margin-bottom: 15px;">Category</p>
+                        <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                            <div>
+                                <strong>Price:</strong> <span id="modalTokenPrice">$0.00</span>
+                            </div>
+                            <div>
+                                <strong>Score:</strong> <span id="modalCompositeScore" style="color: var(--scanner-primary); font-weight: 700;">0</span>/100
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Market Metrics -->
+                    <div class="analysis-section">
+                        <div class="analysis-header">
+                            <h4 class="analysis-title">Market Metrics</h4>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                            <div class="metric">
+                                <span class="metric-label">Market Cap:</span>
+                                <span id="modalMarketCap" class="metric-value">-</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">Volume 24h:</span>
+                                <span id="modalVolume" class="metric-value">-</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">7d Change:</span>
+                                <span id="modal7dChange" class="metric-value">-</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-label">30d Change:</span>
+                                <span id="modal30dChange" class="metric-value">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fundamental Scores -->
+                    <div class="analysis-section">
+                        <div class="analysis-header">
+                            <h4 class="analysis-title">Fundamental Analysis (20 Metrics)</h4>
+                            <button id="loadAnalysisBtn" class="btn btn-primary btn-sm" onclick="loadPerplexityAnalysis()">
+                                <i class="fas fa-brain"></i>
+                                Generate Deep Analysis
+                            </button>
+                        </div>
+                        
+                        <!-- Fundamental Scores Grid -->
+                        <div class="fundamental-scores">
+                            <!-- Token Economics & Supply -->
+                            <div class="score-item">
+                                <span class="score-label">Token Unlock Schedule</span>
+                                <span id="scoreTokenUnlock" class="score-value">-/10</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">TVL</span>
+                                <span id="scoreTVL" class="score-value">-/10</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">Supply Dynamics</span>
+                                <span id="scoreSupplyDynamics" class="score-value">-/10</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">Market Cap</span>
+                                <span id="scoreMarketCap" class="score-value">-/10</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">Token Distribution</span>
+                                <span id="scoreTokenDistribution" class="score-value">-/10</span>
+                            </div>
+                            
+                            <!-- Network Activity & Adoption -->
+                            <div class="score-item">
+                                <span class="score-label">Active Addresses</span>
+                                <span id="scoreActiveAddresses" class="score-value">-/10</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">Transaction Volume</span>
+                                <span id="scoreTransactionVolume" class="score-value">-/10</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">Protocol Revenue</span>
+                                <span id="scoreProtocolRevenue" class="score-value">-/10</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">Users</span>
+                                <span id="scoreUsers" class="score-value">-/10</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">FDV</span>
+                                <span id="scoreFDV" class="score-value">-/10</span>
+                            </div>
+                            
+                            <!-- Technical & Development -->
+                            <div class="score-item">
+                                <span class="score-label">Development Activity</span>
+                                <span id="scoreDevelopmentActivity" class="score-value">-/10</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">Security Audits</span>
+                                <span id="scoreSecurityAudits" class="score-value">-/10</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">On-Chain Activity</span>
+                                <span id="scoreOnChainActivity" class="score-value">-/10</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">Liquidity</span>
+                                <span id="scoreLiquidity" class="score-value">-/10</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">Trading Volume</span>
+                                <span id="scoreTradingVolume" class="score-value">-/10</span>
+                            </div>
+                            
+                            <!-- Market & Community -->
+                            <div class="score-item">
+                                <span class="score-label">Community Size</span>
+                                <span id="scoreCommunitySize" class="score-value">-/10</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">Partnerships</span>
+                                <span id="scorePartnerships" class="score-value">-/10</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">Ecosystem Flows</span>
+                                <span id="scoreEcosystemFlows" class="score-value">-/10</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">P/F Ratio</span>
+                                <span id="scorePFRatio" class="score-value">-/10</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">MCap/TVL Ratio</span>
+                                <span id="scoreMcapTvlRatio" class="score-value">-/10</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Analysis -->
+                    <div class="analysis-section" style="display: none;" id="analysisContainer">
+                        <div class="analysis-header">
+                            <h4 class="analysis-title">AI-Powered Deep Analysis</h4>
+                        </div>
+                        <div id="analysisContent">
+                            <!-- Analysis content will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Loading Analysis -->
+                    <div class="analysis-section" style="display: none;" id="analysisLoadingContainer">
+                        <div style="text-align: center; padding: 40px;">
+                            <div class="loading-spinner" style="margin: 0 auto 20px;"></div>
+                            <div style="font-size: 16px; font-weight: 600; margin-bottom: 10px;">Generating Analysis...</div>
+                            <div style="font-size: 14px; color: #666;">This may take up to 30 seconds</div>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Error -->
+                    <div class="analysis-section" style="display: none;" id="analysisError">
+                        <div style="text-align: center; padding: 40px;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 32px; color: var(--scanner-danger); margin-bottom: 15px;"></i>
+                            <div style="font-size: 16px; font-weight: 600; margin-bottom: 10px;">Analysis Failed</div>
+                            <div id="analysisErrorMessage" style="font-size: 14px; color: #666; margin-bottom: 20px;">Unable to generate analysis at this time.</div>
+                            <button class="btn btn-primary" onclick="loadPerplexityAnalysis()">
+                                <i class="fas fa-retry"></i>
+                                Try Again
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include navigation script -->
+    <script src="../js/script.js"></script>
+    
+    <!-- Main Dashboard JavaScript -->
+    <script>
+        // Global variables
+        let dashboard = null;
+        let currentAnalysisToken = null;
+        const analysisCache = new Map();
+
+        // Dashboard class with enhanced functionality
+        class CryptoDashboard {
+            constructor(useApiData = true) {
+                this.allTokens = [];
+                this.filteredTokens = [];
+                this.lastUpdate = null;
+                this.useApi = useApiData;
+                this.currentSort = 'compositeScore';
+                this.sortDirection = 'desc';
+                
+                console.log('🚀 Dashboard initialized with API:', useApiData);
+                this.loadData();
+            }
+
+            async loadData() {
+                this.showLoading('Fetching cryptocurrency data...');
+                
+                try {
+                    if (this.useApi) {
+                        await this.loadLiveData();
+                    } else {
+                        await this.loadDemoData();
+                    }
+                    
+                    this.updateLastUpdate();
+                    this.updateStats();
+                    this.renderHighlights();
+                    this.renderTokens();
+                    this.hideLoading();
+                    
+                    console.log('✅ Data loading completed');
+                } catch (error) {
+                    console.error('❌ Failed to load data:', error);
+                    this.hideLoading();
+                    this.showError('Failed to load market data. Please try again.');
+                }
+            }
+
+            async loadLiveData() {
+                try {
+                    console.log('📡 Fetching live crypto data...');
+                    const response = await fetch('/api/crypto/listings');
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('📊 Live data received:', data);
+                    
+                    if (data.success && data.data) {
+                        this.allTokens = data.data.slice(0, 100); // Limit to top 100
+                        await this.enrichDataWithAI(this.allTokens);
+                        console.log('✅ Live data processed successfully');
+                    } else {
+                        throw new Error('Invalid data format received');
+                    }
+                } catch (error) {
+                    console.error('❌ Live data fetch failed:', error);
+                    console.log('🔄 Falling back to demo data...');
+                    
+                    // Update status to show demo mode
+                    const statusEl = document.getElementById('apiStatus');
+                    if (statusEl) {
+                        statusEl.textContent = '🔴 API ERROR - Using Demo';
+                        statusEl.className = 'api-status demo';
+                    }
+                    
+                    await this.loadDemoData();
+                    return;
+                }
+            }
+
+            async loadDemoData() {
+                console.log('📋 Loading demo data...');
+                
+                // Demo data with realistic crypto tokens
+                this.allTokens = [
+                    {
+                        id: 1,
+                        name: "Ethereum",
+                        symbol: "ETH",
+                        category: "Smart Contract Platform",
+                        quote: {
+                            USD: {
+                                price: 2450.67,
+                                percent_change_24h: 2.34,
+                                percent_change_7d: -1.23,
+                                percent_change_30d: 8.45,
+                                market_cap: 294523000000,
+                                volume_24h: 12456789000
+                            }
+                        }
+                    },
+                    {
+                        id: 2,
+                        name: "Chainlink",
+                        symbol: "LINK",
+                        category: "Oracle",
+                        quote: {
+                            USD: {
+                                price: 14.23,
+                                percent_change_24h: 5.67,
+                                percent_change_7d: 12.34,
+                                percent_change_30d: -3.21,
+                                market_cap: 8456789000,
+                                volume_24h: 567890000
+                            }
+                        }
+                    },
+                    {
+                        id: 3,
+                        name: "Polygon",
+                        symbol: "MATIC",
+                        category: "Scaling Solution",
+                        quote: {
+                            USD: {
+                                price: 0.89,
+                                percent_change_24h: -1.23,
+                                percent_change_7d: 4.56,
+                                percent_change_30d: 15.67,
+                                market_cap: 8234567000,
+                                volume_24h: 234567000
+                            }
+                        }
+                    },
+                    {
+                        id: 4,
+                        name: "Solana",
+                        symbol: "SOL",
+                        category: "Smart Contract Platform",
+                        quote: {
+                            USD: {
+                                price: 98.45,
+                                percent_change_24h: 3.21,
+                                percent_change_7d: 8.76,
+                                percent_change_30d: 22.34,
+                                market_cap: 43567890000,
+                                volume_24h: 2345678000
+                            }
+                        }
+                    },
+                    {
+                        id: 5,
+                        name: "Avalanche",
+                        symbol: "AVAX",
+                        category: "Smart Contract Platform",
+                        quote: {
+                            USD: {
+                                price: 34.56,
+                                percent_change_24h: -2.11,
+                                percent_change_7d: 5.43,
+                                percent_change_30d: 18.90,
+                                market_cap: 13456789000,
+                                volume_24h: 456789000
+                            }
+                        }
+                    },
+                    {
+                        id: 6,
+                        name: "Uniswap",
+                        symbol: "UNI",
+                        category: "DeFi",
+                        quote: {
+                            USD: {
+                                price: 6.78,
+                                percent_change_24h: 4.32,
+                                percent_change_7d: -2.15,
+                                percent_change_30d: 12.67,
+                                market_cap: 4567890000,
+                                volume_24h: 234567000
+                            }
+                        }
+                    },
+                    {
+                        id: 7,
+                        name: "The Graph",
+                        symbol: "GRT",
+                        category: "Infrastructure",
+                        quote: {
+                            USD: {
+                                price: 0.156,
+                                percent_change_24h: 6.78,
+                                percent_change_7d: 15.23,
+                                percent_change_30d: 28.45,
+                                market_cap: 1456789000,
+                                volume_24h: 123456000
+                            }
+                        }
+                    },
+                    {
+                        id: 8,
+                        name: "Render Token",
+                        symbol: "RNDR",
+                        category: "AI & Computing",
+                        quote: {
+                            USD: {
+                                price: 7.89,
+                                percent_change_24h: 12.34,
+                                percent_change_7d: 23.45,
+                                percent_change_30d: 45.67,
+                                market_cap: 2987654000,
+                                volume_24h: 189234000
+                            }
+                        }
+                    },
+                    {
+                        id: 9,
+                        name: "Injective",
+                        symbol: "INJ",
+                        category: "DeFi",
+                        quote: {
+                            USD: {
+                                price: 24.56,
+                                percent_change_24h: 8.90,
+                                percent_change_7d: 18.23,
+                                percent_change_30d: 34.56,
+                                market_cap: 2234567000,
+                                volume_24h: 234567000
+                            }
+                        }
+                    },
+                    {
+                        id: 10,
+                        name: "Fetch.ai",
+                        symbol: "FET",
+                        category: "AI & Machine Learning",
+                        quote: {
+                            USD: {
+                                price: 1.23,
+                                percent_change_24h: 9.87,
+                                percent_change_7d: 21.45,
+                                percent_change_30d: 67.89,
+                                market_cap: 987654321,
+                                volume_24h: 98765432
+                            }
+                        }
+                    },
+                    {
+                        id: 11,
+                        name: "Ocean Protocol",
+                        symbol: "OCEAN",
+                        category: "AI & Data",
+                        quote: {
+                            USD: {
+                                price: 0.456,
+                                percent_change_24h: 7.65,
+                                percent_change_7d: 19.87,
+                                percent_change_30d: 52.34,
+                                market_cap: 345678901,
+                                volume_24h: 45678901
+                            }
+                        }
+                    },
+                    {
+                        id: 12,
+                        name: "SingularityNET",
+                        symbol: "AGIX",
+                        category: "AI & Machine Learning",
+                        quote: {
+                            USD: {
+                                price: 0.789,
+                                percent_change_24h: 11.23,
+                                percent_change_7d: 25.67,
+                                percent_change_30d: 78.90,
+                                market_cap: 456789012,
+                                volume_24h: 56789012
+                            }
+                        }
+                    },
+                    {
+                        id: 13,
+                        name: "Kaspa",
+                        symbol: "KAS",
+                        category: "Infrastructure",
+                        quote: {
+                            USD: {
+                                price: 0.134,
+                                percent_change_24h: 13.45,
+                                percent_change_7d: 32.10,
+                                percent_change_30d: 89.23,
+                                market_cap: 3234567890,
+                                volume_24h: 234567890
+                            }
+                        }
+                    },
+                    {
+                        id: 14,
+                        name: "Arbitrum",
+                        symbol: "ARB",
+                        category: "Layer 2",
+                        quote: {
+                            USD: {
+                                price: 1.89,
+                                percent_change_24h: 4.56,
+                                percent_change_7d: 12.34,
+                                percent_change_30d: 28.90,
+                                market_cap: 7567890123,
+                                volume_24h: 456789123
+                            }
+                        }
+                    },
+                    {
+                        id: 15,
+                        name: "Optimism",
+                        symbol: "OP",
+                        category: "Layer 2",
+                        quote: {
+                            USD: {
+                                price: 2.34,
+                                percent_change_24h: 6.78,
+                                percent_change_7d: 15.67,
+                                percent_change_30d: 35.42,
+                                market_cap: 2345678901,
+                                volume_24h: 123456789
+                            }
+                        }
+                    }
+                ];
+
+                await this.enrichDataWithAI(this.allTokens);
+                console.log('✅ Demo data loaded');
+            }
+
+            async enrichDataWithAI(tokens) {
+                console.log('🧠 Enriching data with AI analysis...');
+                
+                for (let token of tokens) {
+                    // Calculate basic score (fast loading)
+                    token.compositeScore = this.calculateBasicScore(token);
+                    
+                    // Add individual scores placeholder
+                    token.individualScores = null;
+                    token.fundamentalMetrics = null;
+                    
+                    console.log(`📊 Basic score for ${token.symbol}: ${token.compositeScore.toFixed(1)}`);
+                }
+                
+                this.filteredTokens = [...tokens];
+            }
+
+            calculateBasicScore(token) {
+                const quote = token.quote.USD;
+                let score = 50; // Base score
+                
+                // Market cap weighting (0-25 points)
+                if (quote.market_cap > 10000000000) score += 20;
+                else if (quote.market_cap > 1000000000) score += 15;
+                else if (quote.market_cap > 100000000) score += 10;
+                else score += 5;
+                
+                // Volume/Market cap ratio (0-15 points)
+                const volumeRatio = quote.volume_24h / quote.market_cap;
+                if (volumeRatio > 0.1) score += 15;
+                else if (volumeRatio > 0.05) score += 10;
+                else if (volumeRatio > 0.01) score += 5;
+                
+                // Price momentum (0-10 points)
+                if (quote.percent_change_7d > 10) score += 10;
+                else if (quote.percent_change_7d > 5) score += 7;
+                else if (quote.percent_change_7d > 0) score += 5;
+                else if (quote.percent_change_7d > -5) score += 2;
+                
+                return Math.min(100, Math.max(0, score));
+            }
+
+            async calculateFundamentalScore(token) {
+                try {
+                    console.log(`🔍 Fetching fundamental metrics for ${token.symbol}...`);
+                    
+                    const response = await fetch('/api/fundamental-metrics', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            coinSymbol: token.symbol,
+                            coinName: token.name
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const data = await response.json();
+                    
+                    if (data.success && data.metrics) {
+                        const metrics = data.metrics;
+                        console.log(`📊 Fundamental metrics received for ${token.symbol}:`, metrics);
+                        
+                        // Calculate individual scores (0-10 each)
+                        const individualScores = {
+                            tokenUnlock: this.scoreTokenUnlock(metrics.tokenUnlockSchedule),
+                            tvl: this.scoreTVL(metrics.tvl),
+                            supplyDynamics: this.scoreSupplyDynamics(metrics.supplyDynamics),
+                            marketCap: this.scoreMarketCap(token.quote.USD.market_cap),
+                            tokenDistribution: this.scoreTokenDistribution(metrics.tokenDistribution || { percentage: 50 }),
+                            activeAddresses: this.scoreActiveAddresses(metrics.activeAddresses),
+                            transactionVolume: this.scoreTransactionVolume(metrics.transactionVolume),
+                            protocolRevenue: this.scoreProtocolRevenue(metrics.protocolRevenue),
+                            users: this.scoreUsers(metrics.users),
+                            fdv: this.scoreFDV(metrics.fdv),
+                            developmentActivity: this.scoreDevelopmentActivity(metrics.developmentActivity),
+                            securityAudits: this.scoreSecurityAudits(metrics.securityAudits),
+                            onChainActivity: this.scoreOnChainActivity(metrics.onChainActivity),
+                            liquidity: this.scoreLiquidity(metrics.liquidity),
+                            tradingVolume: this.scoreTradingVolume(token.quote.USD.volume_24h),
+                            communitySize: this.scoreCommunitySize(metrics.communitySize),
+                            partnerships: this.scorePartnerships(metrics.partnerships),
+                            ecosystemFlows: this.scoreEcosystemFlows(metrics.ecosystemFlows),
+                            pfRatio: this.scorePFRatio(metrics.pfRatio),
+                            mcapTvlRatio: this.scoreMcapTvlRatio(metrics.mcapTvlRatio)
+                        };
+                        
+                        // Calculate composite score (sum of all individual scores)
+                        const compositeScore = Object.values(individualScores).reduce((sum, score) => sum + score, 0);
+                        
+                        return {
+                            individualScores,
+                            fundamentalMetrics: metrics,
+                            compositeScore: Math.min(100, compositeScore)
+                        };
+                    } else {
+                        console.warn(`⚠️ No fundamental metrics available for ${token.symbol}, using basic score`);
+                        return {
+                            individualScores: this.getDefaultScores(),
+                            fundamentalMetrics: null,
+                            compositeScore: this.calculateBasicScore(token)
+                        };
+                    }
+                } catch (error) {
+                    console.error(`❌ Error fetching fundamental metrics for ${token.symbol}:`, error);
+                    return {
+                        individualScores: this.getDefaultScores(),
+                        fundamentalMetrics: null,
+                        compositeScore: this.calculateBasicScore(token)
+                    };
+                }
+            }
+
+            getDefaultScores() {
+                return {
+                    tokenUnlock: 5, tvl: 5, supplyDynamics: 5, marketCap: 5, tokenDistribution: 5,
+                    activeAddresses: 5, transactionVolume: 5, protocolRevenue: 5, users: 5, fdv: 5,
+                    developmentActivity: 5, securityAudits: 5, onChainActivity: 5, liquidity: 5, tradingVolume: 5,
+                    communitySize: 5, partnerships: 5, ecosystemFlows: 5, pfRatio: 5, mcapTvlRatio: 5
+                };
+            }
+
+            // Individual scoring functions (0-10 scale)
+            scoreTokenUnlock(data) {
+                if (!data || data.value === "N/A") return 5;
+                const percentage = parseFloat(data.value) || 0;
+                if (percentage <= 5) return 10;
+                if (percentage <= 15) return 8;
+                if (percentage <= 30) return 6;
+                if (percentage <= 50) return 4;
+                return 2;
+            }
+
+            scoreTVL(data) {
+                if (!data || data.value === "N/A") return 5;
+                const tvl = parseFloat(data.value) || 0;
+                if (tvl >= 1000000000) return 10; // >$1B
+                if (tvl >= 500000000) return 9;   // >$500M
+                if (tvl >= 100000000) return 8;   // >$100M
+                if (tvl >= 50000000) return 7;    // >$50M
+                if (tvl >= 10000000) return 6;    // >$10M
+                if (tvl >= 1000000) return 4;     // >$1M
+                return 2;
+            }
+
+            scoreSupplyDynamics(data) {
+                if (!data || data.type === "N/A") return 5;
+                if (data.type === "deflationary") return 10;
+                if (data.type === "stable") return 8;
+                if (data.type === "inflationary") {
+                    const rate = parseFloat(data.rate) || 0;
+                    if (rate <= 2) return 7;
+                    if (rate <= 5) return 5;
+                    if (rate <= 10) return 3;
+                    return 1;
+                }
+                return 5;
+            }
+
+            scoreMarketCap(marketCap) {
+                if (marketCap >= 50000000000) return 10; // >$50B
+                if (marketCap >= 10000000000) return 9;  // >$10B
+                if (marketCap >= 1000000000) return 8;   // >$1B
+                if (marketCap >= 500000000) return 7;    // >$500M
+                if (marketCap >= 100000000) return 6;    // >$100M
+                if (marketCap >= 50000000) return 5;     // >$50M
+                if (marketCap >= 10000000) return 4;     // >$10M
+                if (marketCap >= 1000000) return 3;      // >$1M
+                return 2;
+            }
+
+            scoreTokenDistribution(data) {
+                if (!data || data.percentage === "N/A") return 5;
+                const concentration = parseFloat(data.percentage) || 50;
+                if (concentration <= 20) return 10;      // Low concentration
+                if (concentration <= 35) return 8;
+                if (concentration <= 50) return 6;
+                if (concentration <= 70) return 4;
+                return 2;                                // High concentration
+            }
+
+            scoreActiveAddresses(data) {
+                if (!data || data.value === "N/A") return 5;
+                const addresses = parseFloat(data.value) || 0;
+                if (addresses >= 100000) return 10;
+                if (addresses >= 50000) return 9;
+                if (addresses >= 25000) return 8;
+                if (addresses >= 10000) return 7;
+                if (addresses >= 5000) return 6;
+                if (addresses >= 1000) return 5;
+                if (addresses >= 500) return 4;
+                return 2;
+            }
+
+            scoreTransactionVolume(data) {
+                if (!data || data.valueUSD === "N/A") return 5;
+                const volume = parseFloat(data.valueUSD) || 0;
+                if (volume >= 1000000000) return 10;     // >$1B
+                if (volume >= 500000000) return 9;
+                if (volume >= 100000000) return 8;
+                if (volume >= 50000000) return 7;
+                if (volume >= 10000000) return 6;
+                if (volume >= 1000000) return 5;
+                return 3;
+            }
+
+            scoreProtocolRevenue(data) {
+                if (!data || data.value === "N/A") return 5;
+                const revenue = parseFloat(data.value) || 0;
+                if (revenue >= 10000000) return 10;      // >$10M monthly
+                if (revenue >= 5000000) return 9;
+                if (revenue >= 1000000) return 8;
+                if (revenue >= 500000) return 7;
+                if (revenue >= 100000) return 6;
+                if (revenue >= 10000) return 5;
+                return 3;
+            }
+
+            scoreUsers(data) {
+                if (!data || data.value === "N/A") return 5;
+                const users = parseFloat(data.value) || 0;
+                if (users >= 1000000) return 10;         // >1M users
+                if (users >= 500000) return 9;
+                if (users >= 100000) return 8;
+                if (users >= 50000) return 7;
+                if (users >= 10000) return 6;
+                if (users >= 1000) return 5;
+                return 3;
+            }
+
+            scoreFDV(data) {
+                if (!data || data.value === "N/A") return 5;
+                const fdv = parseFloat(data.value) || 0;
+                if (fdv >= 100000000000) return 6;       // Very high FDV might be overvalued
+                if (fdv >= 10000000000) return 8;
+                if (fdv >= 1000000000) return 10;        // Sweet spot
+                if (fdv >= 100000000) return 8;
+                if (fdv >= 10000000) return 6;
+                return 4;
+            }
+
+            scoreDevelopmentActivity(data) {
+                if (!data || data.commits === "N/A") return 5;
+                const commits = parseFloat(data.commits) || 0;
+                if (commits >= 100) return 10;           // Very active
+                if (commits >= 50) return 9;
+                if (commits >= 25) return 8;
+                if (commits >= 10) return 7;
+                if (commits >= 5) return 6;
+                if (commits >= 1) return 5;
+                return 2;                                // Inactive
+            }
+
+            scoreSecurityAudits(data) {
+                if (!data || data.count === "N/A") return 5;
+                const audits = parseFloat(data.count) || 0;
+                if (audits >= 5) return 10;              // Multiple audits
+                if (audits >= 3) return 9;
+                if (audits >= 2) return 8;
+                if (audits >= 1) return 7;
+                return 3;                                // No audits
+            }
+
+            scoreOnChainActivity(data) {
+                if (!data || data.trend === "N/A") return 5;
+                if (data.trend === "increasing") return 10;
+                if (data.trend === "stable") return 7;
+                if (data.trend === "decreasing") return 3;
+                return 5;
+            }
+
+            scoreLiquidity(data) {
+                if (!data || data.value === "N/A") return 5;
+                const liquidity = parseFloat(data.value) || 0;
+                if (liquidity >= 100000000) return 10;   // >$100M
+                if (liquidity >= 50000000) return 9;
+                if (liquidity >= 25000000) return 8;
+                if (liquidity >= 10000000) return 7;
+                if (liquidity >= 5000000) return 6;
+                if (liquidity >= 1000000) return 5;
+                return 3;
+            }
+
+            scoreTradingVolume(volume24h) {
+                if (volume24h >= 1000000000) return 10;  // >$1B
+                if (volume24h >= 500000000) return 9;
+                if (volume24h >= 100000000) return 8;
+                if (volume24h >= 50000000) return 7;
+                if (volume24h >= 10000000) return 6;
+                if (volume24h >= 1000000) return 5;
+                return 3;
+            }
+
+            scoreCommunitySize(data) {
+                if (!data || data.followers === "N/A") return 5;
+                const followers = parseFloat(data.followers) || 0;
+                if (followers >= 1000000) return 10;     // >1M followers
+                if (followers >= 500000) return 9;
+                if (followers >= 100000) return 8;
+                if (followers >= 50000) return 7;
+                if (followers >= 10000) return 6;
+                if (followers >= 1000) return 5;
+                return 3;
+            }
+
+            scorePartnerships(data) {
+                if (!data || data.count === "N/A") return 5;
+                const partnerships = parseFloat(data.count) || 0;
+                if (partnerships >= 20) return 10;
+                if (partnerships >= 15) return 9;
+                if (partnerships >= 10) return 8;
+                if (partnerships >= 5) return 7;
+                if (partnerships >= 3) return 6;
+                if (partnerships >= 1) return 5;
+                return 3;
+            }
+
+            scoreEcosystemFlows(data) {
+                if (!data || data.value === "N/A") return 5;
+                const flows = parseFloat(data.value) || 0;
+                if (flows >= 1000000000) return 10;      // >$1B
+                if (flows >= 500000000) return 9;
+                if (flows >= 100000000) return 8;
+                if (flows >= 50000000) return 7;
+                if (flows >= 10000000) return 6;
+                if (flows >= 1000000) return 5;
+                return 3;
+            }
+
+            scorePFRatio(data) {
+                if (!data || data.value === "N/A") return 5;
+                const ratio = parseFloat(data.value) || 0;
+                if (ratio <= 20) return 10;              // Low P/F is good
+                if (ratio <= 50) return 8;
+                if (ratio <= 100) return 6;
+                if (ratio <= 200) return 4;
+                return 2;                                // High P/F
+            }
+
+            scoreMcapTvlRatio(data) {
+                if (!data || data.value === "N/A") return 5;
+                const ratio = parseFloat(data.value) || 0;
+                if (ratio <= 1) return 10;               // Undervalued
+                if (ratio <= 2) return 9;
+                if (ratio <= 5) return 8;
+                if (ratio <= 10) return 6;
+                if (ratio <= 20) return 4;
+                return 2;                                // Overvalued
+            }
+
+            renderHighlights() {
+                this.renderSmallCapHighlights();
+                this.renderTopPerformers();
+            }
+
+            renderSmallCapHighlights() {
+                const container = document.getElementById('smallCapTokens');
+                if (!container) return;
+
+                // Filter for small cap tokens (market cap < $500M)
+                const smallCapTokens = this.allTokens
+                    .filter(token => token.quote.USD.market_cap < 500000000)
+                    .sort((a, b) => b.compositeScore - a.compositeScore)
+                    .slice(0, 3);
+
+                container.innerHTML = smallCapTokens.map(token => this.createHighlightCard(token)).join('');
+            }
+
+            renderTopPerformers() {
+                const container = document.getElementById('topPerformersTokens');
+                if (!container) return;
+
+                // Get top 3 performers by composite score
+                const topPerformers = [...this.allTokens]
+                    .sort((a, b) => b.compositeScore - a.compositeScore)
+                    .slice(0, 3);
+
+                container.innerHTML = topPerformers.map(token => this.createHighlightCard(token)).join('');
+            }
+
+            createHighlightCard(token) {
+                const quote = token.quote.USD;
+                const change7d = quote.percent_change_7d || 0;
+                const change30d = quote.percent_change_30d || 0;
+                
+                return `
+                    <div class="token-highlight-card" onclick="openTokenModal('${token.symbol}')">
+                        <div class="token-highlight-header">
+                            <div class="token-highlight-info">
+                                <h4>${token.name} (${token.symbol})</h4>
+                                <p>${token.category || 'Cryptocurrency'}</p>
+                            </div>
+                            <div class="token-highlight-score">${token.compositeScore.toFixed(1)}</div>
+                        </div>
+                        
+                        <div class="token-highlight-metrics">
+                            <div class="highlight-metric">
+                                <span class="highlight-metric-label">Price</span>
+                                <span class="highlight-metric-value">$${this.formatNumber(quote.price)}</span>
+                            </div>
+                            <div class="highlight-metric">
+                                <span class="highlight-metric-label">Market Cap</span>
+                                <span class="highlight-metric-value">$${this.formatMarketCap(quote.market_cap)}</span>
+                            </div>
+                            <div class="highlight-metric">
+                                <span class="highlight-metric-label">7d Change</span>
+                                <span class="highlight-metric-value ${change7d >= 0 ? 'positive' : 'negative'}">
+                                    ${change7d >= 0 ? '+' : ''}${change7d.toFixed(1)}%
+                                </span>
+                            </div>
+                            <div class="highlight-metric">
+                                <span class="highlight-metric-label">30d Change</span>
+                                <span class="highlight-metric-value ${change30d >= 0 ? 'positive' : 'negative'}">
+                                    ${change30d >= 0 ? '+' : ''}${change30d.toFixed(1)}%
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="token-highlight-actions">
+                            <button class="btn-highlight btn-highlight-primary" onclick="event.stopPropagation(); openTokenModal('${token.symbol}')">
+                                <i class="fas fa-chart-line"></i>
+                                View Summary
+                            </button>
+                            <button class="btn-highlight btn-highlight-secondary" onclick="event.stopPropagation(); openTokenModal('${token.symbol}'); setTimeout(() => loadPerplexityAnalysis(), 500);">
+                                <i class="fas fa-brain"></i>
+                                Deep Dive
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderTokens() {
+                const container = document.getElementById('tokensContainer');
+                if (!container) return;
+
+                if (this.filteredTokens.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px; grid-column: 1 / -1;">
+                            <i class="fas fa-search" style="font-size: 48px; color: #ccc; margin-bottom: 20px;"></i>
+                            <h3 style="color: #666; margin-bottom: 10px;">No tokens found</h3>
+                            <p style="color: #999;">Try adjusting your filters or refresh the data.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = this.filteredTokens.map(token => {
+                    const quote = token.quote.USD;
+                    const change7d = quote.percent_change_7d || 0;
+                    const change30d = quote.percent_change_30d || 0;
+                    
+                    return `
+                        <div class="token-card" onclick="openTokenModal('${token.symbol}')">
+                            <div class="token-header">
+                                <div class="token-info">
+                                    <div>
+                                        <div class="token-symbol">${token.symbol}</div>
+                                        <div class="token-name">${token.name}</div>
+                                    </div>
+                                </div>
+                                <div class="token-score">${token.compositeScore.toFixed(1)}</div>
+                            </div>
+                            <div class="token-metrics">
+                                <div class="metric">
+                                    <span class="metric-label">Price</span>
+                                    <span class="metric-value">$${this.formatNumber(quote.price)}</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Market Cap</span>
+                                    <span class="metric-value">$${this.formatMarketCap(quote.market_cap)}</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">7d Change</span>
+                                    <span class="metric-value ${change7d >= 0 ? 'positive' : 'negative'}">
+                                        ${change7d >= 0 ? '+' : ''}${change7d.toFixed(1)}%
+                                    </span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">30d Change</span>
+                                    <span class="metric-value ${change30d >= 0 ? 'positive' : 'negative'}">
+                                        ${change30d >= 0 ? '+' : ''}${change30d.toFixed(1)}%
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            updateStats() {
+                if (this.allTokens.length === 0) return;
+
+                const totalTokens = this.allTokens.length;
+                const scores = this.allTokens.map(t => t.compositeScore);
+                const topScore = Math.max(...scores);
+                const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+
+                document.getElementById('totalTokens').textContent = totalTokens;
+                document.getElementById('topScore').textContent = topScore.toFixed(1);
+                document.getElementById('avgScore').textContent = avgScore.toFixed(1);
+
+                if (this.lastUpdate) {
+                    document.getElementById('lastUpdateStat').textContent = this.lastUpdate.toLocaleTimeString();
+                }
+            }
+
+            formatNumber(num) {
+                if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+                if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+                if (num >= 1e3) return (num / 1e3).toFixed(2) + 'K';
+                if (num >= 1) return num.toFixed(2);
+                if (num >= 0.01) return num.toFixed(4);
+                return num.toFixed(8);
+            }
+
+            formatMarketCap(num) {
+                if (num >= 1e12) return (num / 1e12).toFixed(1) + 'T';
+                if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
+                if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
+                if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+                return num.toFixed(0);
+            }
+
+            updateLastUpdate() {
+                this.lastUpdate = new Date();
+                const lastUpdateEl = document.getElementById('lastUpdate');
+                if (lastUpdateEl) lastUpdateEl.textContent = this.lastUpdate.toLocaleString();
+            }
+
+            showLoading(status) {
+                const loadingOverlayEl = document.getElementById('loadingOverlay');
+                if (loadingOverlayEl) loadingOverlayEl.style.display = 'flex';
+                
+                const loadingStatusEl = document.getElementById('loadingStatus');
+                if (loadingStatusEl) loadingStatusEl.textContent = status;
+            }
+
+            hideLoading() {
+                const loadingOverlayEl = document.getElementById('loadingOverlay');
+                if (loadingOverlayEl) loadingOverlayEl.style.display = 'none';
+            }
+
+            async refreshData() {
+                console.log('🔄 Refreshing dashboard data...');
+                await this.loadData();
+            }
+
+            showError(message) {
+                // You can implement a custom error display here
+                console.error('Dashboard Error:', message);
+                alert(message);
+            }
+        }
+
+        // Test API connectivity
+        async function testApiConnectivity() {
+            const statusEl = document.getElementById('apiStatus');
+            if (statusEl) {
+                statusEl.textContent = '🔄 Testing API...';
+                statusEl.className = 'api-status demo';
+            }
+            
+            try {
+                console.log('🔍 Testing backend server connectivity...');
+                const response = await fetch('/api/test-connection');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ Backend server connected successfully:', data);
+                    if (statusEl) {
+                        statusEl.textContent = '🟢 LIVE DATA';
+                        statusEl.className = 'api-status live';
+                    }
+                    return true;
+                }
+            } catch (error) {
+                console.error('❌ Backend server connectivity test failed:', error);
+            }
+
+            console.warn('⚠️ Backend server unavailable, using demo data');
+            if (statusEl) {
+                statusEl.textContent = '🔴 API ERROR - Using Demo';
+                statusEl.className = 'api-status demo';
+            }
+            return false;
+        }
+
+        // Modal functions
+        function openTokenModal(symbol) {
+            const token = dashboard.allTokens.find(t => t.symbol === symbol);
+            if (!token) {
+                console.error('❌ Token not found:', symbol);
+                return;
+            }
+
+            console.log('🔍 Opening modal for:', symbol, token);
+            populateTokenModal(token);
+            document.getElementById('tokenModal').style.display = 'flex';
+        }
+
+        function closeTokenModal() {
+            document.getElementById('tokenModal').style.display = 'none';
+            currentAnalysisToken = null;
+        }
+
+        function populateTokenModal(token) {
+            console.log('🔄 Starting populateTokenModal for:', token.symbol);
+            
+            // Verify modal exists in DOM
+            const modalElement = document.getElementById('tokenModal');
+            if (!modalElement) {
+                console.error('❌ Token modal not present in DOM');
+                return;
+            }
+            
+            const quote = token.quote.USD;
+            
+            // CRITICAL: Set current token for analysis immediately
+            currentAnalysisToken = token;
+            console.log('🎯 Token set for analysis:', currentAnalysisToken?.symbol, currentAnalysisToken?.name);
+            resetAnalysisSection();
+            
+            // Load fundamental analysis in background if not already available (non-blocking)
+            if (!token.individualScores) {
+                console.log(`🔍 Loading fundamental analysis for ${token.symbol}...`);
+                dashboard.calculateFundamentalScore(token).then(fundamentalResults => {
+                    token.compositeScore = fundamentalResults.compositeScore;
+                    token.individualScores = fundamentalResults.individualScores;
+                    token.fundamentalMetrics = fundamentalResults.fundamentalMetrics;
+                    
+                    // Update the modal with new scores if still open
+                    if (currentAnalysisToken && currentAnalysisToken.symbol === token.symbol) {
+                        populateFundamentalScores(token);
+                    }
+                }).catch(error => {
+                    console.warn(`Failed to load fundamental analysis for ${token.symbol}:`, error);
+                });
+            }
+
+            // Header information with null checks
+            const symbolEl = document.getElementById('modalTokenSymbol');
+            if (symbolEl) symbolEl.textContent = `$${token.symbol}`;
+            
+            const nameEl = document.getElementById('modalTokenName');
+            if (nameEl) nameEl.textContent = token.name;
+            
+            const categoryEl = document.getElementById('modalTokenCategory');
+            if (categoryEl) categoryEl.textContent = token.category;
+            
+            const priceEl = document.getElementById('modalTokenPrice');
+            if (priceEl) priceEl.textContent = `$${dashboard.formatNumber(quote.price)}`;
+
+            // Composite Score with null check
+            const compositeEl = document.getElementById('modalCompositeScore');
+            if (compositeEl) compositeEl.textContent = token.compositeScore.toFixed(1);
+
+            // Market Metrics with null checks
+            const marketCapEl = document.getElementById('modalMarketCap');
+            if (marketCapEl) marketCapEl.textContent = `$${dashboard.formatMarketCap(quote.market_cap)}`;
+            
+            const volumeEl = document.getElementById('modalVolume');
+            if (volumeEl) volumeEl.textContent = `$${dashboard.formatMarketCap(quote.volume_24h)}`;
+            
+            const change7d = quote.percent_change_7d || 0;
+            const change7dEl = document.getElementById('modal7dChange');
+            if (change7dEl) {
+                change7dEl.textContent = `${change7d >= 0 ? '+' : ''}${change7d.toFixed(1)}%`;
+                change7dEl.className = `metric-value ${change7d >= 0 ? 'positive' : 'negative'}`;
+            }
+            
+            const change30d = quote.percent_change_30d || 0;
+            const change30dEl = document.getElementById('modal30dChange');
+            if (change30dEl) {
+                change30dEl.textContent = `${change30d >= 0 ? '+' : ''}${change30d.toFixed(1)}%`;
+                change30dEl.className = `metric-value ${change30d >= 0 ? 'positive' : 'negative'}`;
+            }
+
+            // Populate Fundamental Score Breakdown
+            populateFundamentalScores(token);
+            
+            console.log('✅ populateTokenModal completed successfully for:', token.symbol);
+        }
+
+        function resetAnalysisSection() {
+            const analysisContainer = document.getElementById('analysisContainer');
+            const analysisLoadingContainer = document.getElementById('analysisLoadingContainer');
+            const analysisError = document.getElementById('analysisError');
+            const loadAnalysisBtn = document.getElementById('loadAnalysisBtn');
+            
+            if (analysisContainer) analysisContainer.style.display = 'none';
+            if (analysisLoadingContainer) analysisLoadingContainer.style.display = 'none';
+            if (analysisError) analysisError.style.display = 'none';
+            if (loadAnalysisBtn) loadAnalysisBtn.style.display = 'block';
+        }
+
+        // Function to populate fundamental scores in modal
+        function populateFundamentalScores(token) {
+            if (token.individualScores) {
+                // Token Economics & Supply - with null checks
+                const scoreTokenUnlockEl = document.getElementById('scoreTokenUnlock');
+                if (scoreTokenUnlockEl) scoreTokenUnlockEl.textContent = `${token.individualScores.tokenUnlock}/10`;
+                
+                const scoreTVLEl = document.getElementById('scoreTVL');
+                if (scoreTVLEl) scoreTVLEl.textContent = `${token.individualScores.tvl}/10`;
+                
+                const scoreSupplyDynamicsEl = document.getElementById('scoreSupplyDynamics');
+                if (scoreSupplyDynamicsEl) scoreSupplyDynamicsEl.textContent = `${token.individualScores.supplyDynamics}/10`;
+                
+                const scoreMarketCapEl = document.getElementById('scoreMarketCap');
+                if (scoreMarketCapEl) scoreMarketCapEl.textContent = `${token.individualScores.marketCap}/10`;
+                
+                const scoreTokenDistributionEl = document.getElementById('scoreTokenDistribution');
+                if (scoreTokenDistributionEl) scoreTokenDistributionEl.textContent = `${token.individualScores.tokenDistribution}/10`;
+                
+                // Network Activity & Adoption - with null checks
+                const scoreActiveAddressesEl = document.getElementById('scoreActiveAddresses');
+                if (scoreActiveAddressesEl) scoreActiveAddressesEl.textContent = `${token.individualScores.activeAddresses}/10`;
+                
+                const scoreTransactionVolumeEl = document.getElementById('scoreTransactionVolume');
+                if (scoreTransactionVolumeEl) scoreTransactionVolumeEl.textContent = `${token.individualScores.transactionVolume}/10`;
+                
+                const scoreProtocolRevenueEl = document.getElementById('scoreProtocolRevenue');
+                if (scoreProtocolRevenueEl) scoreProtocolRevenueEl.textContent = `${token.individualScores.protocolRevenue}/10`;
+                
+                const scoreUsersEl = document.getElementById('scoreUsers');
+                if (scoreUsersEl) scoreUsersEl.textContent = `${token.individualScores.users}/10`;
+                
+                const scoreFDVEl = document.getElementById('scoreFDV');
+                if (scoreFDVEl) scoreFDVEl.textContent = `${token.individualScores.fdv}/10`;
+                
+                // Technical & Development - with null checks
+                const scoreDevelopmentActivityEl = document.getElementById('scoreDevelopmentActivity');
+                if (scoreDevelopmentActivityEl) scoreDevelopmentActivityEl.textContent = `${token.individualScores.developmentActivity}/10`;
+                
+                const scoreSecurityAuditsEl = document.getElementById('scoreSecurityAudits');
+                if (scoreSecurityAuditsEl) scoreSecurityAuditsEl.textContent = `${token.individualScores.securityAudits}/10`;
+                
+                const scoreOnChainActivityEl = document.getElementById('scoreOnChainActivity');
+                if (scoreOnChainActivityEl) scoreOnChainActivityEl.textContent = `${token.individualScores.onChainActivity}/10`;
+                
+                const scoreLiquidityEl = document.getElementById('scoreLiquidity');
+                if (scoreLiquidityEl) scoreLiquidityEl.textContent = `${token.individualScores.liquidity}/10`;
+                
+                const scoreTradingVolumeEl = document.getElementById('scoreTradingVolume');
+                if (scoreTradingVolumeEl) scoreTradingVolumeEl.textContent = `${token.individualScores.tradingVolume}/10`;
+                
+                // Market & Community - with null checks
+                const scoreCommunitySizeEl = document.getElementById('scoreCommunitySize');
+                if (scoreCommunitySizeEl) scoreCommunitySizeEl.textContent = `${token.individualScores.communitySize}/10`;
+                
+                const scorePartnershipsEl = document.getElementById('scorePartnerships');
+                if (scorePartnershipsEl) scorePartnershipsEl.textContent = `${token.individualScores.partnerships}/10`;
+                
+                const scoreEcosystemFlowsEl = document.getElementById('scoreEcosystemFlows');
+                if (scoreEcosystemFlowsEl) scoreEcosystemFlowsEl.textContent = `${token.individualScores.ecosystemFlows}/10`;
+                
+                const scorePFRatioEl = document.getElementById('scorePFRatio');
+                if (scorePFRatioEl) scorePFRatioEl.textContent = `${token.individualScores.pfRatio}/10`;
+                
+                const scoreMcapTvlRatioEl = document.getElementById('scoreMcapTvlRatio');
+                if (scoreMcapTvlRatioEl) scoreMcapTvlRatioEl.textContent = `${token.individualScores.mcapTvlRatio}/10`;
+                
+                // Update composite score display - with null check
+                const modalCompositeScoreEl = document.getElementById('modalCompositeScore');
+                if (modalCompositeScoreEl) modalCompositeScoreEl.textContent = token.compositeScore.toFixed(1);
+            } else {
+                // Reset to loading state if no fundamental scores available
+                const scoreElements = [
+                    'scoreTokenUnlock', 'scoreTVL', 'scoreSupplyDynamics', 'scoreMarketCap', 'scoreTokenDistribution',
+                    'scoreActiveAddresses', 'scoreTransactionVolume', 'scoreProtocolRevenue', 'scoreUsers', 'scoreFDV',
+                    'scoreDevelopmentActivity', 'scoreSecurityAudits', 'scoreOnChainActivity', 'scoreLiquidity', 'scoreTradingVolume',
+                    'scoreCommunitySize', 'scorePartnerships', 'scoreEcosystemFlows', 'scorePFRatio', 'scoreMcapTvlRatio'
+                ];
+                scoreElements.forEach(elementId => {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        element.textContent = 'Loading...';
+                    }
+                });
+            }
+        }
+
+        // Load Perplexity AI analysis for current token
+        async function loadPerplexityAnalysis() {
+            console.log('🧠 loadPerplexityAnalysis() called');
+            console.log('🔍 Current analysis token state:', currentAnalysisToken);
+            
+            if (!currentAnalysisToken) {
+                console.error('❌ No token selected for analysis');
+                console.log('🔍 Debugging - All available tokens:', dashboard?.allTokens?.map(t => t.symbol));
+                alert('Error: No token selected for analysis. Please try closing and reopening the token modal.');
+                return;
+            }
+
+            console.log('📊 Current analysis token:', currentAnalysisToken.symbol, currentAnalysisToken.name);
+
+            const cacheKey = `${currentAnalysisToken.symbol}_${currentAnalysisToken.name}`;
+            
+            // Check cache first
+            if (analysisCache.has(cacheKey)) {
+                console.log('📦 Loading cached analysis');
+                displayAnalysis(analysisCache.get(cacheKey));
+                return;
+            }
+
+            // Show loading state
+            const loadBtn = document.getElementById('loadAnalysisBtn');
+            const loadingContainer = document.getElementById('analysisLoadingContainer');
+            const errorContainer = document.getElementById('analysisError');
+            
+            if (!loadBtn || !loadingContainer || !errorContainer) {
+                console.error('❌ Missing required modal elements');
+                alert('Error: Modal elements not found. Please refresh the page.');
+                return;
+            }
+
+            loadBtn.style.display = 'none';
+            loadingContainer.style.display = 'block';
+            errorContainer.style.display = 'none';
+
+            try {
+                console.log('🧠 Requesting Perplexity analysis for:', currentAnalysisToken.symbol);
+                
+                const requestData = {
+                    coinName: currentAnalysisToken.name,
+                    coinSymbol: currentAnalysisToken.symbol,
+                    category: currentAnalysisToken.category || 'Cryptocurrency',
+                    marketCap: currentAnalysisToken.quote.USD.market_cap,
+                    price: currentAnalysisToken.quote.USD.price,
+                    score: currentAnalysisToken.compositeScore || 75
+                };
+                
+                console.log('📤 Sending request data:', requestData);
+                console.log("🚀 Perplexity API request triggered");
+                
+                const response = await fetch('/api/perplexity-analysis', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                console.log('📥 Response status:', response.status, response.statusText);
+                console.log("📨 Response:", response);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log('📄 Response data:', data);
+                
+                // Enhanced content parsing with multiple fallbacks
+                let analysisContent = null;
+                
+                if (data.success && data.structured) {
+                    console.log('✅ Analysis received successfully with structured data');
+                    analysisContent = data.structured;
+                } else if (data.structured) {
+                    console.log('⚠️ Using fallback structured analysis');
+                    analysisContent = data.structured;
+                } else if (data.result) {
+                    console.log('📄 Using raw result content');
+                    analysisContent = data.result;
+                } else if (data.choices && data.choices[0] && data.choices[0].message) {
+                    console.log('🔄 Parsing direct API response format');
+                    analysisContent = data.choices[0].message.content;
+                } else {
+                    console.error('❌ No valid content found in response:', data);
+                    throw new Error(data.error || 'No analysis content received from API');
+                }
+
+                if (!analysisContent) {
+                    throw new Error('Analysis content is empty or undefined');
+                }
+
+                console.log('📊 Final analysis content type:', typeof analysisContent);
+                analysisCache.set(cacheKey, analysisContent);
+                displayAnalysis(analysisContent);
+
+            } catch (error) {
+                console.error('❌ Analysis error:', error);
+                showAnalysisError(`Analysis failed: ${error.message}. Please try again or check your connection.`);
+            }
+        }
+
+        // Display the analysis content with collapsible sections
+        function displayAnalysis(analysisData) {
+            console.log('🖼️ displayAnalysis called with:', typeof analysisData, analysisData);
+            
+            const analysisLoadingEl = document.getElementById('analysisLoadingContainer');
+            if (analysisLoadingEl) analysisLoadingEl.style.display = 'none';
+            
+            const analysisContainerEl = document.getElementById('analysisContainer');
+            if (analysisContainerEl) analysisContainerEl.style.display = 'block';
+            
+            // Enhanced data validation and parsing
+            let structuredData;
+            
+            if (!analysisData) {
+                console.warn('⚠️ No analysis data provided');
+                structuredData = {
+                    summary: 'Data temporarily unavailable. Please try again later.',
+                    overview: 'Analysis content could not be loaded.',
+                    risks: 'Unable to assess risks at this time.'
+                };
+            } else if (typeof analysisData === 'object' && analysisData.structured) {
+                console.log('📊 Using pre-structured data');
+                structuredData = analysisData.structured;
+            } else if (typeof analysisData === 'string') {
+                console.log('📝 Parsing text analysis');
+                structuredData = parseAnalysisText(analysisData);
+            } else if (typeof analysisData === 'object') {
+                console.log('🔄 Using object data directly');
+                structuredData = analysisData;
+            } else {
+                console.warn('⚠️ Unexpected data format, creating fallback');
+                structuredData = {
+                    summary: 'Analysis data received in unexpected format.',
+                    overview: String(analysisData) || 'Unable to display analysis content.'
+                };
+            }
+            
+            // Validate that we have some content
+            const hasContent = structuredData && Object.values(structuredData).some(value => 
+                value && typeof value === 'string' && value.trim().length > 0
+            );
+            
+            if (!hasContent) {
+                console.warn('⚠️ No valid content found in structured data');
+                structuredData = {
+                    summary: 'Analysis temporarily unavailable.',
+                    overview: 'Please try refreshing the analysis or check back later.',
+                    risks: 'Unable to assess risks without analysis data.'
+                };
+            }
+            
+            // Convert structured data to HTML with collapsible sections
+            const formattedAnalysis = formatStructuredAnalysisToHTML(structuredData);
+            const analysisContentEl = document.getElementById('analysisContent');
+            if (analysisContentEl) {
+                analysisContentEl.innerHTML = formattedAnalysis;
+                console.log('✅ Analysis content updated in DOM');
+            } else {
+                console.error('❌ analysisContent element not found in DOM');
+            }
+        }
+
+        // Show analysis error
+        function showAnalysisError(errorMessage) {
+            const analysisLoadingEl = document.getElementById('analysisLoadingContainer');
+            if (analysisLoadingEl) analysisLoadingEl.style.display = 'none';
+            
+            const analysisErrorEl = document.getElementById('analysisError');
+            if (analysisErrorEl) analysisErrorEl.style.display = 'block';
+            
+            const analysisErrorMessageEl = document.getElementById('analysisErrorMessage');
+            if (analysisErrorMessageEl) analysisErrorMessageEl.textContent = errorMessage;
+            
+            const loadAnalysisBtnEl = document.getElementById('loadAnalysisBtn');
+            if (loadAnalysisBtnEl) loadAnalysisBtnEl.style.display = 'block';
+        }
+
+        // Format structured analysis data to HTML with collapsible sections
+        function formatStructuredAnalysisToHTML(structuredData) {
+            const sectionConfig = [
+                { key: 'overview', title: '📊 Overview', icon: '📊', expanded: false },
+                { key: 'useCase', title: '🎯 Use Case & Value Proposition', icon: '🎯', expanded: false },
+                { key: 'tokenomics', title: '💰 Tokenomics', icon: '💰', expanded: false },
+                { key: 'investors', title: '🏦 Investors & Backers', icon: '🏦', expanded: false },
+                { key: 'competitors', title: '⚔️ Competitors & Market Position', icon: '⚔️', expanded: false },
+                { key: 'developments', title: '📈 Recent Developments', icon: '📈', expanded: false },
+                { key: 'scoreExplanation', title: '🏆 Strength Score Explanation', icon: '🏆', expanded: false },
+                { key: 'risks', title: '⚠️ Risks / Weaknesses', icon: '⚠️', expanded: false },
+                { key: 'summary', title: '✅ Summary Verdict', icon: '✅', expanded: true },
+                { key: 'whyMatters', title: '💡 Why This Coin Matters', icon: '💡', expanded: true }
+            ];
+
+            let html = '';
+            
+            sectionConfig.forEach((config, index) => {
+                const content = structuredData[config.key];
+                if (content && content.trim()) {
+                    const sectionId = `analysis-section-${index}`;
+                    const isExpanded = config.expanded;
+                    
+                    html += `
+                        <div class="analysis-section" style="margin-bottom: 15px; border: 1px solid #e1e5e9; border-radius: 8px; overflow: hidden;">
+                            <div class="analysis-section-header" style="background: #f8f9fa; padding: 15px; cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center;" onclick="toggleAnalysisSection('${sectionId}')">
+                                <h5 style="margin: 0; font-size: 16px; font-weight: 600; color: #333;">${config.title}</h5>
+                                <i id="${sectionId}-icon" class="fas fa-chevron-${isExpanded ? 'up' : 'down'}" style="color: #666; transition: transform 0.3s ease;"></i>
+                            </div>
+                            <div id="${sectionId}" class="analysis-section-content" style="padding: ${isExpanded ? '20px' : '0'}; max-height: ${isExpanded ? 'none' : '0'}; overflow: hidden; transition: all 0.3s ease; background: white;">
+                                <div style="line-height: 1.6; color: #444;">
+                                    ${content.replace(/\n/g, '<br>')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            return html || '<p style="text-align: center; color: #666; padding: 40px;">No analysis content available.</p>';
+        }
+
+        // Toggle analysis section
+        function toggleAnalysisSection(sectionId) {
+            const content = document.getElementById(sectionId);
+            const icon = document.getElementById(`${sectionId}-icon`);
+            
+            if (!content || !icon) return;
+            
+            const isExpanded = content.style.maxHeight !== '0px' && content.style.maxHeight !== '';
+            
+            if (isExpanded) {
+                content.style.maxHeight = '0px';
+                content.style.padding = '0 20px';
+                icon.className = 'fas fa-chevron-down';
+            } else {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                content.style.padding = '20px';
+                icon.className = 'fas fa-chevron-up';
+            }
+        }
+
+        // Parse analysis text into structured format
+        function parseAnalysisText(text) {
+            const sections = {
+                overview: '',
+                useCase: '',
+                tokenomics: '',
+                investors: '',
+                competitors: '',
+                developments: '',
+                scoreExplanation: '',
+                risks: '',
+                summary: '',
+                whyMatters: ''
+            };
+
+            // Split by markdown headers and extract content
+            const lines = text.split('\n');
+            let currentSection = '';
+            let currentContent = [];
+
+            lines.forEach(line => {
+                const trimmedLine = line.trim();
+                
+                if (trimmedLine.startsWith('##')) {
+                    // Save previous section
+                    if (currentSection && currentContent.length > 0) {
+                        sections[currentSection] = currentContent.join('\n').trim();
+                    }
+                    
+                    // Determine new section
+                    const header = trimmedLine.toLowerCase();
+                    if (header.includes('overview') || header.includes('introduction')) {
+                        currentSection = 'overview';
+                    } else if (header.includes('use case') || header.includes('value proposition')) {
+                        currentSection = 'useCase';
+                    } else if (header.includes('tokenomics') || header.includes('token economics')) {
+                        currentSection = 'tokenomics';
+                    } else if (header.includes('investors') || header.includes('backers')) {
+                        currentSection = 'investors';
+                    } else if (header.includes('competitors') || header.includes('market position')) {
+                        currentSection = 'competitors';
+                    } else if (header.includes('developments') || header.includes('catalysts')) {
+                        currentSection = 'developments';
+                    } else if (header.includes('score') || header.includes('strength')) {
+                        currentSection = 'scoreExplanation';
+                    } else if (header.includes('risks') || header.includes('weaknesses')) {
+                        currentSection = 'risks';
+                    } else if (header.includes('summary') || header.includes('verdict')) {
+                        currentSection = 'summary';
+                    } else if (header.includes('why') || header.includes('matters')) {
+                        currentSection = 'whyMatters';
+                    } else {
+                        currentSection = '';
+                    }
+                    
+                    currentContent = [];
+                } else if (currentSection && trimmedLine) {
+                    currentContent.push(line);
+                }
+            });
+
+            // Save last section
+            if (currentSection && currentContent.length > 0) {
+                sections[currentSection] = currentContent.join('\n').trim();
+            }
+
+            return sections;
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Initializing dashboard...');
+            const apiConnected = await testApiConnectivity();
+            window.dashboard = new CryptoDashboard(apiConnected);
+            dashboard = window.dashboard; // Ensure global access
+            console.log('✅ Dashboard initialized:', dashboard);
+        });
+
+        // Refresh button
+        document.getElementById('refreshBtn').addEventListener('click', () => {
+            dashboard.refreshData();
+        });
+
+        // Modal close events
+        document.getElementById('tokenModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTokenModal();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeTokenModal();
+            }
+        });
+
+        // Debug function for Perplexity API
+        window.debugPerplexity = async () => {
+            try {
+                console.log('🔧 Running Perplexity debug...');
+                const res = await fetch('/api/perplexity-debug');
+                const json = await res.json();
+                console.log('🔍 Perplexity Debug Response:', json);
+                alert(`Debug result: ${json.success ? 'SUCCESS' : 'FAILED'}\nMessage: ${json.message || json.error}\nCheck console for details.`);
+                return json;
+            } catch (error) {
+                console.error('❌ Debug function error:', error);
+                alert(`Debug function failed: ${error.message}`);
+            }
+        };
+    </script>
+</body>
+</html>
