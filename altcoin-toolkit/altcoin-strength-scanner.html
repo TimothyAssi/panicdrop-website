@@ -1192,8 +1192,8 @@
     <!-- Include navigation script -->
     <script src="../js/script.js"></script>
     
-    <!-- FIXED Live API Scanner JavaScript - NO MOCK DATA -->
-    <script src="scanner-fixed.js"></script>
+    <!-- ADVANCED Scanner with Transparent Scoring System -->
+    <script src="scanner-with-scoring.js"></script>
     
     <style>
         /* Additional styles for token cards */
@@ -1283,6 +1283,365 @@
         
         .token-price {
             text-align: right;
+        }
+
+        /* SCORING SYSTEM STYLES */
+        
+        /* Total Score Section */
+        .total-score-section {
+            margin: 15px 0;
+            padding: 12px;
+            background: rgba(74, 144, 226, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(74, 144, 226, 0.2);
+        }
+        
+        .total-score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .total-score-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        
+        .total-score-value {
+            font-weight: 700;
+            color: #4A90E2;
+            font-size: 1.1rem;
+        }
+        
+        /* Score Bars */
+        .score-bar-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        
+        .score-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            background: linear-gradient(90deg, currentColor 0%, rgba(255,255,255,0.2) 100%);
+        }
+        
+        /* Score Badges for Top 3 */
+        .score-badges {
+            margin: 15px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.1) 0%, rgba(58, 123, 213, 0.05) 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(74, 144, 226, 0.2);
+        }
+        
+        .main-score {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            background: rgba(74, 144, 226, 0.15);
+            border-radius: 8px;
+        }
+        
+        .score-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        
+        .score-value {
+            font-weight: 700;
+            color: #4A90E2;
+            font-size: 1.2rem;
+        }
+        
+        .sub-scores {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        
+        .sub-score {
+            text-align: center;
+            padding: 6px 4px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: help;
+            transition: all 0.3s ease;
+        }
+        
+        .sub-score:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .sub-label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 2px;
+        }
+        
+        .sub-value {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        /* SCORING MODAL STYLES */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 16px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+        
+        .modal-header {
+            padding: 30px 30px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.1) 0%, transparent 100%);
+            border-radius: 16px 16px 0 0;
+        }
+        
+        .modal-title {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+        }
+        
+        .modal-title i {
+            color: #4A90E2;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255, 68, 68, 0.1);
+            color: #FF4444;
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .scoring-overview {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .scoring-overview h3 {
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+        
+        .formula {
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.1) 0%, rgba(58, 123, 213, 0.05) 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(74, 144, 226, 0.2);
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            color: #4A90E2;
+        }
+        
+        .scoring-categories {
+            margin-bottom: 30px;
+        }
+        
+        .category {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            border-left: 4px solid currentColor;
+        }
+        
+        .category h4 {
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .category-icon {
+            font-size: 1.2rem;
+        }
+        
+        .category ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .category li {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .category li strong {
+            color: var(--text-primary);
+        }
+        
+        .data-sources {
+            margin-bottom: 25px;
+        }
+        
+        .data-sources h3 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+        
+        .source-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .source {
+            padding: 20px;
+            background: rgba(74, 144, 226, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(74, 144, 226, 0.2);
+        }
+        
+        .source strong {
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .source p {
+            color: var(--text-secondary);
+            margin: 8px 0;
+            line-height: 1.4;
+        }
+        
+        .update-freq {
+            display: inline-block;
+            background: rgba(74, 144, 226, 0.2);
+            color: #4A90E2;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .last-update {
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 208, 132, 0.1);
+            border-radius: 8px;
+            color: var(--text-primary);
+            border: 1px solid rgba(0, 208, 132, 0.2);
+        }
+        
+        .last-update i {
+            color: #00D084;
+            margin-right: 8px;
+        }
+        
+        .scoring-notes {
+            background: rgba(255, 165, 2, 0.1);
+            border: 1px solid rgba(255, 165, 2, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .scoring-notes h3 {
+            color: #ffa502;
+            margin-bottom: 15px;
+        }
+        
+        .scoring-notes ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .scoring-notes li {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .modal-content {
+                margin: 10px;
+                max-height: 95vh;
+            }
+            
+            .modal-header,
+            .modal-body {
+                padding: 20px;
+            }
+            
+            .source-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sub-scores {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+            }
+            
+            .formula {
+                font-size: 0.9rem;
+                padding: 15px;
+            }
         }
     </style>
 </body>

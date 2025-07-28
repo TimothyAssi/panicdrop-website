@@ -32,6 +32,11 @@ from = "/api/perplexity-debug"
 to = "/.netlify/functions/perplexity-debug"
 status = 200
 
+[[redirects]]
+from = "/api/perplexity-score"
+to = "/.netlify/functions/perplexity-score"
+status = 200
+
 [[headers]]
 for = "/.netlify/functions/*"
 [headers.values]
