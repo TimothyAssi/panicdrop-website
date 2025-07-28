@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Deployment Test</title>
+</head>
+<body>
+    <h1>✅ Site is deployed and working!</h1>
+    <p>Timestamp: <script>document.write(new Date().toISOString())</script></p>
+    
+    <h2>API Test Links:</h2>
+    <button onclick="testCMC()">Test CMC API</button>
+    <button onclick="testPerplexity()">Test Perplexity API</button>
+    
+    <div id="results"></div>
+    
+    <script>
+        async function testCMC() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>Testing CMC API...</p>';
+            try {
+                const response = await fetch('/api/crypto-listings');
+                const data = await response.json();
+                results.innerHTML = '<h3>CMC API Result:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                results.innerHTML = '<h3>CMC API Error:</h3><p>' + error.message + '</p>';
+            }
+        }
+        
+        async function testPerplexity() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>Testing Perplexity API...</p>';
+            try {
+                const response = await fetch('/api/perplexity-score', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tokenName: 'Cardano' })
+                });
+                const data = await response.json();
+                results.innerHTML = '<h3>Perplexity API Result:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                results.innerHTML = '<h3>Perplexity API Error:</h3><p>' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html>
