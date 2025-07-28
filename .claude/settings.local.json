@@ -22,7 +22,8 @@
       "Bash(python:*)",
       "WebFetch(domain:intellectia.ai)",
       "Bash(true)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "WebFetch(domain:panicdrop.com)"
     ],
     "deny": []
   }
