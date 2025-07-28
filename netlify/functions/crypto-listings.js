@@ -3,6 +3,8 @@ const fetch = require('node-fetch');
 
 exports.handler = async (event, context) => {
   console.log('🚀 Netlify Function: crypto-listings started');
+  console.log('🔍 Method:', event.httpMethod);
+  console.log('🔍 Path:', event.path);
   
   // Handle CORS preflight
   if (event.httpMethod === 'OPTIONS') {

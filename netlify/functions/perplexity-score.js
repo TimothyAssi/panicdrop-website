@@ -98,11 +98,11 @@ exports.handler = async (event) => {
 
     console.log(`🔍 Analyzing token: ${tokenName}`);
 
-    // Create timeout promise (10 seconds)
+    // Create timeout promise (8 seconds)
     const timeoutPromise = new Promise((_, reject) => {
       setTimeout(() => {
-        reject(new Error('API request timed out after 10 seconds'));
-      }, 10000);
+        reject(new Error('API request timed out after 8 seconds'));
+      }, 8000);
     });
 
     // Create simplified API request
@@ -113,7 +113,7 @@ exports.handler = async (event) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'sonar-pro',
+        model: 'sonar-medium-online',
         messages: [{
           role: 'user',
           content: `Give a crypto risk score (0-100) for ${tokenName} based on unlocks, supply trend, wallet holders and any recent token events.`
