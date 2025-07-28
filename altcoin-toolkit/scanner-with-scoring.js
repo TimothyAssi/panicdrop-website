@@ -114,43 +114,61 @@ async function enhanceWithAIScoring() {
     updateAPIStatus('loading', 'Adding AI insights...');
     
     try {
-        // Get top 50 tokens for scoring
-        const tokensToScore = liveData.allTokens.slice(0, 50);
+        // Get top 20 tokens for scoring to avoid rate limits
+        const tokensToScore = liveData.allTokens.slice(0, 20);
+        let scoredCount = 0;
         
-        const response = await fetch(API_CONFIG.perplexityScore, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ tokens: tokensToScore })
-        });
+        // Score tokens individually with delays to respect rate limits
+        for (const token of tokensToScore) {
+            try {
+                const response = await fetch(API_CONFIG.perplexityScore, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ tokenName: token.name })
+                });
 
-        if (!response.ok) {
-            throw new Error(`Perplexity scoring failed: ${response.status}`);
-        }
-
-        const data = await response.json();
-        
-        if (data.success && data.tokens) {
-            // Apply AI scores to tokens
-            data.tokens.forEach(scoredToken => {
-                const token = liveData.allTokens.find(t => t.symbol === scoredToken.symbol);
-                if (token) {
-                    applyScoresToToken(token, scoredToken);
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Apply the AI score and explanation
+                    token.aiScore = data.score;
+                    token.aiExplanation = data.explanation;
+                    token.hasAIData = data.success && !data.fallback && data.score !== null;
+                    
+                    // Update total score to include AI component
+                    if (token.hasAIData && token.aiScore) {
+                        token.totalScore = Math.round(token.aiScore);
+                    } else if (data.score === null) {
+                        // Keep original scoring when API fails
+                        console.warn(`⚠️ API failed for ${token.symbol}: ${data.explanation}`);
+                    }
+                    
+                    scoredCount++;
+                    const scoreDisplay = data.score !== null ? `${data.score}/100` : 'Failed';
+                    console.log(`✅ AI scored: ${token.symbol} = ${scoreDisplay}${data.fallback ? ' (fallback)' : ''}`);
+                } else {
+                    console.warn(`⚠️ Scoring failed for ${token.symbol}: ${response.status}`);
                 }
-            });
-
-            liveData.lastScoreUpdate = new Date().toISOString();
-            
-            // Update UI with new scores
-            refreshAllSections();
-            
-            updateAPIStatus('live', 'Live data + AI insights active');
-            console.log('✅ AI scoring complete');
-            
-        } else {
-            throw new Error('Invalid scoring response');
+                
+                // Rate limiting delay
+                if (scoredCount < tokensToScore.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+                
+            } catch (tokenError) {
+                console.error(`❌ Error scoring ${token.symbol}:`, tokenError);
+            }
         }
+
+        liveData.lastScoreUpdate = new Date().toISOString();
+        
+        // Update UI with new scores
+        refreshAllSections();
+        
+        updateAPIStatus('live', `Live data + AI insights (${scoredCount} tokens scored)`);
+        console.log(`✅ AI scoring complete: ${scoredCount}/${tokensToScore.length} tokens`);
         
     } catch (error) {
         console.error('⚠️ AI scoring failed, using fallback:', error);
@@ -277,14 +295,14 @@ function createTokenCard(token, type) {
     let scoreBar = '';
     
     if (type === 'narrative') {
-        specialMetric = `<div class="token-metric">AI Score: <span class="metric-value">${token.narrativeScore || 'N/A'}/100</span></div>`;
-        scoreBar = createScoreBar(token.narrativeScore || 0, 'narrative');
+        specialMetric = `<div class="token-metric">AI Score: <span class="metric-value">${token.aiScore || token.narrativeScore || 'N/A'}/100</span> ${token.hasAIData ? '<i class="fas fa-robot" title="AI Enhanced"></i>' : ''}</div>`;
+        scoreBar = createScoreBar(token.aiScore || token.narrativeScore || 0, 'narrative');
     } else if (type === 'meme') {
-        specialMetric = `<div class="token-metric">Social Score: <span class="metric-value">${token.socialScore || 'N/A'}/100</span></div>`;
-        scoreBar = createScoreBar(token.socialScore || 0, 'social');
+        specialMetric = `<div class="token-metric">AI Score: <span class="metric-value">${token.aiScore || token.socialScore || 'N/A'}/100</span> ${token.hasAIData ? '<i class="fas fa-robot" title="AI Enhanced"></i>' : ''}</div>`;
+        scoreBar = createScoreBar(token.aiScore || token.socialScore || 0, 'social');
     } else if (type === 'network') {
-        specialMetric = `<div class="token-metric">Network Score: <span class="metric-value">${token.networkScore || 'N/A'}/100</span></div>`;
-        scoreBar = createScoreBar(token.networkScore || 0, 'network');
+        specialMetric = `<div class="token-metric">AI Score: <span class="metric-value">${token.aiScore || token.networkScore || 'N/A'}/100</span> ${token.hasAIData ? '<i class="fas fa-robot" title="AI Enhanced"></i>' : ''}</div>`;
+        scoreBar = createScoreBar(token.aiScore || token.networkScore || 0, 'network');
     }
     
     const totalScoreBar = token.totalScore ? createScoreBar(token.totalScore, 'total') : '';
@@ -329,6 +347,11 @@ function createTokenCard(token, type) {
                 <i class="fas fa-external-link-alt"></i>
                 Trade
             </button>
+            ${token.hasAIData ? `
+            <button class="btn-score-explanation" onclick="showScoreExplanation('${token.symbol}')" title="How is this score calculated?">
+                <i class="fas fa-question-circle"></i>
+            </button>
+            ` : ''}
         </div>
         
         <div class="live-indicator">
@@ -419,12 +442,18 @@ function applyFiltersToLiveData() {
         if (DEBUG_SCORING) console.log(`🔍 After memecoin exclusion: ${filteredTokens.length} (was ${beforeCount})`);
     }
     
-    // FIXED: Sort by totalScore (highest first), fallback to rank
+    // FIXED: Sort by AI score first, then totalScore, then rank
     filteredTokens.sort((a, b) => {
-        if (a.totalScore && b.totalScore) {
-            return b.totalScore - a.totalScore; // Highest score first
+        // Prioritize AI scores when available
+        const aScore = a.aiScore || a.totalScore || (100 - (a.rank || 50));
+        const bScore = b.aiScore || b.totalScore || (100 - (b.rank || 50));
+        
+        if (aScore !== bScore) {
+            return bScore - aScore; // Highest score first
         }
-        return (a.rank || 999) - (b.rank || 999); // Lowest rank first
+        
+        // Fallback to rank (lower rank is better)
+        return (a.rank || 999) - (b.rank || 999);
     });
     
     // FIXED: Always show at least 3 tokens if available
@@ -436,9 +465,14 @@ function applyFiltersToLiveData() {
             .filter(token => !excludeStablecoins || token.category !== 'stablecoin')
             .filter(token => !excludeMemecoins || token.category !== 'meme')
             .sort((a, b) => {
-                if (a.totalScore && b.totalScore) {
-                    return b.totalScore - a.totalScore;
+                // Prioritize AI scores when available
+                const aScore = a.aiScore || a.totalScore || (100 - (a.rank || 50));
+                const bScore = b.aiScore || b.totalScore || (100 - (b.rank || 50));
+                
+                if (aScore !== bScore) {
+                    return bScore - aScore; // Highest score first
                 }
+                
                 return (a.rank || 999) - (b.rank || 999);
             });
         
@@ -909,6 +943,96 @@ function viewTokenDetails(symbol) {
 function openTradeLink(symbol) {
     console.log(`Opening trade link for ${symbol}`);
     window.open(`https://www.binance.com/en/trade/${symbol}_USDT`, '_blank');
+}
+
+// Show score explanation modal
+function showScoreExplanation(symbol) {
+    const token = liveData.allTokens.find(t => t.symbol === symbol);
+    if (!token) return;
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content score-explanation-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-robot"></i> AI Score Explanation: ${token.symbol}</h3>
+                <button class="modal-close" onclick="closeScoreExplanation()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="score-overview">
+                    <div class="score-circle">
+                        <span class="score-number">${token.aiScore || 'N/A'}</span>
+                        <span class="score-suffix">/100</span>
+                    </div>
+                    <div class="score-status">
+                        <strong>${token.hasAIData ? 'Live AI Analysis' : 'Fallback Score'}</strong>
+                        <p>Updated: ${liveData.lastScoreUpdate ? new Date(liveData.lastScoreUpdate).toLocaleTimeString() : 'N/A'}</p>
+                    </div>
+                </div>
+                
+                <div class="score-breakdown">
+                    <h4>How do we calculate AI Scores?</h4>
+                    <div class="score-categories">
+                        <div class="score-category">
+                            <div class="category-icon">📈</div>
+                            <div class="category-info">
+                                <strong>Supply Trend (0-25)</strong>
+                                <p>Growing supply is better for ecosystem health</p>
+                                <span class="category-score">${token.scoreBreakdown?.supplyTrend || 'N/A'}/25</span>
+                            </div>
+                        </div>
+                        <div class="score-category">
+                            <div class="category-icon">🔓</div>
+                            <div class="category-info">
+                                <strong>Token Unlock Risk (0-25)</strong>
+                                <p>Less unlocks = better (reduced sell pressure)</p>
+                                <span class="category-score">${token.scoreBreakdown?.unlockRisk || 'N/A'}/25</span>
+                            </div>
+                        </div>
+                        <div class="score-category">
+                            <div class="category-icon">👥</div>
+                            <div class="category-info">
+                                <strong>Wallet Holder Growth (0-25)</strong>
+                                <p>Growing holder base indicates adoption</p>
+                                <span class="category-score">${token.scoreBreakdown?.holderGrowth || 'N/A'}/25</span>
+                            </div>
+                        </div>
+                        <div class="score-category">
+                            <div class="category-icon">⚡</div>
+                            <div class="category-info">
+                                <strong>Utility & Narrative (0-25)</strong>
+                                <p>Real utility or strong narrative strength</p>
+                                <span class="category-score">${token.scoreBreakdown?.utilityStrength || 'N/A'}/25</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                ${token.aiExplanation ? `
+                <div class="ai-analysis-section">
+                    <h4>AI Analysis</h4>
+                    <div class="ai-explanation">
+                        ${token.aiExplanation}
+                    </div>
+                </div>
+                ` : ''}
+                
+                <div class="score-disclaimer">
+                    <p><strong>Disclaimer:</strong> Scores come from Perplexity AI live research and are for informational purposes only. Always do your own research before making investment decisions.</p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+// Close score explanation modal
+function closeScoreExplanation() {
+    const modal = document.querySelector('.modal-overlay');
+    if (modal) {
+        document.body.removeChild(modal);
+    }
 }
 
 // Export for debugging
