@@ -23,7 +23,8 @@
       "WebFetch(domain:intellectia.ai)",
       "Bash(true)",
       "Bash(sed:*)",
-      "WebFetch(domain:panicdrop.com)"
+      "WebFetch(domain:panicdrop.com)",
+      "Bash(curl:*)"
     ],
     "deny": []
   }
