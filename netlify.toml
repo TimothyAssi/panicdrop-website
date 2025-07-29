@@ -1,13 +1,13 @@
 [build]
   publish = "."
   functions = "netlify/functions"
-  command = ""
+  command = "echo 'Functions ready - deploying crypto-listings and perplexity-score'"
 
 [functions]
   node_bundler = "esbuild"
   external_node_modules = ["node-fetch"]
 
-# Primary API redirects
+# Primary API routes
 [[redirects]]
   from = "/api/crypto-listings"
   to = "/.netlify/functions/crypto-listings"
@@ -20,7 +20,7 @@
   status = 200
   force = true
 
-# Debug: Direct function access
+# Debug routes for testing
 [[redirects]]
   from = "/debug/crypto-listings"
   to = "/.netlify/functions/crypto-listings"
@@ -37,8 +37,10 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
-# Catch-all for debugging
-[[redirects]]
-  from = "/functions/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
+# Headers for function responses
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS"

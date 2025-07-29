@@ -1,9 +1,9 @@
-// Netlify Function: perplexity-score.js
-// Endpoint: /api/perplexity-score
+// Netlify Function: perplexity/score.js
+// Endpoint: /api/perplexity/score
 const fetch = require('node-fetch');
 
 console.log("🧠 Perplexity deployed: " + Date.now());
-console.log("📁 Function file path: netlify/functions/perplexity-score.js");
+console.log("📁 Function file path: netlify/functions/perplexity/score.js");
 
 let lastRequestTime = 0;
 
@@ -69,7 +69,7 @@ function cleanExplanation(content, tokenName) {
 }
 
 exports.handler = async (event, context) => {
-  console.log('🧠 perplexity-score function EXECUTING');
+  console.log('🧠 perplexity/score function EXECUTING');
   console.log('📍 Request path:', event.path);
   console.log('🔗 Request URL:', event.headers?.host + event.path);
   console.log('📮 Request method:', event.httpMethod);
@@ -92,7 +92,7 @@ exports.handler = async (event, context) => {
       headers,
       body: JSON.stringify({
         message: 'CORS preflight successful',
-        functionName: 'perplexity-score',
+        functionName: 'perplexity/score',
         path: event.path,
         timestamp: new Date().toISOString()
       })
@@ -108,7 +108,7 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({ 
         error: 'Method not allowed. Use POST.',
         allowedMethods: ['POST'],
-        functionName: 'perplexity-score',
+        functionName: 'perplexity/score',
         deploymentCheck: 'SUCCESS',
         requestPath: event.path,
         requestUrl: event.headers?.host + event.path
@@ -130,7 +130,7 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({ 
           error: 'Missing tokenName in request body',
           example: { tokenName: 'Cardano' },
-          functionName: 'perplexity-score',
+          functionName: 'perplexity/score',
           deploymentCheck: 'SUCCESS',
           requestPath: event.path
         })
@@ -146,7 +146,7 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({ 
         error: 'Invalid JSON in request body',
         example: { tokenName: 'Cardano' },
-        functionName: 'perplexity-score',
+        functionName: 'perplexity/score',
         deploymentCheck: 'SUCCESS',
         requestPath: event.path
       })
@@ -160,7 +160,7 @@ exports.handler = async (event, context) => {
     
     // Create debug response structure
     const debugResponse = {
-      functionName: 'perplexity-score',
+      functionName: 'perplexity/score',
       deploymentCheck: 'SUCCESS',
       requestPath: event.path,
       requestUrl: event.headers?.host + event.path,
@@ -288,7 +288,7 @@ exports.handler = async (event, context) => {
         tokenName,
         warning: `Perplexity API failed: ${error.message}`,
         fallback: true,
-        functionName: 'perplexity-score',
+        functionName: 'perplexity/score',
         deploymentCheck: 'ERROR',
         requestPath: event.path,
         timestamp: new Date().toISOString()

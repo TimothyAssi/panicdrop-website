@@ -1,9 +1,9 @@
-// Netlify Function: crypto-listings.js
-// Endpoint: /api/crypto-listings
+// Netlify Function: crypto/listings.js
+// Endpoint: /api/crypto/listings
 const fetch = require('node-fetch');
 
 console.log("🚀 CMC deployed: " + Date.now());
-console.log("📁 Function file path: netlify/functions/crypto-listings.js");
+console.log("📁 Function file path: netlify/functions/crypto/listings.js");
 
 const MOCK_DATA = [
   { name: "Cardano", symbol: "ADA", price: 0.40, market_cap: 14000000000, percent_change_24h: 2.1, cmc_rank: 8 },
@@ -14,7 +14,7 @@ const MOCK_DATA = [
 ];
 
 exports.handler = async (event, context) => {
-  console.log('🚀 crypto-listings function EXECUTING');
+  console.log('🚀 crypto/listings function EXECUTING');
   console.log('📍 Request path:', event.path);
   console.log('🔗 Request URL:', event.headers?.host + event.path);
   console.log('📮 Request method:', event.httpMethod);
@@ -36,7 +36,7 @@ exports.handler = async (event, context) => {
       headers,
       body: JSON.stringify({
         message: 'CORS preflight successful',
-        functionName: 'crypto-listings',
+        functionName: 'crypto/listings',
         path: event.path,
         timestamp: new Date().toISOString()
       })
@@ -51,7 +51,7 @@ exports.handler = async (event, context) => {
     // Always return successful response for debugging
     const debugResponse = {
       data: MOCK_DATA,
-      functionName: 'crypto-listings',
+      functionName: 'crypto/listings',
       deploymentCheck: 'SUCCESS',
       requestPath: event.path,
       requestUrl: event.headers?.host + event.path,
@@ -145,7 +145,7 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         data: MOCK_DATA,
         error: error.message,
-        functionName: 'crypto-listings',
+        functionName: 'crypto/listings',
         deploymentCheck: 'ERROR',
         requestPath: event.path,
         fallback: true,
