@@ -2103,6 +2103,15 @@ p {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .navbar {
+        min-height: 65px;
+        padding: 0.75rem 0;
+    }
+    
+    .nav-logo img {
+        height: 32px;
+    }
+    
     .hamburger {
         display: flex !important;
         position: relative;
@@ -2112,7 +2121,7 @@ p {
     .nav-menu {
         position: fixed;
         left: -100%;
-        top: 50px;
+        top: 65px;
         flex-direction: column;
         background: rgba(15, 15, 35, 0.98);
         width: 100%;
@@ -2122,7 +2131,7 @@ p {
         z-index: 999;
         backdrop-filter: blur(15px);
         border-top: 1px solid var(--border-color);
-        max-height: calc(100vh - 50px);
+        max-height: calc(100vh - 65px);
         overflow-y: auto;
         box-shadow: var(--shadow-heavy);
         align-items: stretch;
@@ -2363,11 +2372,11 @@ p {
 
 @media (max-width: 480px) {
     .hero {
-        padding: 60px 0 60px;
+        padding: 75px 0 60px;
     }
     
     .tool-hero {
-        padding: 60px 20px 40px !important;
+        padding: 75px 20px 40px !important;
     }
     
     .hero-title {
