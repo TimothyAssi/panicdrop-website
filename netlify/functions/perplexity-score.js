@@ -1,5 +1,8 @@
 // Netlify Function: perplexity-score.js
 // Endpoint: /api/perplexity-score
+const fetch = require('node-fetch');
+
+console.log("Perplexity function deployed");
 
 let lastRequestTime = 0;
 
@@ -13,7 +16,7 @@ const FALLBACK_SCORES = {
   'Ethereum': 82, 'ETH': 82
 };
 
-// Rate limiting helper
+// Rate limiting helper - 1 second delay
 async function enforceRateLimit() {
   const now = Date.now();
   const timeSinceLastRequest = now - lastRequestTime;
@@ -65,15 +68,14 @@ function cleanExplanation(content, tokenName) {
 }
 
 exports.handler = async (event, context) => {
-  // Log everything for debugging
-  console.log('🧠 perplexity-score function called');
+  console.log('🧠 Perplexity function called');
   console.log('Method:', event.httpMethod);
   console.log('Path:', event.path);
   console.log('Body:', event.body);
 
   const headers = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Content-Type': 'application/json',
     'Cache-Control': 'no-cache'
@@ -89,7 +91,7 @@ exports.handler = async (event, context) => {
     };
   }
 
-  // Only accept POST
+  // Only allow POST method
   if (event.httpMethod !== 'POST') {
     console.log('❌ Method not allowed:', event.httpMethod);
     return {
@@ -115,7 +117,7 @@ exports.handler = async (event, context) => {
         headers,
         body: JSON.stringify({ 
           error: 'Missing tokenName in request body',
-          example: { tokenName: 'Bitcoin' }
+          example: { tokenName: 'Cardano' }
         })
       };
     }
@@ -128,7 +130,7 @@ exports.handler = async (event, context) => {
       headers,
       body: JSON.stringify({ 
         error: 'Invalid JSON in request body',
-        example: { tokenName: 'Bitcoin' }
+        example: { tokenName: 'Cardano' }
       })
     };
   }
@@ -155,93 +157,90 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Rate limiting
+    // Rate limiting - 1 second delay
     await enforceRateLimit();
     
-    console.log(`📡 Calling Perplexity API for ${tokenName}...`);
-    
-    // Call Perplexity API with 6-second timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
-    
-    try {
-      const response = await fetch('https://api.perplexity.ai/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: 'sonar-medium-online',
-          messages: [{
-            role: 'user',
-            content: `Rate ${tokenName} cryptocurrency 0-100 based on current market trends and sentiment. Format: "Score: [number]. [brief analysis]"`
-          }],
-          max_tokens: 100,
-          temperature: 0.3
-        }),
-        signal: controller.signal
-      });
-
-      clearTimeout(timeoutId);
-
-      if (response.status === 401) {
-        throw new Error('Invalid PPLX_API_KEY - check your Perplexity API key');
-      }
-
-      if (response.status === 429) {
-        throw new Error('Rate limit exceeded - please wait before retrying');
-      }
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Perplexity API returned ${response.status}: ${errorText}`);
-      }
-
-      const data = await response.json();
-      const content = data.choices?.[0]?.message?.content || '';
+    // Retry function with 429 handling
+    const fetchWithRetry = async (retryCount = 0) => {
+      console.log(`📡 Calling Perplexity API for ${tokenName} (attempt ${retryCount + 1})...`);
       
-      if (!content) {
-        throw new Error('No content received from Perplexity API');
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8-second timeout
+      
+      try {
+        const response = await fetch('https://api.perplexity.ai/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: 'sonar-medium-online',
+            messages: [{
+              role: 'user',
+              content: `Rate ${tokenName} cryptocurrency 0-100 based on current market trends and sentiment. Format: "Score: [number]. [brief analysis]"`
+            }],
+            max_tokens: 100,
+            temperature: 0.3
+          }),
+          signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        if (response.status === 429 && retryCount === 0) {
+          console.log('⚠️ Rate limit (429) encountered, retrying after 2 seconds...');
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          return fetchWithRetry(1);
+        }
+
+        if (response.status === 401) {
+          throw new Error('Invalid PPLX_API_KEY - check your Perplexity API key');
+        }
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Perplexity API returned ${response.status}: ${errorText}`);
+        }
+
+        const data = await response.json();
+        const content = data.choices?.[0]?.message?.content || '';
+        
+        if (!content) {
+          throw new Error('No content received from Perplexity API');
+        }
+
+        const score = extractScore(content);
+        const explanation = cleanExplanation(content, tokenName);
+
+        console.log(`✅ Perplexity Success: ${tokenName} scored ${score}`);
+        
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({
+            score,
+            explanation,
+            tokenName,
+            source: 'perplexity',
+            timestamp: new Date().toISOString()
+          })
+        };
+
+      } catch (apiError) {
+        clearTimeout(timeoutId);
+        
+        if (retryCount === 0 && apiError.message.includes('429')) {
+          console.log('⚠️ Retrying after 429 error...');
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          return fetchWithRetry(1);
+        }
+        
+        throw apiError;
       }
+    };
 
-      const score = extractScore(content);
-      const explanation = cleanExplanation(content, tokenName);
-
-      console.log(`✅ Perplexity Success: ${tokenName} scored ${score}`);
-      
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({
-          score,
-          explanation,
-          tokenName,
-          source: 'perplexity',
-          timestamp: new Date().toISOString()
-        })
-      };
-
-    } catch (apiError) {
-      clearTimeout(timeoutId);
-      console.log(`⚠️ Perplexity API failed for ${tokenName}:`, apiError.message);
-      
-      // Return fallback on API failure
-      const fallbackScore = FALLBACK_SCORES[tokenName] || (45 + Math.floor(Math.random() * 25));
-      
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({
-          score: fallbackScore,
-          explanation: `Mock analysis for ${tokenName}: moderate market interest with standard risk factors.`,
-          tokenName,
-          warning: `Perplexity API failed: ${apiError.message}`,
-          fallback: true,
-          timestamp: new Date().toISOString()
-        })
-      };
-    }
+    return await fetchWithRetry();
 
   } catch (error) {
     console.error(`❌ Function error for ${tokenName}:`, error);
@@ -249,14 +248,13 @@ exports.handler = async (event, context) => {
     const fallbackScore = FALLBACK_SCORES[tokenName] || (45 + Math.floor(Math.random() * 25));
     
     return {
-      statusCode: 500,
+      statusCode: 200,
       headers,
       body: JSON.stringify({
-        error: 'Internal server error',
-        message: error.message,
         score: fallbackScore,
         explanation: `Mock analysis for ${tokenName}: moderate market interest with standard risk factors.`,
         tokenName,
+        warning: `Perplexity API failed: ${error.message}`,
         fallback: true,
         timestamp: new Date().toISOString()
       })

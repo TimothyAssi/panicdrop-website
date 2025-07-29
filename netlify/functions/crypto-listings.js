@@ -1,5 +1,8 @@
 // Netlify Function: crypto-listings.js
 // Endpoint: /api/crypto-listings
+const fetch = require('node-fetch');
+
+console.log("CMC function deployed");
 
 const MOCK_DATA = [
   { name: "Cardano", symbol: "ADA", price: 0.40, market_cap: 14000000000, percent_change_24h: 2.1, cmc_rank: 8 },
@@ -10,16 +13,14 @@ const MOCK_DATA = [
 ];
 
 exports.handler = async (event, context) => {
-  // Log everything for debugging
-  console.log('🚀 crypto-listings function called');
+  console.log('🚀 CMC function called');
   console.log('Method:', event.httpMethod);
   console.log('Path:', event.path);
-  console.log('Headers:', JSON.stringify(event.headers));
 
   const headers = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Content-Type': 'application/json',
     'Cache-Control': 'no-cache'
   };
@@ -31,19 +32,6 @@ exports.handler = async (event, context) => {
       statusCode: 200,
       headers,
       body: ''
-    };
-  }
-
-  // Accept both GET and POST for flexibility
-  if (event.httpMethod !== 'GET' && event.httpMethod !== 'POST') {
-    console.log('❌ Method not allowed:', event.httpMethod);
-    return {
-      statusCode: 405,
-      headers,
-      body: JSON.stringify({ 
-        error: 'Method not allowed',
-        allowedMethods: ['GET', 'POST']
-      })
     };
   }
 
@@ -65,11 +53,11 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Try CMC API with quick timeout
+    // Try CMC API with 8-second timeout
     console.log('📡 Fetching from CoinMarketCap API...');
     
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
     
     try {
       const response = await fetch('https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?limit=100&sort=market_cap&convert=USD', {
@@ -137,12 +125,11 @@ exports.handler = async (event, context) => {
     console.error('❌ Function error:', error);
     
     return {
-      statusCode: 500,
+      statusCode: 200,
       headers,
       body: JSON.stringify({
-        error: 'Internal server error',
-        message: error.message,
         data: MOCK_DATA,
+        error: error.message,
         fallback: true,
         timestamp: new Date().toISOString()
       })

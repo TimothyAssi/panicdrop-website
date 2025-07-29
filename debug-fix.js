@@ -40,7 +40,7 @@ async function initializeDashboardFixed() {
   let coins = [];
   try {
     console.log('📡 Fetching CMC data...');
-    const response = await fetchWithTimeout('/api/crypto/listings', {
+    const response = await fetchWithTimeout('/api/crypto-listings', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -81,7 +81,7 @@ async function initializeDashboardFixed() {
     try {
       console.log(`🔍 Analyzing ${token}... (${i + 1}/${TOKENS.length})`);
       
-      const response = await fetchWithTimeout('/api/perplexity/score', {
+      const response = await fetchWithTimeout('/api/perplexity-score', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tokenName: coinData?.name || token }),
