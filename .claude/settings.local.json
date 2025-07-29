@@ -24,7 +24,8 @@
       "Bash(true)",
       "Bash(sed:*)",
       "WebFetch(domain:panicdrop.com)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(cat:*)"
     ],
     "deny": []
   }
