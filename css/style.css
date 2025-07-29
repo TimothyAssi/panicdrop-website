@@ -68,10 +68,10 @@ p {
     background: rgba(15, 15, 35, 0.95);
     backdrop-filter: blur(20px);
     z-index: 1000;
-    padding: 0.75rem 0;
+    padding: 0.5rem 0;
     border-bottom: 1px solid var(--border-color);
     transition: all 0.3s ease;
-    min-height: 60px;
+    min-height: 50px;
     box-shadow: var(--shadow-light);
 }
 
@@ -91,7 +91,7 @@ p {
 }
 
 .nav-logo img {
-    height: 35px;
+    height: 28px;
     width: auto;
 }
 
@@ -214,7 +214,7 @@ p {
 
 /* Hero Section */
 .hero {
-    padding: 100px 0 80px;
+    padding: 70px 0 80px;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -2112,7 +2112,7 @@ p {
     .nav-menu {
         position: fixed;
         left: -100%;
-        top: 60px;
+        top: 50px;
         flex-direction: column;
         background: rgba(15, 15, 35, 0.98);
         width: 100%;
@@ -2122,7 +2122,7 @@ p {
         z-index: 999;
         backdrop-filter: blur(15px);
         border-top: 1px solid var(--border-color);
-        max-height: calc(100vh - 60px);
+        max-height: calc(100vh - 50px);
         overflow-y: auto;
         box-shadow: var(--shadow-heavy);
         align-items: stretch;
@@ -2362,6 +2362,14 @@ p {
 }
 
 @media (max-width: 480px) {
+    .hero {
+        padding: 60px 0 60px;
+    }
+    
+    .tool-hero {
+        padding: 60px 20px 40px !important;
+    }
+    
     .hero-title {
         font-size: 2rem;
     }
