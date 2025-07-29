@@ -1,10 +1,118 @@
-const fetch = require('node-fetch');
-
-console.log('Perplexity: Function loaded');
+const https = require('https');
 
 let lastRequestTime = 0;
 
-exports.handler = async (event) => {
+// Fallback scores for common tokens
+const FALLBACK_SCORES = {
+  'Cardano': 68, 'ADA': 68,
+  'Solana': 75, 'SOL': 75,
+  'Polkadot': 62, 'DOT': 62,
+  'Polygon': 70, 'MATIC': 70,
+  'Chainlink': 72, 'LINK': 72,
+  'Bitcoin': 85, 'BTC': 85,
+  'Ethereum': 82, 'ETH': 82
+};
+
+// HTTP request helper for POST requests
+function makePostRequest(hostname, path, headers, body) {
+  return new Promise((resolve, reject) => {
+    const options = {
+      hostname,
+      port: 443,
+      path,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(body),
+        ...headers
+      }
+    };
+
+    const request = https.request(options, (response) => {
+      let data = '';
+      
+      response.on('data', (chunk) => {
+        data += chunk;
+      });
+      
+      response.on('end', () => {
+        try {
+          const parsedData = JSON.parse(data);
+          resolve({ status: response.statusCode, data: parsedData });
+        } catch (error) {
+          reject(new Error('Failed to parse JSON response'));
+        }
+      });
+    });
+    
+    request.on('error', (error) => {
+      reject(error);
+    });
+    
+    request.setTimeout(8000, () => {
+      request.abort();
+      reject(new Error('Request timeout'));
+    });
+    
+    request.write(body);
+    request.end();
+  });
+}
+
+// Rate limiting helper
+async function enforceRateLimit() {
+  const now = Date.now();
+  const timeSinceLastRequest = now - lastRequestTime;
+  const minInterval = 1000; // 1 second between requests
+  
+  if (timeSinceLastRequest < minInterval) {
+    const waitTime = minInterval - timeSinceLastRequest;
+    console.log(`⏱️ Rate limiting: waiting ${waitTime}ms`);
+    await new Promise(resolve => setTimeout(resolve, waitTime));
+  }
+  
+  lastRequestTime = Date.now();
+}
+
+// Extract score from Perplexity response
+function extractScore(content) {
+  const patterns = [
+    /Score:\s*(\d+)/i,
+    /(\d{1,2})[\/\s]*(?:out of\s*)?100/i,
+    /(\d{1,2})\/100/i,
+    /rating[:\s]*(\d{1,2})/i
+  ];
+
+  for (const pattern of patterns) {
+    const match = content.match(pattern);
+    if (match) {
+      const score = parseInt(match[1]);
+      if (score >= 0 && score <= 100) {
+        return score;
+      }
+    }
+  }
+  
+  return 50; // Default fallback
+}
+
+// Clean explanation text
+function cleanExplanation(content, tokenName) {
+  let explanation = content
+    .replace(/^Score:\s*\d+\.?\s*/i, '')
+    .replace(/^\d+[\/\s]*(?:out of\s*)?100\.?\s*/i, '')
+    .trim();
+
+  if (!explanation || explanation.length < 10) {
+    explanation = `Analysis for ${tokenName}: moderate market performance with balanced risk factors.`;
+  }
+
+  return explanation;
+}
+
+exports.handler = async (event, context) => {
+  console.log('🧠 Perplexity API Function called');
+  
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -21,46 +129,11 @@ exports.handler = async (event) => {
     };
   }
 
-  console.log('Perplexity: Request received - Method:', event.httpMethod);
-
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
       headers,
-      body: JSON.stringify({ error: 'Method Not Allowed' })
-    };
-  }
-
-  // Check for node-fetch
-  try {
-    if (!fetch) {
-      throw new Error('node-fetch not available');
-    }
-    console.log('Perplexity: node-fetch imported successfully');
-  } catch (error) {
-    console.error('Perplexity: node-fetch import error:', error.message);
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
-        score: 50,
-        explanation: 'Mock analysis: node-fetch dependency missing.',
-        fallback: true
-      })
-    };
-  }
-
-  const apiKey = process.env.PPLX_API_KEY;
-  if (!apiKey) {
-    console.error('Perplexity: Missing PPLX_API_KEY environment variable');
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
-        score: 50,
-        explanation: 'Mock analysis: PPLX_API_KEY not configured.',
-        fallback: true
-      })
+      body: JSON.stringify({ error: 'Method not allowed' })
     };
   }
 
@@ -71,9 +144,7 @@ exports.handler = async (event) => {
     if (!tokenName) {
       throw new Error('Missing tokenName in request body');
     }
-    console.log(`Perplexity: Processing request for ${tokenName}`);
   } catch (error) {
-    console.error('Perplexity: Invalid request body:', error.message);
     return {
       statusCode: 400,
       headers,
@@ -81,150 +152,85 @@ exports.handler = async (event) => {
     };
   }
 
-  // Enhanced rate limiting with 429 handling
-  const now = Date.now();
-  const timeSinceLastRequest = now - lastRequestTime;
-  const baseDelay = 1000; // 1 second base delay
+  const apiKey = process.env.PPLX_API_KEY;
   
-  if (timeSinceLastRequest < baseDelay) {
-    const delayNeeded = baseDelay - timeSinceLastRequest;
-    console.log(`Perplexity: Rate limiting - waiting ${delayNeeded}ms`);
-    await new Promise(resolve => setTimeout(resolve, delayNeeded));
+  // Return fallback data if no API key
+  if (!apiKey) {
+    console.log('⚠️ No PPLX_API_KEY found, returning fallback score');
+    const fallbackScore = FALLBACK_SCORES[tokenName] || (50 + Math.floor(Math.random() * 30));
+    
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        score: fallbackScore,
+        explanation: `Mock analysis for ${tokenName}: moderate market interest with standard risk assessment.`,
+        tokenName,
+        warning: 'Using fallback data - PPLX_API_KEY not configured',
+        fallback: true
+      })
+    };
   }
-  lastRequestTime = Date.now();
-
-  // API call with retry logic for 429
-  const fetchWithRetry = async (retryCount = 0) => {
-    const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('Perplexity API timeout after 8 seconds')), 8000)
-    );
-
-    try {
-      console.log(`Perplexity: Attempting API call for ${tokenName} (attempt ${retryCount + 1})`);
-      
-      const response = await Promise.race([
-        fetch('https://api.perplexity.ai/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`,
-            'User-Agent': 'Netlify-Function/1.0'
-          },
-          body: JSON.stringify({
-            model: 'sonar-medium-online',
-            messages: [{
-              role: 'user',
-              content: `Rate ${tokenName} cryptocurrency 0-100 based on trends and sentiment. Reply format: "Score: [number]. [brief explanation]"`
-            }],
-            max_tokens: 80,
-            temperature: 0.3
-          }),
-          timeout: 7000
-        }),
-        timeoutPromise
-      ]);
-
-      console.log(`Perplexity: Response status for ${tokenName}: ${response.status}`);
-
-      if (response.status === 429 && retryCount === 0) {
-        console.log('Perplexity: Rate limit hit, waiting 2 seconds...');
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        return fetchWithRetry(1);
-      }
-
-      if (response.status === 401) {
-        throw new Error('Unauthorized: Invalid PPLX_API_KEY');
-      }
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
-      }
-
-      const data = await response.json();
-      console.log(`Perplexity: Raw response for ${tokenName}:`, JSON.stringify(data));
-
-      const content = data.choices?.[0]?.message?.content || '';
-      
-      if (!content) {
-        throw new Error('No content received from Perplexity API');
-      }
-
-      // Simplified parsing
-      let score = 50;
-      let explanation = content.trim();
-
-      // Extract score with multiple patterns
-      const scorePatterns = [
-        /Score:\s*(\d+)/i,
-        /(\d{1,2})[\/\s]*(?:out of\s*)?100/i,
-        /(\d{1,2})\/100/i,
-        /(\d{1,2})%/i,
-        /rating[:\s]*(\d{1,2})/i
-      ];
-
-      for (const pattern of scorePatterns) {
-        const match = content.match(pattern);
-        if (match) {
-          const extractedScore = parseInt(match[1]);
-          if (extractedScore >= 0 && extractedScore <= 100) {
-            score = extractedScore;
-            break;
-          }
-        }
-      }
-
-      // Clean explanation
-      explanation = explanation
-        .replace(/^Score:\s*\d+\.?\s*/i, '')
-        .replace(/^\d+[\/\s]*(?:out of\s*)?100\.?\s*/i, '')
-        .trim();
-
-      if (!explanation || explanation.length < 10) {
-        explanation = `Analysis for ${tokenName}: moderate market performance with standard risk factors.`;
-      }
-
-      console.log(`Perplexity: Success for ${tokenName} - Score: ${score}`);
-      
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({
-          score,
-          explanation,
-          tokenName,
-          timestamp: new Date().toISOString()
-        })
-      };
-
-    } catch (error) {
-      console.error(`Perplexity: API error for ${tokenName} (attempt ${retryCount + 1}):`, error.message);
-      
-      if (retryCount === 0 && (error.message.includes('429') || error.message.includes('rate'))) {
-        console.log('Perplexity: Retrying after rate limit...');
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        return fetchWithRetry(1);
-      }
-      
-      throw error;
-    }
-  };
 
   try {
-    return await fetchWithRetry();
-  } catch (error) {
-    console.error(`Perplexity: Final error for ${tokenName}:`, error.message);
+    // Rate limiting
+    await enforceRateLimit();
     
-    // Generate fallback score based on token
-    const fallbackScores = {
-      'Cardano': 65, 'ADA': 65,
-      'Solana': 75, 'SOL': 75,
-      'Polkadot': 60, 'DOT': 60,
-      'Polygon': 70, 'MATIC': 70,
-      'Chainlink': 68, 'LINK': 68
+    console.log(`🔍 Analyzing ${tokenName} with Perplexity...`);
+    
+    const requestBody = JSON.stringify({
+      model: 'sonar-medium-online',
+      messages: [{
+        role: 'user',
+        content: `Rate ${tokenName} cryptocurrency 0-100 based on current market trends and sentiment. Format: "Score: [number]. [brief analysis]"`
+      }],
+      max_tokens: 100,
+      temperature: 0.3
+    });
+
+    const response = await makePostRequest(
+      'api.perplexity.ai',
+      '/chat/completions',
+      {
+        'Authorization': `Bearer ${apiKey}`
+      },
+      requestBody
+    );
+
+    if (response.status === 401) {
+      throw new Error('Invalid PPLX_API_KEY');
+    }
+
+    if (response.status !== 200) {
+      throw new Error(`Perplexity API returned status ${response.status}`);
+    }
+
+    const content = response.data.choices?.[0]?.message?.content || '';
+    
+    if (!content) {
+      throw new Error('No content received from Perplexity API');
+    }
+
+    const score = extractScore(content);
+    const explanation = cleanExplanation(content, tokenName);
+
+    console.log(`✅ Perplexity Success: ${tokenName} scored ${score}`);
+    
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        score,
+        explanation,
+        tokenName,
+        timestamp: new Date().toISOString()
+      })
     };
+
+  } catch (error) {
+    console.error(`❌ Perplexity API Error for ${tokenName}:`, error.message);
     
-    const fallbackScore = fallbackScores[tokenName] || (45 + Math.floor(Math.random() * 20));
+    const fallbackScore = FALLBACK_SCORES[tokenName] || (45 + Math.floor(Math.random() * 25));
     
     return {
       statusCode: 200,
