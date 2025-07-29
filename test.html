@@ -18,7 +18,7 @@
             const results = document.getElementById('results');
             results.innerHTML = '<p>Testing CMC API...</p>';
             try {
-                const response = await fetch('/api/crypto-listings');
+                const response = await fetch('/api/cryptoListings');
                 const data = await response.json();
                 results.innerHTML = '<h3>CMC API Result:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
             } catch (error) {
@@ -30,7 +30,7 @@
             const results = document.getElementById('results');
             results.innerHTML = '<p>Testing Perplexity API...</p>';
             try {
-                const response = await fetch('/api/perplexity-score', {
+                const response = await fetch('/api/perplexityScore', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ tokenName: 'Cardano' })

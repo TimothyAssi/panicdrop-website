@@ -25,7 +25,10 @@
       "Bash(sed:*)",
       "WebFetch(domain:panicdrop.com)",
       "Bash(curl:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(node:*)",
+      "Bash(mv:*)"
     ],
     "deny": []
   }

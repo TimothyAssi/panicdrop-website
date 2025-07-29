@@ -201,7 +201,7 @@
             statusEl.className = 'status-indicator status-loading';
             
             try {
-                const response = await fetch('/api/crypto/listings');
+                const response = await fetch('/api/cryptoListings');
                 const data = await response.json();
                 
                 // Critical checks for live data
@@ -314,7 +314,7 @@
             try {
                 const testPrompt = "What is the current market sentiment for Bitcoin? Provide a brief analysis.";
                 
-                const response = await fetch('/api/perplexity-analysis', {
+                const response = await fetch('/api/perplexityScore', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -440,7 +440,7 @@
             const resultsEl = document.getElementById('perplexityResults');
             
             try {
-                const response = await fetch('/api/perplexity-analysis', {
+                const response = await fetch('/api/perplexityScore', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -485,10 +485,10 @@
             
             // Test if APIs work (indirect way to check if keys are configured)
             try {
-                const cmcTest = await fetch('/api/crypto/listings');
+                const cmcTest = await fetch('/api/cryptoListings');
                 const cmcWorks = cmcTest.ok;
                 
-                const perplexityTest = await fetch('/api/perplexity-debug');
+                const perplexityTest = await fetch('/api/perplexityScore');
                 const perplexityWorks = perplexityTest.ok;
                 
                 resultsEl.innerHTML += `
