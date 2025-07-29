@@ -1,11 +1,13 @@
 [build]
   publish = "."
   functions = "netlify/functions"
+  command = ""
 
 [functions]
   node_bundler = "esbuild"
+  external_node_modules = ["node-fetch"]
 
-# Correct redirect rules - API routes to functions
+# Primary API redirects
 [[redirects]]
   from = "/api/crypto-listings"
   to = "/.netlify/functions/crypto-listings"
@@ -18,8 +20,25 @@
   status = 200
   force = true
 
+# Debug: Direct function access
+[[redirects]]
+  from = "/debug/crypto-listings"
+  to = "/.netlify/functions/crypto-listings"
+  status = 200
+
+[[redirects]]
+  from = "/debug/perplexity-score"
+  to = "/.netlify/functions/perplexity-score"
+  status = 200
+
 # General API fallback
 [[redirects]]
   from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Catch-all for debugging
+[[redirects]]
+  from = "/functions/*"
   to = "/.netlify/functions/:splat"
   status = 200

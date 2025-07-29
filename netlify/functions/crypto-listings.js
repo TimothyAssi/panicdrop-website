@@ -2,7 +2,8 @@
 // Endpoint: /api/crypto-listings
 const fetch = require('node-fetch');
 
-console.log("CMC deployed: " + Date.now());
+console.log("🚀 CMC deployed: " + Date.now());
+console.log("📁 Function file path: netlify/functions/crypto-listings.js");
 
 const MOCK_DATA = [
   { name: "Cardano", symbol: "ADA", price: 0.40, market_cap: 14000000000, percent_change_24h: 2.1, cmc_rank: 8 },
@@ -13,10 +14,12 @@ const MOCK_DATA = [
 ];
 
 exports.handler = async (event, context) => {
-  console.log('🚀 crypto-listings function executing');
-  console.log('Request path:', event.path);
-  console.log('Request method:', event.httpMethod);
-  console.log('Timestamp:', new Date().toISOString());
+  console.log('🚀 crypto-listings function EXECUTING');
+  console.log('📍 Request path:', event.path);
+  console.log('🔗 Request URL:', event.headers?.host + event.path);
+  console.log('📮 Request method:', event.httpMethod);
+  console.log('⏰ Timestamp:', new Date().toISOString());
+  console.log('🔧 Context function name:', context.functionName);
 
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -31,27 +34,40 @@ exports.handler = async (event, context) => {
     return {
       statusCode: 200,
       headers,
-      body: ''
+      body: JSON.stringify({
+        message: 'CORS preflight successful',
+        functionName: 'crypto-listings',
+        path: event.path,
+        timestamp: new Date().toISOString()
+      })
     };
   }
 
   try {
     const apiKey = process.env.CMC_API_KEY;
     
-    // Always return success response to test routing first
+    console.log('🔑 CMC_API_KEY present:', !!apiKey);
+    
+    // Always return successful response for debugging
+    const debugResponse = {
+      data: MOCK_DATA,
+      functionName: 'crypto-listings',
+      deploymentCheck: 'SUCCESS',
+      requestPath: event.path,
+      requestUrl: event.headers?.host + event.path,
+      hasApiKey: !!apiKey,
+      timestamp: new Date().toISOString()
+    };
+
     if (!apiKey) {
       console.log('⚠️ No CMC_API_KEY, returning mock data');
+      debugResponse.warning = 'Using mock data - CMC_API_KEY not configured';
+      debugResponse.fallback = true;
+      
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({
-          data: MOCK_DATA,
-          warning: 'Using mock data - CMC_API_KEY not configured',
-          fallback: true,
-          functionName: 'crypto-listings',
-          deploymentCheck: 'SUCCESS',
-          timestamp: new Date().toISOString()
-        })
+        body: JSON.stringify(debugResponse)
       };
     }
 
@@ -96,33 +112,27 @@ exports.handler = async (event, context) => {
 
       console.log(`✅ CMC API Success: ${coins.length} coins fetched`);
       
+      debugResponse.data = coins;
+      debugResponse.source = 'coinmarketcap';
+      debugResponse.coinsCount = coins.length;
+      
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({
-          data: coins,
-          source: 'coinmarketcap',
-          functionName: 'crypto-listings',
-          deploymentCheck: 'SUCCESS',
-          timestamp: new Date().toISOString()
-        })
+        body: JSON.stringify(debugResponse)
       };
 
     } catch (apiError) {
       clearTimeout(timeoutId);
       console.log('⚠️ CMC API failed, using fallback:', apiError.message);
       
+      debugResponse.warning = `CMC API failed: ${apiError.message}`;
+      debugResponse.fallback = true;
+      
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({
-          data: MOCK_DATA,
-          warning: `CMC API failed: ${apiError.message}`,
-          fallback: true,
-          functionName: 'crypto-listings',
-          deploymentCheck: 'SUCCESS',
-          timestamp: new Date().toISOString()
-        })
+        body: JSON.stringify(debugResponse)
       };
     }
 
@@ -130,14 +140,15 @@ exports.handler = async (event, context) => {
     console.error('❌ Function error:', error);
     
     return {
-      statusCode: 200,
+      statusCode: 500,
       headers,
       body: JSON.stringify({
         data: MOCK_DATA,
         error: error.message,
-        fallback: true,
         functionName: 'crypto-listings',
         deploymentCheck: 'ERROR',
+        requestPath: event.path,
+        fallback: true,
         timestamp: new Date().toISOString()
       })
     };

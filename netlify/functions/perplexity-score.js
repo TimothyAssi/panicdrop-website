@@ -2,7 +2,8 @@
 // Endpoint: /api/perplexity-score
 const fetch = require('node-fetch');
 
-console.log("Perplexity deployed: " + Date.now());
+console.log("🧠 Perplexity deployed: " + Date.now());
+console.log("📁 Function file path: netlify/functions/perplexity-score.js");
 
 let lastRequestTime = 0;
 
@@ -68,11 +69,13 @@ function cleanExplanation(content, tokenName) {
 }
 
 exports.handler = async (event, context) => {
-  console.log('🧠 perplexity-score function executing');
-  console.log('Request path:', event.path);
-  console.log('Request method:', event.httpMethod);
-  console.log('Request body:', event.body);
-  console.log('Timestamp:', new Date().toISOString());
+  console.log('🧠 perplexity-score function EXECUTING');
+  console.log('📍 Request path:', event.path);
+  console.log('🔗 Request URL:', event.headers?.host + event.path);
+  console.log('📮 Request method:', event.httpMethod);
+  console.log('📝 Request body:', event.body);
+  console.log('⏰ Timestamp:', new Date().toISOString());
+  console.log('🔧 Context function name:', context.functionName);
 
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -87,7 +90,12 @@ exports.handler = async (event, context) => {
     return {
       statusCode: 200,
       headers,
-      body: ''
+      body: JSON.stringify({
+        message: 'CORS preflight successful',
+        functionName: 'perplexity-score',
+        path: event.path,
+        timestamp: new Date().toISOString()
+      })
     };
   }
 
@@ -101,7 +109,9 @@ exports.handler = async (event, context) => {
         error: 'Method not allowed. Use POST.',
         allowedMethods: ['POST'],
         functionName: 'perplexity-score',
-        deploymentCheck: 'SUCCESS'
+        deploymentCheck: 'SUCCESS',
+        requestPath: event.path,
+        requestUrl: event.headers?.host + event.path
       })
     };
   }
@@ -121,7 +131,8 @@ exports.handler = async (event, context) => {
           error: 'Missing tokenName in request body',
           example: { tokenName: 'Cardano' },
           functionName: 'perplexity-score',
-          deploymentCheck: 'SUCCESS'
+          deploymentCheck: 'SUCCESS',
+          requestPath: event.path
         })
       };
     }
@@ -136,13 +147,27 @@ exports.handler = async (event, context) => {
         error: 'Invalid JSON in request body',
         example: { tokenName: 'Cardano' },
         functionName: 'perplexity-score',
-        deploymentCheck: 'SUCCESS'
+        deploymentCheck: 'SUCCESS',
+        requestPath: event.path
       })
     };
   }
 
   try {
     const apiKey = process.env.PPLX_API_KEY;
+    
+    console.log('🔑 PPLX_API_KEY present:', !!apiKey);
+    
+    // Create debug response structure
+    const debugResponse = {
+      functionName: 'perplexity-score',
+      deploymentCheck: 'SUCCESS',
+      requestPath: event.path,
+      requestUrl: event.headers?.host + event.path,
+      tokenRequested: tokenName,
+      hasApiKey: !!apiKey,
+      timestamp: new Date().toISOString()
+    };
     
     // If no API key, return fallback immediately
     if (!apiKey) {
@@ -153,14 +178,12 @@ exports.handler = async (event, context) => {
         statusCode: 200,
         headers,
         body: JSON.stringify({
+          ...debugResponse,
           score: fallbackScore,
           explanation: `Mock analysis for ${tokenName}: moderate market interest with standard risk assessment.`,
           tokenName,
           warning: 'Using fallback data - PPLX_API_KEY not configured',
-          fallback: true,
-          functionName: 'perplexity-score',
-          deploymentCheck: 'SUCCESS',
-          timestamp: new Date().toISOString()
+          fallback: true
         })
       };
     }
@@ -227,13 +250,12 @@ exports.handler = async (event, context) => {
           statusCode: 200,
           headers,
           body: JSON.stringify({
+            ...debugResponse,
             score,
             explanation,
             tokenName,
             source: 'perplexity',
-            functionName: 'perplexity-score',
-            deploymentCheck: 'SUCCESS',
-            timestamp: new Date().toISOString()
+            apiCallCount: retryCount + 1
           })
         };
 
@@ -268,6 +290,7 @@ exports.handler = async (event, context) => {
         fallback: true,
         functionName: 'perplexity-score',
         deploymentCheck: 'ERROR',
+        requestPath: event.path,
         timestamp: new Date().toISOString()
       })
     };
