@@ -1,156 +1,28 @@
-// Netlify Function: crypto/listings.js
-// Endpoint: /api/crypto/listings
 const fetch = require('node-fetch');
 
-console.log("🚀 CMC deployed: " + Date.now());
-console.log("📁 Function file path: netlify/functions/crypto/listings.js");
-
-const MOCK_DATA = [
-  { name: "Cardano", symbol: "ADA", price: 0.40, market_cap: 14000000000, percent_change_24h: 2.1, cmc_rank: 8 },
-  { name: "Solana", symbol: "SOL", price: 180, market_cap: 80000000000, percent_change_24h: 4.5, cmc_rank: 5 },
-  { name: "Polkadot", symbol: "DOT", price: 5.5, market_cap: 8000000000, percent_change_24h: -1.2, cmc_rank: 12 },
-  { name: "Polygon", symbol: "MATIC", price: 0.50, market_cap: 5000000000, percent_change_24h: 3.8, cmc_rank: 15 },
-  { name: "Chainlink", symbol: "LINK", price: 13, market_cap: 7000000000, percent_change_24h: 1.7, cmc_rank: 18 }
-];
-
 exports.handler = async (event, context) => {
-  console.log('🚀 crypto/listings function EXECUTING');
-  console.log('📍 Request path:', event.path);
-  console.log('🔗 Request URL:', event.headers?.host + event.path);
-  console.log('📮 Request method:', event.httpMethod);
-  console.log('⏰ Timestamp:', new Date().toISOString());
-  console.log('🔧 Context function name:', context.functionName);
-
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Content-Type': 'application/json'
-  };
-
-  // Handle CORS preflight
-  if (event.httpMethod === 'OPTIONS') {
-    console.log('✅ CORS preflight handled');
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
-        message: 'CORS preflight successful',
-        functionName: 'crypto/listings',
-        path: event.path,
-        timestamp: new Date().toISOString()
-      })
-    };
-  }
-
   try {
     const apiKey = process.env.CMC_API_KEY;
-    
-    console.log('🔑 CMC_API_KEY present:', !!apiKey);
-    
-    // Always return successful response for debugging
-    const debugResponse = {
-      data: MOCK_DATA,
-      functionName: 'crypto/listings',
-      deploymentCheck: 'SUCCESS',
-      requestPath: event.path,
-      requestUrl: event.headers?.host + event.path,
-      hasApiKey: !!apiKey,
-      timestamp: new Date().toISOString()
+    const url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?limit=100&sort=market_cap&convert=USD';
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'X-CMC_PRO_API_KEY': apiKey,
+        'Accept': 'application/json'
+      }
+    });
+
+    const data = await response.json();
+    return {
+      statusCode: 200,
+      headers: { "Access-Control-Allow-Origin": "*" },
+      body: JSON.stringify(data)
     };
-
-    if (!apiKey) {
-      console.log('⚠️ No CMC_API_KEY, returning mock data');
-      debugResponse.warning = 'Using mock data - CMC_API_KEY not configured';
-      debugResponse.fallback = true;
-      
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify(debugResponse)
-      };
-    }
-
-    // Try CMC API with 8-second timeout
-    console.log('📡 Fetching from CoinMarketCap API...');
-    
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000);
-    
-    try {
-      const response = await fetch('https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?limit=100&sort=market_cap&convert=USD', {
-        method: 'GET',
-        headers: {
-          'X-CMC_PRO_API_KEY': apiKey,
-          'Accept': 'application/json'
-        },
-        signal: controller.signal
-      });
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        throw new Error(`CMC API returned ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      
-      if (!data.data || !Array.isArray(data.data)) {
-        throw new Error('Invalid CMC API response format');
-      }
-
-      const coins = data.data.slice(0, 100).map(coin => ({
-        id: coin.id,
-        name: coin.name,
-        symbol: coin.symbol,
-        price: coin.quote?.USD?.price || 0,
-        market_cap: coin.quote?.USD?.market_cap || 0,
-        volume_24h: coin.quote?.USD?.volume_24h || 0,
-        percent_change_24h: coin.quote?.USD?.percent_change_24h || 0,
-        cmc_rank: coin.cmc_rank || 999
-      }));
-
-      console.log(`✅ CMC API Success: ${coins.length} coins fetched`);
-      
-      debugResponse.data = coins;
-      debugResponse.source = 'coinmarketcap';
-      debugResponse.coinsCount = coins.length;
-      
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify(debugResponse)
-      };
-
-    } catch (apiError) {
-      clearTimeout(timeoutId);
-      console.log('⚠️ CMC API failed, using fallback:', apiError.message);
-      
-      debugResponse.warning = `CMC API failed: ${apiError.message}`;
-      debugResponse.fallback = true;
-      
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify(debugResponse)
-      };
-    }
-
-  } catch (error) {
-    console.error('❌ Function error:', error);
-    
+  } catch (err) {
     return {
       statusCode: 500,
-      headers,
-      body: JSON.stringify({
-        data: MOCK_DATA,
-        error: error.message,
-        functionName: 'crypto/listings',
-        deploymentCheck: 'ERROR',
-        requestPath: event.path,
-        fallback: true,
-        timestamp: new Date().toISOString()
-      })
+      body: JSON.stringify({ error: err.message })
     };
   }
 };
