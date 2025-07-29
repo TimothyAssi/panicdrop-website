@@ -35,7 +35,7 @@ body {
     font-size: 16px;
     font-weight: 400;
     overflow-x: hidden;
-    padding-top: 50px;
+    padding-top: 45px;
 }
 
 .container {
@@ -69,10 +69,10 @@ p {
     background: rgba(15, 15, 35, 0.95);
     backdrop-filter: blur(20px);
     z-index: 1000;
-    padding: 0.5rem 0;
+    padding: 0.25rem 0;
     border-bottom: 1px solid var(--border-color);
     transition: all 0.3s ease;
-    min-height: 50px;
+    min-height: 45px;
     box-shadow: var(--shadow-light);
 }
 
@@ -92,7 +92,7 @@ p {
 }
 
 .nav-logo img {
-    height: 28px;
+    height: 24px;
     width: auto;
 }
 
@@ -2105,16 +2105,16 @@ p {
 /* Responsive Design */
 @media (max-width: 768px) {
     body {
-        padding-top: 65px;
+        padding-top: 55px;
     }
     
     .navbar {
-        min-height: 65px;
-        padding: 0.75rem 0;
+        min-height: 55px;
+        padding: 0.5rem 0;
     }
     
     .nav-logo img {
-        height: 32px;
+        height: 28px;
     }
     
     .hamburger {
@@ -2126,7 +2126,7 @@ p {
     .nav-menu {
         position: fixed;
         left: -100%;
-        top: 65px;
+        top: 55px;
         flex-direction: column;
         background: rgba(15, 15, 35, 0.98);
         width: 100%;
@@ -2136,7 +2136,7 @@ p {
         z-index: 999;
         backdrop-filter: blur(15px);
         border-top: 1px solid var(--border-color);
-        max-height: calc(100vh - 65px);
+        max-height: calc(100vh - 55px);
         overflow-y: auto;
         box-shadow: var(--shadow-heavy);
         align-items: stretch;
