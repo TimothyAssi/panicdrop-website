@@ -2,7 +2,7 @@
 // Endpoint: /api/perplexity-score
 const fetch = require('node-fetch');
 
-console.log("Perplexity function deployed");
+console.log("Perplexity deployed: " + Date.now());
 
 let lastRequestTime = 0;
 
@@ -68,17 +68,17 @@ function cleanExplanation(content, tokenName) {
 }
 
 exports.handler = async (event, context) => {
-  console.log('🧠 Perplexity function called');
-  console.log('Method:', event.httpMethod);
-  console.log('Path:', event.path);
-  console.log('Body:', event.body);
+  console.log('🧠 perplexity-score function executing');
+  console.log('Request path:', event.path);
+  console.log('Request method:', event.httpMethod);
+  console.log('Request body:', event.body);
+  console.log('Timestamp:', new Date().toISOString());
 
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Content-Type': 'application/json',
-    'Cache-Control': 'no-cache'
+    'Content-Type': 'application/json'
   };
 
   // Handle CORS preflight
@@ -99,7 +99,9 @@ exports.handler = async (event, context) => {
       headers,
       body: JSON.stringify({ 
         error: 'Method not allowed. Use POST.',
-        allowedMethods: ['POST']
+        allowedMethods: ['POST'],
+        functionName: 'perplexity-score',
+        deploymentCheck: 'SUCCESS'
       })
     };
   }
@@ -117,7 +119,9 @@ exports.handler = async (event, context) => {
         headers,
         body: JSON.stringify({ 
           error: 'Missing tokenName in request body',
-          example: { tokenName: 'Cardano' }
+          example: { tokenName: 'Cardano' },
+          functionName: 'perplexity-score',
+          deploymentCheck: 'SUCCESS'
         })
       };
     }
@@ -130,7 +134,9 @@ exports.handler = async (event, context) => {
       headers,
       body: JSON.stringify({ 
         error: 'Invalid JSON in request body',
-        example: { tokenName: 'Cardano' }
+        example: { tokenName: 'Cardano' },
+        functionName: 'perplexity-score',
+        deploymentCheck: 'SUCCESS'
       })
     };
   }
@@ -152,6 +158,8 @@ exports.handler = async (event, context) => {
           tokenName,
           warning: 'Using fallback data - PPLX_API_KEY not configured',
           fallback: true,
+          functionName: 'perplexity-score',
+          deploymentCheck: 'SUCCESS',
           timestamp: new Date().toISOString()
         })
       };
@@ -223,6 +231,8 @@ exports.handler = async (event, context) => {
             explanation,
             tokenName,
             source: 'perplexity',
+            functionName: 'perplexity-score',
+            deploymentCheck: 'SUCCESS',
             timestamp: new Date().toISOString()
           })
         };
@@ -256,6 +266,8 @@ exports.handler = async (event, context) => {
         tokenName,
         warning: `Perplexity API failed: ${error.message}`,
         fallback: true,
+        functionName: 'perplexity-score',
+        deploymentCheck: 'ERROR',
         timestamp: new Date().toISOString()
       })
     };

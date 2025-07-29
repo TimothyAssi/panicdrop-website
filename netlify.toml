@@ -4,14 +4,34 @@
 
 [functions]
   node_bundler = "esbuild"
+  included_files = ["netlify/functions/**"]
 
+# Explicit redirects matching function names exactly
+[[redirects]]
+  from = "/api/crypto-listings"
+  to = "/.netlify/functions/crypto-listings"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/perplexity-score"
+  to = "/.netlify/functions/perplexity-score"
+  status = 200
+  force = true
+
+# Fallback for any other API calls
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
 
-# Debug redirect for testing
+# Debug routes for testing
 [[redirects]]
-  from = "/debug-api/*"  
-  to = "/.netlify/functions/:splat"
+  from = "/.netlify/functions/crypto-listings"
+  to = "/.netlify/functions/crypto-listings"
+  status = 200
+
+[[redirects]]
+  from = "/.netlify/functions/perplexity-score"
+  to = "/.netlify/functions/perplexity-score"
   status = 200

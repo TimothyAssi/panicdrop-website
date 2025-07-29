@@ -2,7 +2,7 @@
 // Endpoint: /api/crypto-listings
 const fetch = require('node-fetch');
 
-console.log("CMC function deployed");
+console.log("CMC deployed: " + Date.now());
 
 const MOCK_DATA = [
   { name: "Cardano", symbol: "ADA", price: 0.40, market_cap: 14000000000, percent_change_24h: 2.1, cmc_rank: 8 },
@@ -13,16 +13,16 @@ const MOCK_DATA = [
 ];
 
 exports.handler = async (event, context) => {
-  console.log('🚀 CMC function called');
-  console.log('Method:', event.httpMethod);
-  console.log('Path:', event.path);
+  console.log('🚀 crypto-listings function executing');
+  console.log('Request path:', event.path);
+  console.log('Request method:', event.httpMethod);
+  console.log('Timestamp:', new Date().toISOString());
 
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Content-Type': 'application/json',
-    'Cache-Control': 'no-cache'
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Content-Type': 'application/json'
   };
 
   // Handle CORS preflight
@@ -38,7 +38,7 @@ exports.handler = async (event, context) => {
   try {
     const apiKey = process.env.CMC_API_KEY;
     
-    // If no API key, return mock data immediately
+    // Always return success response to test routing first
     if (!apiKey) {
       console.log('⚠️ No CMC_API_KEY, returning mock data');
       return {
@@ -48,6 +48,8 @@ exports.handler = async (event, context) => {
           data: MOCK_DATA,
           warning: 'Using mock data - CMC_API_KEY not configured',
           fallback: true,
+          functionName: 'crypto-listings',
+          deploymentCheck: 'SUCCESS',
           timestamp: new Date().toISOString()
         })
       };
@@ -100,6 +102,8 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({
           data: coins,
           source: 'coinmarketcap',
+          functionName: 'crypto-listings',
+          deploymentCheck: 'SUCCESS',
           timestamp: new Date().toISOString()
         })
       };
@@ -108,7 +112,6 @@ exports.handler = async (event, context) => {
       clearTimeout(timeoutId);
       console.log('⚠️ CMC API failed, using fallback:', apiError.message);
       
-      // Return mock data on API failure
       return {
         statusCode: 200,
         headers,
@@ -116,6 +119,8 @@ exports.handler = async (event, context) => {
           data: MOCK_DATA,
           warning: `CMC API failed: ${apiError.message}`,
           fallback: true,
+          functionName: 'crypto-listings',
+          deploymentCheck: 'SUCCESS',
           timestamp: new Date().toISOString()
         })
       };
@@ -131,6 +136,8 @@ exports.handler = async (event, context) => {
         data: MOCK_DATA,
         error: error.message,
         fallback: true,
+        functionName: 'crypto-listings',
+        deploymentCheck: 'ERROR',
         timestamp: new Date().toISOString()
       })
     };
