@@ -303,6 +303,276 @@
             accent-color: var(--accent-primary);
         }
 
+        .analysis-btn {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .analysis-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Analysis Modal */
+        .analysis-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-heavy);
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-title .token-symbol {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--accent-primary);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            background: var(--primary-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-btn.active {
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-primary);
+            background: rgba(0, 168, 255, 0.1);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            padding: 30px;
+            min-height: 400px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .analysis-section {
+            margin-bottom: 25px;
+        }
+
+        .analysis-section h3 {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .analysis-section h3 i {
+            color: var(--accent-primary);
+        }
+
+        .analysis-text {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        .analysis-text h4 {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin: 20px 0 10px 0;
+        }
+
+        .analysis-text ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .analysis-text li {
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .analysis-text strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .metric-card {
+            background: var(--primary-bg);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+        }
+
+        .metric-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .loading-analysis {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .loading-analysis i {
+            font-size: 2.5rem;
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-analysis .loading-text {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .loading-analysis .loading-subtext {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .error-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .error-state i {
+            font-size: 2.5rem;
+            color: var(--accent-danger);
+            margin-bottom: 15px;
+        }
+
+        .error-state .error-text {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .retry-btn {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .retry-btn:hover {
+            background: var(--accent-secondary);
+            transform: translateY(-2px);
+        }
+
         @media (max-width: 768px) {
             .tool-hero h1 {
                 font-size: 2rem;
@@ -315,6 +585,28 @@
             .control-header {
                 flex-direction: column;
                 align-items: stretch;
+            }
+
+            .modal-content {
+                margin: 10px;
+                max-height: 95vh;
+            }
+
+            .modal-header {
+                padding: 20px;
+            }
+
+            .tab-content {
+                padding: 20px;
+            }
+
+            .tab-btn {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+
+            .metric-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -760,6 +1052,10 @@ CRITICAL: NEVER use asterisks, bold formatting, or numbered lists. Provide clean
                             ${token.change24h >= 0 ? '+' : ''}${token.change24h.toFixed(2)}%
                         </div>
                     </div>
+                    <button class="analysis-btn" onclick="openDetailedAnalysis('${token.symbol}', '${token.name}')">
+                        <i class="fas fa-chart-line"></i>
+                        Detailed Analysis
+                    </button>
                 </div>
             `).join('');
         }
@@ -796,6 +1092,388 @@ CRITICAL: NEVER use asterisks, bold formatting, or numbered lists. Provide clean
             } else {
                 return price.toFixed(6);
             }
+        }
+
+        // Chain detection mapping
+        const CHAIN_MAPPING = {
+            'BTC': 'Bitcoin',
+            'ETH': 'Ethereum',
+            'BNB': 'BNB Smart Chain',
+            'ADA': 'Cardano',
+            'DOT': 'Polkadot',
+            'MATIC': 'Polygon',
+            'AVAX': 'Avalanche',
+            'SOL': 'Solana',
+            'ATOM': 'Cosmos',
+            'NEAR': 'NEAR Protocol',
+            'FTM': 'Fantom',
+            'ALGO': 'Algorand',
+            'BONK': 'Solana',
+            'DOGE': 'Dogecoin',
+            'SHIB': 'Ethereum',
+            'PEPE': 'Ethereum',
+            'LINK': 'Ethereum',
+            'UNI': 'Ethereum',
+            'AAVE': 'Ethereum',
+            'SUSHI': 'Ethereum',
+            'CRV': 'Ethereum',
+            'COMP': 'Ethereum',
+            'MKR': 'Ethereum',
+            'YFI': 'Ethereum',
+            'SNX': 'Ethereum',
+            'BAL': 'Ethereum',
+            '1INCH': 'Ethereum',
+            'CAKE': 'BNB Smart Chain',
+            'JOE': 'Avalanche',
+            'GMX': 'Arbitrum',
+            'MAGIC': 'Arbitrum',
+            'OP': 'Optimism',
+            'ARB': 'Arbitrum'
+        };
+
+        // Open detailed analysis modal
+        async function openDetailedAnalysis(symbol, name) {
+            console.log(`🔍 Opening detailed analysis for ${symbol}`);
+            
+            // Detect chain
+            const chain = CHAIN_MAPPING[symbol] || 'Ethereum';
+            
+            // Create modal
+            const modal = document.createElement('div');
+            modal.className = 'analysis-modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="modal-title">
+                            <i class="fas fa-microscope"></i>
+                            ${name} Analysis
+                            <span class="token-symbol">${symbol}</span>
+                        </div>
+                        <button class="close-btn" onclick="closeDetailedAnalysis()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="tab-nav">
+                        <button class="tab-btn active" onclick="switchTab('chain')">
+                            <i class="fas fa-network-wired"></i>
+                            Chain Analysis
+                        </button>
+                        <button class="tab-btn" onclick="switchTab('token')">
+                            <i class="fas fa-coins"></i>
+                            Token Analysis
+                        </button>
+                    </div>
+                    
+                    <div class="tab-content">
+                        <div id="chainTab" class="tab-panel active">
+                            <div class="loading-analysis">
+                                <i class="fas fa-spinner"></i>
+                                <div class="loading-text">Fetching ${chain} chain analysis...</div>
+                                <div class="loading-subtext">Analyzing protocols, TVL growth, and sector momentum</div>
+                            </div>
+                        </div>
+                        
+                        <div id="tokenTab" class="tab-panel">
+                            <div class="loading-analysis">
+                                <i class="fas fa-spinner"></i>
+                                <div class="loading-text">Fetching ${symbol} token analysis...</div>
+                                <div class="loading-subtext">Analyzing emissions, unlocks, and dilution risks</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            document.body.style.overflow = 'hidden';
+
+            // Add escape key listener
+            document.addEventListener('keydown', handleModalEscape);
+
+            // Start analyses
+            analyzeChain(chain);
+            analyzeToken(symbol, name);
+        }
+
+        // Close detailed analysis modal
+        function closeDetailedAnalysis() {
+            const modal = document.querySelector('.analysis-modal');
+            if (modal) {
+                modal.remove();
+                document.body.style.overflow = '';
+                document.removeEventListener('keydown', handleModalEscape);
+            }
+        }
+
+        // Handle escape key for modal
+        function handleModalEscape(e) {
+            if (e.key === 'Escape') {
+                closeDetailedAnalysis();
+            }
+        }
+
+        // Switch between tabs
+        function switchTab(tabType) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[onclick="switchTab('${tabType}')"]`).classList.add('active');
+            
+            // Update tab panels
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+            document.getElementById(`${tabType}Tab`).classList.add('active');
+        }
+
+        // Analyze chain protocols and TVL
+        async function analyzeChain(chain) {
+            try {
+                const currentFilters = getCurrentFilterContext();
+                
+                const prompt = `Analyze ${chain}'s top protocols by TVL growth over the last 30 days. Search the internet for DeFiLlama or equivalent data sources. Which sectors are gaining momentum? Highlight protocols with >20% growth.
+
+${currentFilters ? `Context: Focus on ${currentFilters} within ${chain} ecosystem.` : ''}
+
+Provide analysis covering:
+
+1. FASTEST-GROWING PROTOCOLS (>20% TVL growth):
+   • Protocol name and sector
+   • TVL growth percentage
+   • Key drivers of growth
+
+2. SECTOR TRENDS:
+   • Which sectors (RWA, AI, L2s, DeFi, Gaming) are gaining momentum
+   • Emerging narratives
+   • Capital flow patterns
+
+3. NARRATIVE ROTATION SIGNALS:
+   • Early signs of new narrative adoption
+   • Institutional interest indicators
+   • Developer activity trends
+
+Format as clean text with clear headings and bullet points. NEVER use asterisks (*) or markdown formatting.`;
+
+                const response = await fetch('/api/perplexityScore', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        token: prompt,
+                        maxTokens: 400
+                    })
+                });
+
+                const data = await response.json();
+                let analysisText = '';
+                
+                if (data.choices && data.choices[0]) {
+                    analysisText = data.choices[0].message.content;
+                } else if (data.explanation) {
+                    analysisText = data.explanation;
+                } else {
+                    throw new Error('No analysis received');
+                }
+
+                // Clean and format the analysis
+                const cleanedAnalysis = cleanAnalysisText(analysisText);
+                displayChainAnalysis(cleanedAnalysis, chain);
+                
+            } catch (error) {
+                console.error('❌ Chain analysis failed:', error);
+                displayChainError(chain);
+            }
+        }
+
+        // Analyze token metrics and unlocks
+        async function analyzeToken(symbol, name) {
+            try {
+                const prompt = `Analyze ${symbol} (${name})'s emissions, unlock schedule, inflation rate, and FDV vs circulating market cap. Note any risks.
+
+Provide detailed analysis covering:
+
+1. UNLOCK TIMELINE:
+   • Clear dates for upcoming unlocks
+   • Size of each unlock event
+   • Recipients (VCs, team, community)
+
+2. INFLATION & DILUTION:
+   • Annual inflation rate percentage
+   • Dilution risk explanation
+   • Impact on token price pressure
+
+3. TOKENOMICS STRUCTURE:
+   • FDV vs circulating market cap ratio
+   • Total supply vs circulating supply
+   • Emission schedule details
+
+4. RISK ASSESSMENT:
+   • Major unlock events to watch
+   • Dilution timing risks
+   • Comparison to similar tokens
+
+Format as clean text with clear headings and specific numbers. NEVER use asterisks (*) or markdown formatting.`;
+
+                const response = await fetch('/api/perplexityScore', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        token: prompt,
+                        maxTokens: 400
+                    })
+                });
+
+                const data = await response.json();
+                let analysisText = '';
+                
+                if (data.choices && data.choices[0]) {
+                    analysisText = data.choices[0].message.content;
+                } else if (data.explanation) {
+                    analysisText = data.explanation;
+                } else {
+                    throw new Error('No analysis received');
+                }
+
+                // Clean and format the analysis
+                const cleanedAnalysis = cleanAnalysisText(analysisText);
+                displayTokenAnalysis(cleanedAnalysis, symbol);
+                
+            } catch (error) {
+                console.error('❌ Token analysis failed:', error);
+                displayTokenError(symbol);
+            }
+        }
+
+        // Get current filter context for analysis
+        function getCurrentFilterContext() {
+            const category = document.getElementById('categoryFilter')?.value;
+            const marketCap = document.getElementById('marketCapFilter')?.value;
+            
+            let context = '';
+            if (category && category !== 'all') {
+                const categoryMap = {
+                    'defi': 'DeFi protocols',
+                    'layer1': 'Layer 1 blockchain networks',
+                    'layer2': 'Layer 2 scaling solutions',
+                    'ai': 'AI and Big Data projects',
+                    'gaming': 'Gaming and Metaverse projects'
+                };
+                context = categoryMap[category];
+            }
+            
+            return context;
+        }
+
+        // Clean analysis text from markdown artifacts
+        function cleanAnalysisText(text) {
+            if (!text) return 'No analysis available.';
+            
+            let cleanText = text.toString().trim();
+            
+            // Ultra-aggressive cleaning
+            for (let i = 0; i < 5; i++) {
+                cleanText = cleanText
+                    .replace(/\*\*(.*?)\*\*/g, '$1')
+                    .replace(/\*([^*\n]+)\*/g, '$1')
+                    .replace(/\*/g, '')
+                    .replace(/\[([^\]]*)\]/g, '')
+                    .replace(/#{1,6}\s*/g, '')
+                    .replace(/`([^`]*)`/g, '$1')
+                    .replace(/_{2,}/g, '')
+                    .replace(/_([^_\n]+)_/g, '$1')
+                    .replace(/\n{3,}/g, '\n\n');
+            }
+            
+            return cleanText || 'Analysis information available.';
+        }
+
+        // Display chain analysis results
+        function displayChainAnalysis(analysis, chain) {
+            const chainTab = document.getElementById('chainTab');
+            if (!chainTab) return;
+            
+            chainTab.innerHTML = `
+                <div class="analysis-section">
+                    <h3><i class="fas fa-network-wired"></i>${chain} Chain Analysis</h3>
+                    <div class="analysis-text">${formatAnalysisText(analysis)}</div>
+                </div>
+            `;
+        }
+
+        // Display token analysis results
+        function displayTokenAnalysis(analysis, symbol) {
+            const tokenTab = document.getElementById('tokenTab');
+            if (!tokenTab) return;
+            
+            tokenTab.innerHTML = `
+                <div class="analysis-section">
+                    <h3><i class="fas fa-coins"></i>${symbol} Token Analysis</h3>
+                    <div class="analysis-text">${formatAnalysisText(analysis)}</div>
+                </div>
+            `;
+        }
+
+        // Display chain analysis error
+        function displayChainError(chain) {
+            const chainTab = document.getElementById('chainTab');
+            if (!chainTab) return;
+            
+            chainTab.innerHTML = `
+                <div class="error-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div class="error-text">No recent data available for ${chain} chain</div>
+                    <div>Please try again later or check a different token.</div>
+                    <button class="retry-btn" onclick="analyzeChain('${chain}')">
+                        <i class="fas fa-redo"></i>
+                        Retry Analysis
+                    </button>
+                </div>
+            `;
+        }
+
+        // Display token analysis error
+        function displayTokenError(symbol) {
+            const tokenTab = document.getElementById('tokenTab');
+            if (!tokenTab) return;
+            
+            tokenTab.innerHTML = `
+                <div class="error-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div class="error-text">No recent data available for ${symbol} token</div>
+                    <div>Please try again later or check a different token.</div>
+                    <button class="retry-btn" onclick="analyzeToken('${symbol}', '${symbol}')">
+                        <i class="fas fa-redo"></i>
+                        Retry Analysis
+                    </button>
+                </div>
+            `;
+        }
+
+        // Format analysis text with proper structure
+        function formatAnalysisText(text) {
+            // Split into paragraphs and format
+            const paragraphs = text.split('\n\n').filter(p => p.trim());
+            
+            return paragraphs.map(paragraph => {
+                // Check if it looks like a heading
+                if (paragraph.length < 100 && paragraph.toUpperCase() === paragraph && paragraph.includes(':')) {
+                    return `<h4>${paragraph}</h4>`;
+                }
+                
+                // Check if it contains bullet points
+                if (paragraph.includes('•') || paragraph.includes('-')) {
+                    const lines = paragraph.split('\n').map(line => line.trim()).filter(line => line);
+                    const listItems = lines.filter(line => line.startsWith('•') || line.startsWith('-'));
+                    
+                    if (listItems.length > 0) {
+                        const heading = lines.find(line => !line.startsWith('•') && !line.startsWith('-'));
+                        let html = heading ? `<h4>${heading}</h4>` : '';
+                        html += '<ul>' + listItems.map(item => 
+                            `<li>${item.replace(/^[•-]\s*/, '')}</li>`
+                        ).join('') + '</ul>';
+                        return html;
+                    }
+                }
+                
+                return `<p>${paragraph}</p>`;
+            }).join('');
         }
     </script>
 </body>
