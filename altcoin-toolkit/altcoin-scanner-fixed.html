@@ -1685,19 +1685,26 @@ Format as clean text with clear headings and specific numbers. NEVER use asteris
             `;
 
             try {
-                // Use the same crypto data that's already loaded
-                if (window.cryptoData && window.cryptoData.length > 0) {
-                    console.log('🔍 Using cached crypto data for search');
-                    const data = { success: true, data: window.cryptoData };
-                    processSearchResults(data, searchQuery, searchResults);
-                    return;
+                // Search using CMC API directly
+                console.log('🔍 Fetching crypto data for search:', searchQuery);
+                const response = await fetch('/.netlify/functions/cryptoListings');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
-                // Search using CMC API
-                console.log('🔍 Fetching fresh crypto data for search');
-                const response = await fetch('/.netlify/functions/cryptoListings');
                 const data = await response.json();
+                console.log('🔍 API Response:', data);
                 
+                if (!data.success) {
+                    throw new Error(data.error || 'API request failed');
+                }
+                
+                if (!data.data || data.data.length === 0) {
+                    throw new Error('No cryptocurrency data received');
+                }
+                
+                console.log('🔍 Total coins received:', data.data.length);
                 processSearchResults(data, searchQuery, searchResults);
 
             } catch (error) {
@@ -1722,22 +1729,59 @@ Format as clean text with clear headings and specific numbers. NEVER use asteris
                 throw new Error('Failed to fetch cryptocurrency data');
             }
 
-            // Find matching coins
-            const matches = data.data.filter(coin => 
-                coin.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                coin.name.toLowerCase().includes(searchQuery.toLowerCase())
-            );
+            const query = searchQuery.toLowerCase().trim();
+            console.log('🔍 Searching for:', query);
+            
+            // Find matching coins with flexible matching
+            const matches = data.data.filter(coin => {
+                const symbol = coin.symbol.toLowerCase();
+                const name = coin.name.toLowerCase();
+                
+                // Exact matches first
+                if (symbol === query || name === query) return true;
+                
+                // Partial matches
+                if (symbol.includes(query) || name.includes(query)) return true;
+                
+                // Word boundary matches
+                const nameWords = name.split(/\s+/);
+                if (nameWords.some(word => word.startsWith(query))) return true;
+                
+                return false;
+            });
+
+            console.log('🔍 Found matches:', matches.length);
+            console.log('🔍 Sample matches:', matches.slice(0, 3).map(m => `${m.symbol} - ${m.name}`));
 
             if (matches.length === 0) {
                 searchResults.innerHTML = `
                     <div class="no-results">
                         <i class="fas fa-search"></i>
                         <div class="no-results-text">No coins found for "${searchQuery}"</div>
-                        <div class="no-results-hint">Try searching with a different name or ticker symbol</div>
+                        <div class="no-results-hint">Try searching with a different name or ticker symbol<br>Examples: Bitcoin, BTC, Ethereum, ETH, Solana, SOL</div>
                     </div>
                 `;
                 return;
             }
+
+            // Sort by relevance (exact matches first, then partial)
+            matches.sort((a, b) => {
+                const aSymbol = a.symbol.toLowerCase();
+                const bSymbol = b.symbol.toLowerCase();
+                const aName = a.name.toLowerCase();
+                const bName = b.name.toLowerCase();
+                
+                // Exact symbol matches first
+                if (aSymbol === query && bSymbol !== query) return -1;
+                if (bSymbol === query && aSymbol !== query) return 1;
+                
+                // Exact name matches second
+                if (aName === query && bName !== query) return -1;
+                if (bName === query && aName !== query) return 1;
+                
+                // Then by market cap rank
+                return (a.cmc_rank || 999999) - (b.cmc_rank || 999999);
+            });
 
             // Display results using the same format as other sections
             displaySearchResults(matches, searchResults);
