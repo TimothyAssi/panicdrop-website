@@ -903,6 +903,88 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* ===== NEW GLOBAL SECTION LAYOUT ===== */
+        
+        /* Section container */
+        .data-section {
+            margin: 50px auto;
+            text-align: center;
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        /* Title styling */
+        .data-section .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .data-section .section-title i {
+            color: var(--accent-primary);
+            font-size: 26px;
+        }
+
+        /* Card container */
+        .section-cards {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        /* Individual cards - override existing token card styles */
+        .section-cards .token-card,
+        .section-cards .scored-token-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            width: 280px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .section-cards .token-card:hover,
+        .section-cards .scored-token-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-large);
+        }
+
+        /* Responsive for mobile */
+        @media (max-width: 768px) {
+            .data-section {
+                width: 95%;
+                margin: 30px auto;
+            }
+            
+            .data-section .section-title {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            
+            .section-cards {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            
+            .section-cards .token-card,
+            .section-cards .scored-token-card {
+                width: 90%;
+                max-width: 320px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1001,79 +1083,57 @@
     <!-- Main Scanner Content -->
         
         <!-- Section 1: Trending Narratives -->
-        <section class="scanner-section narrative-section">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <i class="fas fa-fire"></i>
-                    Trending Narratives
-                </h2>
-                <p class="section-subtitle">
-                    Most trending crypto narratives based on AI-powered research via Perplexity
-                </p>
-            </div>
-            <div id="narrativeTokens" class="tokens-grid">
+        <div class="data-section">
+            <h2 class="section-title">
+                <i class="fas fa-fire"></i>
+                Trending Narratives
+            </h2>
+            <div id="narrativeTokens" class="section-cards">
                 <!-- Narrative-based tokens will be populated here -->
                 <div class="token-card loading-placeholder">
                     <div class="loading-spinner-small"></div>
                     <p>Loading trending narratives...</p>
                 </div>
             </div>
-        </section>
+        </div>
 
         <!-- Section 2: Meme Coins with Highest Social Engagement -->
-        <section class="scanner-section meme-section">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <i class="fas fa-rocket"></i>
-                    Top Meme Coins
-                </h2>
-                <p class="section-subtitle">
-                    Meme coins with the highest social engagement and community activity
-                </p>
-            </div>
-            <div id="memeTokens" class="tokens-grid">
+        <div class="data-section">
+            <h2 class="section-title">
+                <i class="fas fa-rocket"></i>
+                Top Meme Coins
+            </h2>
+            <div id="memeTokens" class="section-cards">
                 <!-- Meme coins will be populated here -->
                 <div class="token-card loading-placeholder">
                     <div class="loading-spinner-small"></div>
                     <p>Loading meme coin data...</p>
                 </div>
             </div>
-        </section>
+        </div>
 
         <!-- Section 3: Most Used Networks -->
-        <section class="scanner-section network-section">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <i class="fas fa-network-wired"></i>
-                    Most Used Networks
-                </h2>
-                <p class="section-subtitle">
-                    Networks where most users are putting their money, based on AI research
-                </p>
-            </div>
-            <div id="networkTokens" class="tokens-grid">
+        <div class="data-section">
+            <h2 class="section-title">
+                <i class="fas fa-network-wired"></i>
+                Most Used Networks
+            </h2>
+            <div id="networkTokens" class="section-cards">
                 <!-- Network-based tokens will be populated here -->
                 <div class="token-card loading-placeholder">
                     <div class="loading-spinner-small"></div>
                     <p>Loading network analysis...</p>
                 </div>
             </div>
-        </section>
+        </div>
 
         <!-- Section 4: Top 3 Filtered Altcoins -->
-        <section class="scanner-section top-three-section">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <i class="fas fa-trophy"></i>
-                    Top 3 Altcoins
-                </h2>
-                <p class="section-subtitle">
-                    Best performing altcoins based on your filtering criteria
-                </p>
-            </div>
-
-
-            <div id="topThreeTokens" class="tokens-grid top-three-grid">
+        <div class="data-section">
+            <h2 class="section-title">
+                <i class="fas fa-trophy"></i>
+                Top 3 Altcoins
+            </h2>
+            <div id="topThreeTokens" class="section-cards">
                 <!-- Top 3 filtered tokens will be populated here -->
                 <div class="token-card loading-placeholder">
                     <div class="loading-spinner-small"></div>
@@ -1761,14 +1821,7 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
                 return;
             }
             
-            const sectionInfo = SCORING_SYSTEM[sectionType];
-            let html = `
-                <div class="section-analysis-header">
-                    <h3>${sectionInfo.name}</h3>
-                    <span class="ai-badge">AI + Live Data</span>
-                </div>
-                <div class="tokens-grid-scored">
-            `;
+            let html = ``;
             
             // Get live data for each recommended token
             for (const token of results.tokens) {
@@ -1776,9 +1829,7 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
                 html += createScoredTokenCard(token, liveData, sectionType);
             }
             
-            html += `
-                </div>
-            `;
+            // No closing div needed since we're not wrapping in tokens-grid-scored anymore
             
             container.innerHTML = html;
         }
