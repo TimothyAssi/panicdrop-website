@@ -1758,8 +1758,21 @@ Replace with actual top altcoins and comprehensive scores.`
             const changeClass = change24h >= 0 ? 'positive' : 'negative';
             const changeIcon = change24h >= 0 ? '📈' : '📉';
             
+            // Create unique ID for this card
+            const cardId = `token-card-${token.symbol}-${Date.now()}`;
+            
+            // Store data globally for easy access
+            window.tokenData = window.tokenData || {};
+            window.tokenData[cardId] = {
+                symbol: token.symbol,
+                sectionType: sectionType,
+                score: token.score,
+                description: token.description,
+                liveData: liveData
+            };
+            
             return `
-                <div class="scored-token-card" onclick="showDetailedAnalysis('${token.symbol}', '${sectionType}', ${token.score}, '${token.description.replace(/'/g, "\\'")}', ${JSON.stringify(liveData).replace(/'/g, "\\\'")})">
+                <div class="scored-token-card" id="${cardId}" data-token="${token.symbol}" onclick="handleTokenClick('${cardId}')">
                     <div class="token-header">
                         <div class="token-info">
                             <h4>${liveData.name}</h4>
@@ -1817,92 +1830,156 @@ Replace with actual top altcoins and comprehensive scores.`
             `;
         }
         
+        // Handle token card click
+        function handleTokenClick(cardId) {
+            console.log('Token clicked:', cardId);
+            
+            if (!window.tokenData || !window.tokenData[cardId]) {
+                console.error('Token data not found for:', cardId);
+                alert('Error: Token data not available. Please refresh the page.');
+                return;
+            }
+            
+            const data = window.tokenData[cardId];
+            console.log('Token data:', data);
+            
+            showDetailedAnalysis(
+                data.symbol,
+                data.sectionType,
+                data.score,
+                data.description,
+                data.liveData
+            );
+        }
+        
         // Show detailed analysis modal
         async function showDetailedAnalysis(symbol, sectionType, score, shortDescription, liveData) {
-            // Get additional detailed analysis from AI
-            const detailedAnalysis = await getDetailedTokenAnalysis(symbol, sectionType);
-            const sectionInfo = SCORING_SYSTEM[sectionType];
+            console.log('Showing detailed analysis for:', symbol);
             
-            const modal = document.createElement('div');
-            modal.className = 'detailed-analysis-modal';
-            modal.innerHTML = `
+            // Show loading modal first
+            const loadingModal = document.createElement('div');
+            loadingModal.className = 'detailed-analysis-modal';
+            loadingModal.innerHTML = `
                 <div class="modal-content-detailed">
                     <div class="modal-header">
-                        <div class="token-modal-header">
-                            <h2>${liveData.name} (${symbol})</h2>
-                            <div class="modal-score-badge">
-                                <div class="score-large">${score}</div>
-                                <div class="score-label">/100</div>
-                            </div>
-                        </div>
+                        <h2>Loading Analysis...</h2>
                         <button class="close-btn" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
                     </div>
                     <div class="modal-body-detailed">
-                        <div class="analysis-section">
-                            <h3>🧠 AI Scoring Breakdown</h3>
-                            <div class="scoring-category-info">
-                                <h4>${sectionInfo.name}</h4>
-                                <p>${sectionInfo.description}</p>
-                            </div>
-                            <div class="criteria-breakdown">
-                                <h5>Scoring Criteria Used:</h5>
-                                <ul>
-                                    ${sectionInfo.criteria.map(criterion => `<li>${criterion}</li>`).join('')}
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="analysis-section">
-                            <h3>📊 Live Market Data</h3>
-                            <div class="detailed-metrics">
-                                <div class="metric-grid">
-                                    <div class="metric-detailed">
-                                        <span class="metric-label">Current Price</span>
-                                        <span class="metric-value">$${formatPrice(liveData.quote.USD.price)}</span>
-                                    </div>
-                                    <div class="metric-detailed">
-                                        <span class="metric-label">Market Cap</span>
-                                        <span class="metric-value">$${formatLargeNumber(liveData.quote.USD.market_cap)}</span>
-                                    </div>
-                                    <div class="metric-detailed">
-                                        <span class="metric-label">24h Volume</span>
-                                        <span class="metric-value">$${formatLargeNumber(liveData.quote.USD.volume_24h)}</span>
-                                    </div>
-                                    <div class="metric-detailed">
-                                        <span class="metric-label">Market Rank</span>
-                                        <span class="metric-value">#${liveData.cmc_rank}</span>
-                                    </div>
-                                    <div class="metric-detailed">
-                                        <span class="metric-label">Circulating Supply</span>
-                                        <span class="metric-value">${formatLargeNumber(liveData.circulating_supply)} ${symbol}</span>
-                                    </div>
-                                    <div class="metric-detailed">
-                                        <span class="metric-label">24h Change</span>
-                                        <span class="metric-value ${liveData.quote.USD.percent_change_24h >= 0 ? 'positive' : 'negative'}">
-                                            ${liveData.quote.USD.percent_change_24h >= 0 ? '📈' : '📉'} ${liveData.quote.USD.percent_change_24h.toFixed(2)}%
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="analysis-section">
-                            <h3>🔍 Detailed AI Analysis</h3>
-                            <div class="detailed-reasoning">
-                                <div class="analysis-text">
-                                    ${detailedAnalysis || shortDescription}
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="disclaimer-section">
-                            <h4>⚠️ Investment Disclaimer</h4>
-                            <p>This analysis is for educational purposes only and should not be considered financial advice. Always conduct your own research before making investment decisions. Cryptocurrency investments carry significant risk.</p>
-                        </div>
+                        <div class="loading-spinner-small"></div>
+                        <p>Getting detailed analysis for ${symbol}...</p>
                     </div>
                 </div>
             `;
-            document.body.appendChild(modal);
+            document.body.appendChild(loadingModal);
+            
+            try {
+                // Get additional detailed analysis from AI
+                const detailedAnalysis = await getDetailedTokenAnalysis(symbol, sectionType);
+                const sectionInfo = SCORING_SYSTEM[sectionType];
+                
+                // Create the detailed modal
+                const modal = document.createElement('div');
+                modal.className = 'detailed-analysis-modal';
+                
+                // Build the modal content safely
+                const modalContent = document.createElement('div');
+                modalContent.className = 'modal-content-detailed';
+                
+                // Header
+                const header = document.createElement('div');
+                header.className = 'modal-header';
+                header.innerHTML = `
+                    <div class="token-modal-header">
+                        <h2>${liveData.name} (${symbol})</h2>
+                        <div class="modal-score-badge">
+                            <div class="score-large">${score}</div>
+                            <div class="score-label">/100</div>
+                        </div>
+                    </div>
+                    <button class="close-btn" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
+                `;
+                
+                // Body
+                const body = document.createElement('div');
+                body.className = 'modal-body-detailed';
+                body.innerHTML = `
+                    <div class="analysis-section">
+                        <h3>🧠 AI Scoring Breakdown</h3>
+                        <div class="scoring-category-info">
+                            <h4>${sectionInfo.name}</h4>
+                            <p>${sectionInfo.description}</p>
+                        </div>
+                        <div class="criteria-breakdown">
+                            <h5>Scoring Criteria Used:</h5>
+                            <ul>
+                                ${sectionInfo.criteria.map(criterion => `<li>${criterion}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-section">
+                        <h3>📊 Live Market Data</h3>
+                        <div class="detailed-metrics">
+                            <div class="metric-grid">
+                                <div class="metric-detailed">
+                                    <span class="metric-label">Current Price</span>
+                                    <span class="metric-value">$${formatPrice(liveData.quote.USD.price)}</span>
+                                </div>
+                                <div class="metric-detailed">
+                                    <span class="metric-label">Market Cap</span>
+                                    <span class="metric-value">$${formatLargeNumber(liveData.quote.USD.market_cap)}</span>
+                                </div>
+                                <div class="metric-detailed">
+                                    <span class="metric-label">24h Volume</span>
+                                    <span class="metric-value">$${formatLargeNumber(liveData.quote.USD.volume_24h)}</span>
+                                </div>
+                                <div class="metric-detailed">
+                                    <span class="metric-label">Market Rank</span>
+                                    <span class="metric-value">#${liveData.cmc_rank}</span>
+                                </div>
+                                <div class="metric-detailed">
+                                    <span class="metric-label">Circulating Supply</span>
+                                    <span class="metric-value">${formatLargeNumber(liveData.circulating_supply)} ${symbol}</span>
+                                </div>
+                                <div class="metric-detailed">
+                                    <span class="metric-label">24h Change</span>
+                                    <span class="metric-value ${liveData.quote.USD.percent_change_24h >= 0 ? 'positive' : 'negative'}">
+                                        ${liveData.quote.USD.percent_change_24h >= 0 ? '📈' : '📉'} ${liveData.quote.USD.percent_change_24h.toFixed(2)}%
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-section">
+                        <h3>🔍 Detailed AI Analysis</h3>
+                        <div class="detailed-reasoning">
+                            <div class="analysis-text">
+                                ${detailedAnalysis || shortDescription}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="disclaimer-section">
+                        <h4>⚠️ Investment Disclaimer</h4>
+                        <p>This analysis is for educational purposes only and should not be considered financial advice. Always conduct your own research before making investment decisions. Cryptocurrency investments carry significant risk.</p>
+                    </div>
+                `;
+                
+                modalContent.appendChild(header);
+                modalContent.appendChild(body);
+                modal.appendChild(modalContent);
+                
+                // Remove loading modal and show detailed modal
+                loadingModal.remove();
+                document.body.appendChild(modal);
+                
+            } catch (error) {
+                console.error('Error showing detailed analysis:', error);
+                loadingModal.remove();
+                alert('Error loading detailed analysis. Please try again.');
+            }
         }
         
         // Get detailed token analysis
