@@ -898,6 +898,10 @@
             .tokens-grid {
                 grid-template-columns: 1fr;
             }
+
+            .tokens-grid-scored {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -2579,7 +2583,7 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
         /* Scored Token Cards */
         .tokens-grid-scored {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin: 20px 0;
         }
