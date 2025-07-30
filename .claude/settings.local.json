@@ -28,7 +28,13 @@
       "Bash(cat:*)",
       "Bash(git ls-tree:*)",
       "Bash(node:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "WebFetch(domain:panicdrop.netlify.app)",
+      "WebFetch(domain:panicdrop-website.netlify.app)",
+      "WebFetch(domain:timothyassi-panicdrop-website.netlify.app)",
+      "WebFetch(domain:panicdrop-com.netlify.app)",
+      "WebFetch(domain:bright-kelpie-f1234.netlify.app)",
+      "WebFetch(domain:docs.perplexity.ai)"
     ],
     "deny": []
   }
