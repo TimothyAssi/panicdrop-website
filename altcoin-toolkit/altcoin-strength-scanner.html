@@ -1159,6 +1159,221 @@
                 justify-content: center;
             }
         }
+
+        /* ===== DETAILED ANALYSIS MODAL IMPROVEMENTS ===== */
+        
+        .detailed-analysis-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .modal-content-detailed {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-large);
+        }
+        
+        .modal-body-detailed {
+            padding: 0;
+        }
+        
+        /* Expandable Sections */
+        .expandable-section {
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .expandable-section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            cursor: pointer;
+            background: var(--secondary-bg);
+            transition: background-color 0.3s ease;
+        }
+        
+        .section-header:hover {
+            background: var(--primary-bg);
+        }
+        
+        .section-header h3 {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .expand-icon {
+            color: var(--accent-primary);
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+        
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            background: var(--card-bg);
+        }
+        
+        .section-content.expanded {
+            max-height: 1000px;
+            padding: 20px;
+        }
+        
+        /* Analysis Text Container */
+        .analysis-text-container {
+            background: var(--primary-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            border-left: 4px solid var(--accent-primary);
+        }
+        
+        .analysis-text-full {
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-size: 1rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .analysis-text-full p {
+            margin-bottom: 15px;
+        }
+        
+        .analysis-text-full p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .analysis-text-full strong {
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+        
+        .analysis-text-full em {
+            color: var(--accent-secondary);
+            font-style: italic;
+        }
+        
+        /* Metric Grid Improvements */
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .metric-detailed {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: var(--primary-bg);
+            border-radius: var(--border-radius);
+            border-left: 3px solid var(--accent-primary);
+        }
+        
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .metric-value {
+            color: var(--text-primary);
+            font-weight: 600;
+            text-align: right;
+        }
+        
+        .metric-value.positive {
+            color: var(--accent-success);
+        }
+        
+        .metric-value.negative {
+            color: var(--accent-danger);
+        }
+        
+        /* Scoring Category Info */
+        .scoring-category-info h4 {
+            color: var(--accent-primary);
+            margin: 0 0 10px 0;
+            font-size: 1.1rem;
+        }
+        
+        .scoring-category-info p {
+            color: var(--text-secondary);
+            margin: 0 0 20px 0;
+            line-height: 1.6;
+        }
+        
+        .criteria-breakdown h5 {
+            color: var(--text-primary);
+            margin: 0 0 10px 0;
+            font-size: 1rem;
+        }
+        
+        .criteria-breakdown ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .criteria-breakdown li {
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            line-height: 1.5;
+        }
+        
+        /* Mobile Responsive for Detailed Modal */
+        @media (max-width: 768px) {
+            .detailed-analysis-modal {
+                padding: 10px;
+            }
+            
+            .modal-content-detailed {
+                max-width: 100%;
+                max-height: 95vh;
+            }
+            
+            .section-header {
+                padding: 15px;
+            }
+            
+            .section-header h3 {
+                font-size: 1.1rem;
+            }
+            
+            .section-content.expanded {
+                padding: 15px;
+            }
+            
+            .metric-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .analysis-text-container {
+                padding: 15px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2253,11 +2468,12 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
             // Show loading modal first
             const loadingModal = document.createElement('div');
             loadingModal.className = 'detailed-analysis-modal';
+            loadingModal.id = 'loadingAnalysisModal';
             loadingModal.innerHTML = `
                 <div class="modal-content-detailed">
                     <div class="modal-header">
                         <h2>Loading Analysis...</h2>
-                        <button class="close-btn" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
+                        <button class="close-btn" onclick="closeDetailedAnalysisModal()">×</button>
                     </div>
                     <div class="modal-body-detailed">
                         <div class="loading-spinner-small"></div>
@@ -2267,6 +2483,13 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
             `;
             document.body.appendChild(loadingModal);
             
+            // Add backdrop click to close loading modal
+            loadingModal.addEventListener('click', function(e) {
+                if (e.target === loadingModal) {
+                    closeDetailedAnalysisModal();
+                }
+            });
+            
             try {
                 // Get additional detailed analysis from AI
                 const detailedAnalysis = await getDetailedTokenAnalysis(symbol, sectionType);
@@ -2275,6 +2498,7 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
                 // Create the detailed modal
                 const modal = document.createElement('div');
                 modal.className = 'detailed-analysis-modal';
+                modal.id = 'detailedAnalysisModal';
                 
                 // Build the modal content safely
                 const modalContent = document.createElement('div');
@@ -2291,30 +2515,38 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
                             <div class="score-label">/100</div>
                         </div>
                     </div>
-                    <button class="close-btn" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
+                    <button class="close-btn" onclick="closeDetailedAnalysisModal()">×</button>
                 `;
                 
-                // Body
+                // Body with expandable sections
                 const body = document.createElement('div');
                 body.className = 'modal-body-detailed';
                 body.innerHTML = `
-                    <div class="analysis-section">
-                        <h3>🧠 AI Scoring Breakdown</h3>
-                        <div class="scoring-category-info">
-                            <h4>${sectionInfo.name}</h4>
-                            <p>${sectionInfo.description}</p>
+                    <div class="expandable-section">
+                        <div class="section-header" onclick="toggleModalSection('scoringBreakdown')">
+                            <h3>🧠 AI Scoring Breakdown</h3>
+                            <span class="expand-icon" id="scoringBreakdown-icon">▼</span>
                         </div>
-                        <div class="criteria-breakdown">
-                            <h5>Scoring Criteria Used:</h5>
-                            <ul>
-                                ${sectionInfo.criteria.map(criterion => `<li>${criterion}</li>`).join('')}
-                            </ul>
+                        <div class="section-content" id="scoringBreakdown-content">
+                            <div class="scoring-category-info">
+                                <h4>${sectionInfo.name}</h4>
+                                <p>${sectionInfo.description}</p>
+                            </div>
+                            <div class="criteria-breakdown">
+                                <h5>Scoring Criteria Used:</h5>
+                                <ul>
+                                    ${sectionInfo.criteria.map(criterion => `<li>${criterion}</li>`).join('')}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="analysis-section">
-                        <h3>📊 Live Market Data</h3>
-                        <div class="detailed-metrics">
+                    <div class="expandable-section">
+                        <div class="section-header" onclick="toggleModalSection('marketData')">
+                            <h3>📊 Live Market Data</h3>
+                            <span class="expand-icon" id="marketData-icon">▼</span>
+                        </div>
+                        <div class="section-content" id="marketData-content">
                             <div class="metric-grid">
                                 <div class="metric-detailed">
                                     <span class="metric-label">Current Price</span>
@@ -2346,18 +2578,28 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
                         </div>
                     </div>
                     
-                    <div class="analysis-section">
-                        <h3>🔍 Detailed AI Analysis</h3>
-                        <div class="detailed-reasoning">
-                            <div class="analysis-text">
-                                ${detailedAnalysis || shortDescription}
+                    <div class="expandable-section">
+                        <div class="section-header" onclick="toggleModalSection('aiAnalysis')">
+                            <h3>🔍 Detailed AI Analysis</h3>
+                            <span class="expand-icon" id="aiAnalysis-icon">▼</span>
+                        </div>
+                        <div class="section-content expanded" id="aiAnalysis-content">
+                            <div class="analysis-text-container">
+                                <div class="analysis-text-full">
+                                    ${formatAnalysisTextForModal(detailedAnalysis || shortDescription)}
+                                </div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="disclaimer-section">
-                        <h4>⚠️ Investment Disclaimer</h4>
-                        <p>This analysis is for educational purposes only and should not be considered financial advice. Always conduct your own research before making investment decisions. Cryptocurrency investments carry significant risk.</p>
+                    <div class="expandable-section">
+                        <div class="section-header" onclick="toggleModalSection('disclaimer')">
+                            <h3>⚠️ Investment Disclaimer</h3>
+                            <span class="expand-icon" id="disclaimer-icon">▼</span>
+                        </div>
+                        <div class="section-content" id="disclaimer-content">
+                            <p>This analysis is for educational purposes only and should not be considered financial advice. Always conduct your own research before making investment decisions. Cryptocurrency investments carry significant risk.</p>
+                        </div>
                     </div>
                 `;
                 
@@ -2368,6 +2610,16 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
                 // Remove loading modal and show detailed modal
                 loadingModal.remove();
                 document.body.appendChild(modal);
+                
+                // Add backdrop click to close modal
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeDetailedAnalysisModal();
+                    }
+                });
+                
+                // Add escape key handler
+                document.addEventListener('keydown', handleDetailedModalEscape);
                 
             } catch (error) {
                 console.error('Error showing detailed analysis:', error);
@@ -3214,6 +3466,62 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
                 tokens: filteredFallbacks.slice(0, 3),
                 fullAnalysis: `Fallback analysis for ${sectionType} category with applied filters.`
             };
+        }
+
+        // Close detailed analysis modal function
+        function closeDetailedAnalysisModal() {
+            const modal = document.getElementById('detailedAnalysisModal');
+            const loadingModal = document.getElementById('loadingAnalysisModal');
+            
+            if (modal) {
+                modal.remove();
+                document.removeEventListener('keydown', handleDetailedModalEscape);
+            }
+            if (loadingModal) {
+                loadingModal.remove();
+            }
+        }
+        
+        // Handle escape key for detailed modal
+        function handleDetailedModalEscape(e) {
+            if (e.key === 'Escape') {
+                closeDetailedAnalysisModal();
+            }
+        }
+        
+        // Toggle modal section function
+        function toggleModalSection(sectionId) {
+            const content = document.getElementById(sectionId + '-content');
+            const icon = document.getElementById(sectionId + '-icon');
+            
+            if (content && icon) {
+                if (content.classList.contains('expanded')) {
+                    content.classList.remove('expanded');
+                    icon.textContent = '▼';
+                } else {
+                    content.classList.add('expanded');
+                    icon.textContent = '▲';
+                }
+            }
+        }
+        
+        // Format analysis text for modal display
+        function formatAnalysisTextForModal(text) {
+            if (!text) return 'No detailed analysis available.';
+            
+            // Clean up the text and format it properly
+            let formattedText = text
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            // Wrap in paragraph tags if not already
+            if (!formattedText.startsWith('<p>')) {
+                formattedText = '<p>' + formattedText + '</p>';
+            }
+            
+            return formattedText;
         }
 
         console.log('🚀 Comprehensive Altcoin Strength Scoring System Loaded');
