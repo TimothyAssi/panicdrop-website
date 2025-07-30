@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMC API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: #fff;
+            padding: 20px;
+        }
+        .test-result {
+            background: #111;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #00A8FF;
+        }
+        .success { border-left-color: #00D084; }
+        .error { border-left-color: #FF4444; }
+    </style>
+</head>
+<body>
+    <h1>🔍 CMC API Test</h1>
+    <button onclick="testCMCAPI()">Test CoinMarketCap API</button>
+    <div id="results"></div>
+
+    <script>
+        async function testCMCAPI() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="test-result">🔄 Testing CMC API...</div>';
+            
+            try {
+                console.log('📡 Calling /api/cryptoListings...');
+                const response = await fetch('/api/cryptoListings');
+                
+                console.log('📊 Response status:', response.status, response.statusText);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const data = await response.json();
+                console.log('✅ Data received:', data);
+                
+                if (data.error) {
+                    throw new Error(`API Error: ${data.error}`);
+                }
+                
+                if (data.data && data.data.length > 0) {
+                    resultsDiv.innerHTML = `
+                        <div class="test-result success">
+                            ✅ SUCCESS: CMC API working!
+                            <br>• Received ${data.data.length} cryptocurrencies
+                            <br>• Top coin: ${data.data[0].name} (${data.data[0].symbol})
+                            <br>• Price: $${data.data[0].quote.USD.price.toFixed(2)}
+                        </div>
+                    `;
+                } else {
+                    throw new Error('No cryptocurrency data received');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error:', error);
+                resultsDiv.innerHTML = `
+                    <div class="test-result error">
+                        ❌ ERROR: ${error.message}
+                        <br>Check console for more details
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
