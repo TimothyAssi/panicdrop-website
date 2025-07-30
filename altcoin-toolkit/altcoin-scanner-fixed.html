@@ -320,7 +320,51 @@
     </style>
 </head>
 <body>
-    <!-- Include navigation -->
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="../index.html">
+                    <img src="../images/logo.png" alt="Panic Drop Logo" onerror="this.style.display='none'">
+                    <span class="logo-text">Panic Drop</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../course.html" class="nav-link">Course</a>
+                </li>
+                <li class="nav-item">
+                    <a href="../blog.html" class="nav-link">Blog</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <div class="nav-link dropdown-toggle">
+                        <a href="#" class="main-link">Tools</a>
+                        <span class="toggle-arrow"></span>
+                    </div>
+                    <div class="dropdown-content">
+                        <a href="position-calculator.html">Position Calculator</a>
+                        <a href="trade-journal.html">Trade Journal</a>
+                        <a href="screenshot-analyzer.html">Screenshot Analyzer</a>
+                        <a href="altcoin-strength-scanner.html">Altcoin Strength Scanner</a>
+                        <a href="altcoin-scanner-fixed.html" class="active">Altcoin Scanner (Fixed)</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="../contact.html" class="nav-link">Contact</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Include navigation script -->
     <script src="../js/script.js"></script>
     
     <!-- API Status Indicator -->
