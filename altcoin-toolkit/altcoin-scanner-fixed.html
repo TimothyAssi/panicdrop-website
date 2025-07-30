@@ -609,6 +609,135 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Search Section Styles */
+        .search-panel {
+            margin-top: 20px;
+        }
+
+        .search-input-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-btn {
+            padding: 12px 20px;
+            white-space: nowrap;
+            min-width: 120px;
+        }
+
+        .search-hint {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .search-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .search-loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Search results styles */
+        .no-results {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--accent-primary);
+        }
+
+        .no-results-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .no-results-hint {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .clickable-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .clickable-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-heavy);
+            border-color: var(--accent-primary);
+        }
+
+        .click-hint {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 10px;
+            opacity: 0.7;
+        }
+
+        .clickable-card:hover .click-hint {
+            color: var(--accent-primary);
+            opacity: 1;
+        }
+
+        /* Responsive search styles */
+        @media (max-width: 768px) {
+            .search-input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-btn {
+                min-width: auto;
+            }
+        }
     </style>
 </head>
 <body>
@@ -718,6 +847,40 @@
                         </label>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- Coin Search Section -->
+        <section class="control-panel">
+            <div class="control-header">
+                <div class="control-title">
+                    <i class="fas fa-search"></i>
+                    Search Specific Coin
+                </div>
+            </div>
+            
+            <div class="search-panel">
+                <div class="search-input-group">
+                    <input type="text" id="coinSearchInput" class="search-input" placeholder="Enter coin name or ticker (e.g., Bitcoin, BTC, Solana, SOL)">
+                    <button class="btn btn-primary search-btn" onclick="searchSpecificCoin()">
+                        <i class="fas fa-search"></i>
+                        Search
+                    </button>
+                </div>
+                <div class="search-hint">
+                    Search any cryptocurrency by name or ticker symbol. Get live data and detailed analysis.
+                </div>
+            </div>
+        </section>
+
+        <!-- Search Results Section -->
+        <section class="results-section" id="searchResultsSection" style="display: none;">
+            <div class="section-title">
+                <i class="fas fa-search"></i>
+                Search Results
+            </div>
+            <div id="searchResults" class="token-grid">
+                <!-- Search results will appear here -->
             </div>
         </section>
 
@@ -1470,6 +1633,155 @@ Format as clean text with clear headings and specific numbers. NEVER use asteris
                 return `<p>${paragraph}</p>`;
             }).join('');
         }
+
+        // Search specific coin functionality
+        async function searchSpecificCoin() {
+            const searchInput = document.getElementById('coinSearchInput');
+            const searchQuery = searchInput.value.trim();
+            
+            if (!searchQuery) {
+                alert('Please enter a coin name or ticker symbol');
+                return;
+            }
+
+            const searchResults = document.getElementById('searchResults');
+            const searchSection = document.getElementById('searchResultsSection');
+            
+            // Show loading state
+            searchSection.style.display = 'block';
+            searchResults.innerHTML = `
+                <div class="search-loading">
+                    <i class="fas fa-spinner"></i>
+                    <div>Searching for "${searchQuery}"...</div>
+                </div>
+            `;
+
+            try {
+                // Search using CMC API
+                const response = await fetch('/.netlify/functions/cryptoListings');
+                const data = await response.json();
+                
+                if (!data.success || !data.data) {
+                    throw new Error('Failed to fetch cryptocurrency data');
+                }
+
+                // Find matching coins
+                const matches = data.data.filter(coin => 
+                    coin.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    coin.name.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+
+                if (matches.length === 0) {
+                    searchResults.innerHTML = `
+                        <div class="no-results">
+                            <i class="fas fa-search"></i>
+                            <div class="no-results-text">No coins found for "${searchQuery}"</div>
+                            <div class="no-results-hint">Try searching with a different name or ticker symbol</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Display results using the same format as other sections
+                displaySearchResults(matches);
+
+            } catch (error) {
+                console.error('Search error:', error);
+                searchResults.innerHTML = `
+                    <div class="error-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div class="error-text">Search failed</div>
+                        <div>Please try again or check your connection</div>
+                        <button class="retry-btn" onclick="searchSpecificCoin()">
+                            <i class="fas fa-redo"></i>
+                            Retry Search
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // Display search results in token card format
+        function displaySearchResults(coins) {
+            const searchResults = document.getElementById('searchResults');
+            
+            if (coins.length === 0) {
+                searchResults.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <div class="no-results-text">No results found</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const tokensHtml = coins.map(token => {
+                const price = token.quote?.USD?.price || 0;
+                const change24h = token.quote?.USD?.percent_change_24h || 0;
+                const volume = token.quote?.USD?.volume_24h || 0;
+                const marketCap = token.quote?.USD?.market_cap || 0;
+
+                const changeClass = change24h >= 0 ? 'positive' : 'negative';
+                const changeSymbol = change24h >= 0 ? '+' : '';
+
+                return `
+                    <div class="token-card clickable-card" onclick="openDetailedAnalysis('${token.symbol}', '${token.name.replace(/'/g, "\\'")}')">
+                        <div class="token-header">
+                            <div class="token-info">
+                                <div class="token-symbol">${token.symbol}</div>
+                                <div class="token-name">${token.name}</div>
+                            </div>
+                            <div class="token-rank">#${token.cmc_rank || 'N/A'}</div>
+                        </div>
+                        
+                        <div class="token-metrics">
+                            <div class="metric">
+                                <div class="metric-label">Price</div>
+                                <div class="metric-value">$${price.toLocaleString('en-US', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: price > 1 ? 2 : 6
+                                })}</div>
+                            </div>
+                            
+                            <div class="metric">
+                                <div class="metric-label">24h Change</div>
+                                <div class="metric-value ${changeClass}">
+                                    ${changeSymbol}${change24h.toFixed(2)}%
+                                </div>
+                            </div>
+                            
+                            <div class="metric">
+                                <div class="metric-label">Volume (24h)</div>
+                                <div class="metric-value">$${formatNumber(volume)}</div>
+                            </div>
+                            
+                            <div class="metric">
+                                <div class="metric-label">Market Cap</div>
+                                <div class="metric-value">$${formatNumber(marketCap)}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="token-footer">
+                            <div class="click-hint">🔍 Click for detailed analysis</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            searchResults.innerHTML = tokensHtml;
+        }
+
+        // Add Enter key support for search
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('coinSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        searchSpecificCoin();
+                    }
+                });
+            }
+        });
     </script>
 </body>
 </html>
