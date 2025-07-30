@@ -2,17 +2,20 @@ const fetch = require('node-fetch');
 
 exports.handler = async (event, context) => {
   try {
-    const { token } = JSON.parse(event.body || '{}');
+    const { token, maxTokens } = JSON.parse(event.body || '{}');
 
     const apiKey = process.env.PPLX_API_KEY;
     if (!apiKey) throw new Error('PPLX_API_KEY ontbreekt');
 
+    // Use the token as the full prompt, or create a default prompt
+    const promptContent = token || 'Provide cryptocurrency analysis';
+    
     const body = {
       model: 'sonar',
       messages: [
-        { role: 'user', content: `Rate ${token} cryptocurrency 0-100 with short analysis` }
+        { role: 'user', content: promptContent }
       ],
-      max_tokens: 100,
+      max_tokens: maxTokens || 100,
       temperature: 0.3
     };
 

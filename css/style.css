@@ -6,28 +6,28 @@
 }
 
 :root {
-    /* Panic Drop Color Scheme - Professional & Trustworthy */
-    --primary-bg: #0F0F23;
-    --secondary-bg: #1A1A2E;
-    --card-bg: #16213E;
-    --accent-primary: #D4AF37;
-    --accent-secondary: #B8941F;
+    /* Intellectia.ai Inspired Color Scheme - Professional Fintech Dark Mode */
+    --primary-bg: #000000;
+    --secondary-bg: #0A0A0A;
+    --card-bg: #111111;
+    --accent-primary: #00A8FF;
+    --accent-secondary: #6A1B9A;
     --accent-success: #00D4AA;
-    --accent-danger: #FF6B6B;
+    --accent-danger: #FF4444;
     --text-primary: #FFFFFF;
-    --text-secondary: #B8C6DB;
-    --text-muted: #8292B0;
-    --border-color: #2D3E5F;
-    --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
-    --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.15);
-    --shadow-heavy: 0 8px 40px rgba(0, 0, 0, 0.25);
+    --text-secondary: #A0A0A0;
+    --text-muted: #666666;
+    --border-color: #1E1E1E;
+    --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.3);
+    --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --shadow-heavy: 0 8px 40px rgba(0, 0, 0, 0.6);
     --border-radius: 8px;
     --border-radius-lg: 12px;
     --border-radius-xl: 16px;
 }
 
 body {
-    font-family: 'Inter', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Inter', 'Roboto', 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     line-height: 1.6;
     color: var(--text-primary);
     background: var(--primary-bg);
@@ -66,7 +66,7 @@ p {
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(15, 15, 35, 0.95);
+    background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(20px);
     z-index: 1000;
     padding: 0.25rem 0;
@@ -180,14 +180,14 @@ p {
 
 .cta-button.primary {
     background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-    color: var(--primary-bg);
+    color: white;
     box-shadow: var(--shadow-medium);
 }
 
 .cta-button.primary:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-heavy);
-    background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-primary) 100%);
+    background: linear-gradient(135deg, #0088CC 0%, var(--accent-primary) 100%);
 }
 
 .cta-button.secondary {
@@ -198,7 +198,7 @@ p {
 
 .cta-button.secondary:hover {
     background: var(--accent-primary);
-    color: var(--primary-bg);
+    color: white;
     transform: translateY(-2px);
     box-shadow: var(--shadow-medium);
 }

@@ -7,7 +7,7 @@
     <meta name="description" content="Advanced crypto market intelligence and strength analysis tool by Timothy Assi, eToro Elite Popular Investor.">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         /* API Status Indicator */
@@ -29,7 +29,7 @@
         
         .api-status.demo {
             background: var(--accent-primary);
-            color: var(--primary-bg);
+            color: white;
         }
         
         .api-status.error {
@@ -128,7 +128,7 @@
 
         .btn-primary {
             background: var(--accent-primary);
-            color: var(--primary-bg);
+            color: white;
             font-weight: 600;
         }
 
@@ -904,24 +904,25 @@
             }
         }
 
-        /* ===== NEW GLOBAL SECTION LAYOUT ===== */
+        /* ===== ENHANCED GLOBAL SECTION LAYOUT ===== */
         
         /* Section container */
         .data-section {
-            margin: 50px auto;
-            text-align: center;
-            width: 90%;
-            max-width: 1200px;
+            margin: 60px auto;
+            width: 95%;
+            max-width: 1400px;
+            padding: 0 20px;
         }
 
-        /* Title styling */
+        /* Title styling - always at the top */
         .data-section .section-title {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 15px;
+            margin: 0 0 40px 0;
+            padding: 0 0 20px 0;
+            border-bottom: 3px solid var(--accent-primary);
+            text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -930,59 +931,201 @@
 
         .data-section .section-title i {
             color: var(--accent-primary);
-            font-size: 26px;
+            font-size: 28px;
         }
 
-        /* Card container */
+        /* Enhanced card container with proper grid */
         .section-cards {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 0;
             justify-content: center;
-            gap: 40px;
-            flex-wrap: wrap;
+            align-items: start;
         }
 
-        /* Individual cards - override existing token card styles */
+        /* Enhanced individual cards */
         .section-cards .token-card,
         .section-cards .scored-token-card {
             background: var(--card-bg);
-            border-radius: 16px;
-            width: 280px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: var(--shadow-medium);
-            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid var(--border-color);
             transition: all 0.3s ease;
             cursor: pointer;
+            position: relative;
+            height: auto;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .section-cards .token-card:hover,
         .section-cards .scored-token-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-large);
+            transform: translateY(-8px);
+            box-shadow: 0 8px 30px rgba(74, 144, 226, 0.2);
+            border-color: var(--accent-primary);
         }
 
-        /* Responsive for mobile */
+        /* ===== COMPREHENSIVE RESPONSIVE DESIGN ===== */
+        
+        /* Tablet Portrait */
+        @media (max-width: 1024px) {
+            .section-cards {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 25px;
+            }
+            
+            .data-section .section-title {
+                font-size: 28px;
+            }
+        }
+
+        /* Mobile Landscape */
         @media (max-width: 768px) {
             .data-section {
                 width: 95%;
                 margin: 30px auto;
+                padding: 0 15px;
             }
             
             .data-section .section-title {
                 font-size: 24px;
                 margin-bottom: 20px;
+                gap: 10px;
+            }
+            
+            .data-section .section-title i {
+                font-size: 22px;
             }
             
             .section-cards {
-                flex-direction: column;
-                align-items: center;
+                grid-template-columns: 1fr;
                 gap: 20px;
             }
             
             .section-cards .token-card,
             .section-cards .scored-token-card {
-                width: 90%;
-                max-width: 320px;
+                width: 100%;
+                max-width: none;
+                min-height: auto;
+                padding: 20px;
+            }
+            
+            /* Mobile card header adjustments */
+            .token-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .token-info h4 {
+                font-size: 1.1rem;
+            }
+            
+            .ai-score-badge {
+                align-self: flex-end;
+                min-width: 50px;
+                padding: 8px;
+            }
+            
+            /* Mobile price metrics */
+            .price-block {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .price-value {
+                font-size: 1.2rem;
+            }
+            
+            .market-data-compact {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            /* Mobile AI analysis section */
+            .ai-analysis-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .read-more-btn {
+                align-self: flex-end;
+                font-size: 0.75rem;
+                padding: 5px 10px;
+            }
+        }
+
+        /* Mobile Portrait */
+        @media (max-width: 480px) {
+            .data-section {
+                margin: 20px auto;
+                padding: 0 10px;
+            }
+            
+            .data-section .section-title {
+                font-size: 20px;
+                padding: 0 0 15px 0;
+                margin-bottom: 25px;
+            }
+            
+            .section-cards .scored-token-card {
+                padding: 15px;
+            }
+            
+            .price-metrics-compact {
+                padding: 12px;
+            }
+            
+            .ai-analysis-section {
+                padding: 12px;
+            }
+            
+            .token-info h4 {
+                font-size: 1rem;
+            }
+            
+            .price-value {
+                font-size: 1.1rem;
+            }
+            
+            .ai-score-badge {
+                min-width: 45px;
+                padding: 6px;
+            }
+            
+            .score-number {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Extra Small Screens */
+        @media (max-width: 360px) {
+            .data-section {
+                width: 100%;
+                padding: 0 5px;
+            }
+            
+            .section-cards .scored-token-card {
+                padding: 12px;
+            }
+            
+            .token-header {
+                gap: 10px;
+            }
+            
+            .price-metrics-compact,
+            .ai-analysis-section {
+                padding: 10px;
+                margin: 10px 0;
+            }
+            
+            .market-data-compact {
+                font-size: 0.8rem;
             }
         }
 
@@ -2054,106 +2197,198 @@
         
         // Analyze narrative tokens with AI
         async function analyzeNarrativeTokens() {
-            console.log('🔍 Analyzing trending narratives...');
+            return analyzeNarrativeTokensWithFilters();
+        }
+
+        // Filter-aware narrative analysis
+        async function analyzeNarrativeTokensWithFilters() {
+            console.log('🔍 Analyzing trending narratives with filters...');
             window.currentExtractionSection = 'narrative';
+            
+            const filterCriteria = buildFilterCriteria('narrative');
+            let basePrompt = 'List exactly 3 different altcoins driving trending crypto narratives';
+            
+            if (filterCriteria.length > 0) {
+                basePrompt += ` that meet the following criteria: ${filterCriteria.join(', ')}`;
+            }
+            
+            const prompt = `${basePrompt}. Format each as clean, readable text without markdown or references:
+
+Ethereum (ETH) - Score: 85/100 - Smart contract leader with strong ecosystem
+Solana (SOL) - Score: 82/100 - High-speed blockchain with growing adoption  
+Chainlink (LINK) - Score: 78/100 - Oracle infrastructure connecting blockchains
+
+CRITICAL FORMATTING RULES - NEVER VIOLATE:
+- NEVER use asterisks (*) or double asterisks (**) anywhere in your response
+- NEVER use bold, italic, or any markdown formatting whatsoever  
+- NEVER include numbered lists (1., 2., 3.)
+- NEVER include reference numbers [1], [2] or citations
+- Write ONLY clean, plain text sentences without any special characters
+- Do not use underscores (_), backticks (`), or hash symbols (#)
+- Replace with 3 different actual trending narrative coins meeting the specified criteria
+- Ensure scores reflect performance within the specified category/filters
+- RESPOND WITH CLEAN TEXT ONLY - NO FORMATTING SYMBOLS`;
             
             const response = await fetch('/api/perplexityScore', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    token: `List exactly 3 different altcoins driving trending crypto narratives. Format each as:
-1. Ethereum (ETH) - Score: 85/100 - Smart contract leader
-2. Solana (SOL) - Score: 82/100 - High-speed blockchain  
-3. Chainlink (LINK) - Score: 78/100 - Oracle infrastructure
-
-Replace with 3 different actual trending narrative coins and scores.`
+                    token: prompt,
+                    maxTokens: 250
                 })
             });
             
             const data = await response.json();
             const results = extractTokenRecommendations(data);
             
-            // Apply filtering to results
-            const filteredResults = await applyFilteringToResults(results, 'narrative');
-            return filteredResults;
+            return results; // Return direct results since filtering is built into the prompt
         }
         
         // Analyze meme tokens with AI
         async function analyseMemeTokens() {
-            console.log('🔍 Analyzing top meme coins...');
+            return analyseMemeTokensWithFilters();
+        }
+
+        // Filter-aware meme analysis
+        async function analyseMemeTokensWithFilters() {
+            console.log('🔍 Analyzing top meme coins with filters...');
             window.currentExtractionSection = 'meme';
+            
+            const filterCriteria = buildFilterCriteria('meme');
+            let basePrompt = 'List exactly 3 different MEME cryptocurrencies ONLY (dog-themed, community-driven, speculative coins like Dogecoin, Shiba Inu, Pepe). DO NOT include legitimate blockchain projects like Ethereum, Cardano, Solana, or other utility tokens';
+            
+            if (filterCriteria.length > 0) {
+                basePrompt += ` that also meet: ${filterCriteria.join(', ')}`;
+            }
+            
+            const prompt = `${basePrompt}. Format each as clean, readable text:
+
+Dogecoin (DOGE) - Score: 88/100 - Original meme coin with huge community following
+Shiba Inu (SHIB) - Score: 84/100 - Ethereum-based meme token with strong ecosystem
+Pepe (PEPE) - Score: 79/100 - Viral meme coin phenomenon with social momentum
+
+CRITICAL FORMATTING RULES - NEVER VIOLATE:
+- NEVER use asterisks (*) or double asterisks (**) anywhere in your response
+- NEVER use bold, italic, or any markdown formatting whatsoever  
+- NEVER include numbered lists (1., 2., 3.)
+- NEVER include reference numbers [1], [2] or citations
+- Write ONLY clean, plain text sentences without any special characters
+- Do not use underscores (_), backticks (`), or hash symbols (#)
+- Replace with 3 different actual MEME COINS ONLY meeting the criteria
+- Ensure scores reflect meme coin performance within specified filters
+- RESPOND WITH CLEAN TEXT ONLY - NO FORMATTING SYMBOLS`;
             
             const response = await fetch('/api/perplexityScore', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    token: `List exactly 3 different MEME cryptocurrencies ONLY (dog-themed, community-driven, speculative coins like Dogecoin, Shiba Inu, Pepe). DO NOT include legitimate blockchain projects like Ethereum, Cardano, Solana, or other utility tokens. Format each as:
-1. Dogecoin (DOGE) - Score: 88/100 - Original meme coin with huge community
-2. Shiba Inu (SHIB) - Score: 84/100 - Ethereum-based meme token
-3. Pepe (PEPE) - Score: 79/100 - Viral meme coin phenomenon
-
-Replace with 3 different actual MEME COINS ONLY and current scores.`
+                    token: prompt,
+                    maxTokens: 250
                 })
             });
             
             const data = await response.json();
             const results = extractTokenRecommendations(data);
             
-            // Apply filtering to results and ensure only meme coins
-            const filteredResults = await applyFilteringToResults(results, 'meme');
-            return filteredResults;
+            return results;
         }
         
         // Analyze network tokens with AI
         async function analyzeNetworkTokens() {
-            console.log('🔍 Analyzing network adoption...');
+            return analyzeNetworkTokensWithFilters();
+        }
+
+        // Filter-aware network analysis
+        async function analyzeNetworkTokensWithFilters() {
+            console.log('🔍 Analyzing network adoption with filters...');
             window.currentExtractionSection = 'network';
+            
+            const filterCriteria = buildFilterCriteria('network');
+            let basePrompt = 'List exactly 3 different blockchain networks with highest user adoption and TVL';
+            
+            if (filterCriteria.length > 0) {
+                basePrompt += ` that meet the following criteria: ${filterCriteria.join(', ')}`;
+            }
+            
+            const prompt = `${basePrompt}. Format each as clean, readable text:
+
+Ethereum (ETH) - Score: 92/100 - Dominant DeFi ecosystem with highest TVL and usage
+BNB Smart Chain (BNB) - Score: 87/100 - High transaction volume and widespread adoption
+Polygon (MATIC) - Score: 83/100 - Leading Layer 2 scaling solution for Ethereum
+
+CRITICAL FORMATTING RULES - NEVER VIOLATE:
+- NEVER use asterisks (*) or double asterisks (**) anywhere in your response
+- NEVER use bold, italic, or any markdown formatting whatsoever  
+- NEVER include numbered lists (1., 2., 3.)
+- NEVER include reference numbers [1], [2] or citations
+- Write ONLY clean, plain text sentences without any special characters
+- Do not use underscores (_), backticks (`), or hash symbols (#)
+- Replace with 3 different actual top network tokens meeting the specified criteria
+- Ensure scores reflect network performance within the specified category/filters
+- RESPOND WITH CLEAN TEXT ONLY - NO FORMATTING SYMBOLS`;
             
             const response = await fetch('/api/perplexityScore', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    token: `List exactly 3 different blockchain networks with highest user adoption and TVL. Format each as:
-1. Ethereum (ETH) - Score: 92/100 - Dominant DeFi ecosystem with highest TVL
-2. BNB Smart Chain (BNB) - Score: 87/100 - High transaction volume and adoption
-3. Polygon (MATIC) - Score: 83/100 - Leading Layer 2 scaling solution
-
-Replace with 3 different actual top network tokens and current metrics.`
+                    token: prompt,
+                    maxTokens: 250
                 })
             });
             
             const data = await response.json();
             const results = extractTokenRecommendations(data);
             
-            // Apply filtering to results
-            const filteredResults = await applyFilteringToResults(results, 'network');
-            return filteredResults;
+            return results;
         }
         
         // Analyze overall top 3 altcoins
         async function analyzeOverallTop3() {
-            console.log('🔍 Analyzing overall top altcoins...');
+            return analyzeOverallTop3WithFilters();
+        }
+
+        // Filter-aware overall analysis
+        async function analyzeOverallTop3WithFilters() {
+            console.log('🔍 Analyzing overall top altcoins with filters...');
             window.currentExtractionSection = 'overall';
+            
+            const filterCriteria = buildFilterCriteria('overall');
+            let basePrompt = 'List exactly 3 different best overall altcoins based on fundamentals and growth potential';
+            
+            if (filterCriteria.length > 0) {
+                basePrompt += ` that meet the following criteria: ${filterCriteria.join(', ')}`;
+            }
+            
+            const prompt = `${basePrompt}. Format each as clean, readable text:
+
+Ethereum (ETH) - Score: 95/100 - Leading smart contract platform with strong fundamentals
+Solana (SOL) - Score: 89/100 - High-performance blockchain with growing ecosystem  
+Cardano (ADA) - Score: 84/100 - Research-driven platform with academic approach
+
+CRITICAL FORMATTING RULES - NEVER VIOLATE:
+- NEVER use asterisks (*) or double asterisks (**) anywhere in your response
+- NEVER use bold, italic, or any markdown formatting whatsoever  
+- NEVER include numbered lists (1., 2., 3.)
+- NEVER include reference numbers [1], [2] or citations
+- Write ONLY clean, plain text sentences without any special characters
+- Do not use underscores (_), backticks (`), or hash symbols (#)
+- Replace with 3 different actual top altcoins meeting the specified criteria
+- Ensure scores reflect comprehensive performance within the specified filters
+- RESPOND WITH CLEAN TEXT ONLY - NO FORMATTING SYMBOLS`;
             
             const response = await fetch('/api/perplexityScore', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    token: `List exactly 3 different best overall altcoins based on fundamentals and growth potential. Format each as:
-1. Ethereum (ETH) - Score: 95/100 - Leading smart contract platform with strong fundamentals
-2. Solana (SOL) - Score: 89/100 - High-performance blockchain with growing ecosystem  
-3. Cardano (ADA) - Score: 84/100 - Research-driven platform with academic approach
-
-Replace with 3 different actual top altcoins and comprehensive scores.`
+                    token: prompt,
+                    maxTokens: 250
                 })
             });
             
             const data = await response.json();
             const results = extractTokenRecommendations(data);
             
-            // Apply filtering to results
-            const filteredResults = await applyFilteringToResults(results, 'overall');
-            return filteredResults;
+            return results;
         }
         
         // Extract token recommendations from AI response with enhanced debugging
@@ -2220,10 +2455,26 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
                     // Skip common false positives
                     const symbol = match[1];
                     if (!['THE', 'AND', 'FOR', 'WITH', 'ARE', 'THIS', 'THAT', 'HAVE', 'FROM', 'THEY', 'BEEN', 'THEIR', 'SAID', 'EACH', 'WHICH', 'MORE', 'LIKE', 'INTO', 'TIME', 'VERY', 'WHEN', 'MUCH', 'NEW', 'NOW', 'ONLY', 'TWO', 'WAY', 'WHO', 'ITS', 'DID', 'GET', 'HAS', 'HIM', 'OLD', 'SEE', 'NOW', 'OVER', 'THINK', 'ALSO', 'BACK', 'AFTER', 'USE', 'HER', 'CAN', 'OUT', 'JUST', 'FIRST', 'ANY', 'THESE', 'SOME', 'COULD', 'WELL', 'WERE'].includes(symbol)) {
+                        
+                        // Ensure score is always a valid number between 0-100
+                        let score = parseInt(match[2]);
+                        if (isNaN(score) || score < 0 || score > 100) {
+                            // Generate contextual score based on position in response
+                            const linePosition = lines.indexOf(line);
+                            if (linePosition === 0) score = Math.floor(Math.random() * 15) + 85; // First token: 85-100
+                            else if (linePosition === 1) score = Math.floor(Math.random() * 15) + 75; // Second: 75-90
+                            else score = Math.floor(Math.random() * 15) + 65; // Third: 65-80
+                            console.log(`🔢 Generated score ${score} for ${symbol} (invalid or missing score from AI)`);
+                        }
+                        
+                        // Double-clean the description to ensure no formatting
+                        let cleanDescription = cleanAnalysisText(line.trim());
+                        cleanDescription = cleanDescription.replace(/\*+/g, ''); // Final ** removal
+                        
                         tokens.push({
                             symbol: symbol,
-                            score: parseInt(match[2]) || Math.floor(Math.random() * 30) + 70,
-                            description: line.trim()
+                            score: score,
+                            description: cleanDescription
                         });
                     }
                 }
@@ -2277,27 +2528,40 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
             
             const sectionFallbacks = fallbackTokensBySection[currentSection] || fallbackTokensBySection.overall;
             
-            // Fill up to 3 tokens
+            // Fill up to 3 tokens with score validation
             while (uniqueTokens.length < 3) {
                 const fallbackIndex = uniqueTokens.length;
                 if (fallbackIndex < sectionFallbacks.length) {
                     const fallback = sectionFallbacks[fallbackIndex];
-                    // Only add if not already present
+                    // Only add if not already present and ensure valid score
                     if (!seenSymbols.has(fallback.symbol)) {
-                        uniqueTokens.push(fallback);
+                        // Validate and fix score if needed
+                        let validScore = fallback.score;
+                        if (isNaN(validScore) || validScore < 0 || validScore > 100) {
+                            validScore = Math.floor(Math.random() * 20) + 75; // 75-95 for fallbacks
+                            console.log(`🔧 Fixed invalid fallback score for ${fallback.symbol}: ${validScore}`);
+                        }
+                        
+                        uniqueTokens.push({
+                            symbol: fallback.symbol,
+                            score: validScore,
+                            description: cleanAnalysisText(fallback.description)
+                        });
                         seenSymbols.add(fallback.symbol);
                     }
                 } else {
-                    // Create random fallback
+                    // Create random fallback with guaranteed valid score
                     const randomSymbols = ['DOT', 'LINK', 'UNI', 'ATOM', 'XRP', 'LTC', 'BCH', 'XLM'];
                     const randomSymbol = randomSymbols[Math.floor(Math.random() * randomSymbols.length)];
                     if (!seenSymbols.has(randomSymbol)) {
+                        const guaranteedScore = Math.floor(Math.random() * 20) + 70; // 70-90
                         uniqueTokens.push({
                             symbol: randomSymbol,
-                            score: Math.floor(Math.random() * 20) + 70,
-                            description: `${randomSymbol} - AI analysis result with score-based recommendation`
+                            score: guaranteedScore,
+                            description: cleanAnalysisText(`${randomSymbol} - AI analysis result with score-based recommendation`)
                         });
                         seenSymbols.add(randomSymbol);
+                        console.log(`✅ Added random fallback ${randomSymbol} with guaranteed score: ${guaranteedScore}`);
                     }
                 }
             }
@@ -2335,8 +2599,14 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
                 const fallbacks = emergencyFallbacks[currentSection] || emergencyFallbacks.overall;
                 console.log('🔄 Using emergency fallbacks:', fallbacks.map(t => t.symbol));
                 
+                // Clean the emergency fallback descriptions too
+                const cleanedFallbacks = fallbacks.map(token => ({
+                    ...token,
+                    description: cleanAnalysisText(token.description)
+                }));
+                
                 return {
-                    tokens: fallbacks,
+                    tokens: cleanedFallbacks,
                     fullAnalysis: `Analysis for ${currentSection} tokens completed. These represent strong options in this category based on market fundamentals and performance metrics.`
                 };
             }
@@ -2360,10 +2630,18 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
             // Show error if no tokens
             if (!results.tokens || results.tokens.length === 0) {
                 container.innerHTML = `
-                    <div class="section-error">
-                        <h3>❌ No recommendations found</h3>
-                        <p>AI analysis completed but no tokens were extracted.</p>
-                        <button onclick="location.reload()">🔄 Retry</button>
+                    <div class="section-no-results">
+                        <div class="no-results-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="no-results-content">
+                            <h3 class="no-results-title">No recommendations found</h3>
+                            <p class="no-results-message">AI analysis completed but no tokens were extracted. Please try different filters or refresh the analysis.</p>
+                            <button class="retry-button" onclick="location.reload()">
+                                <i class="fas fa-redo"></i>
+                                Retry Analysis
+                            </button>
+                        </div>
                     </div>
                 `;
                 return;
@@ -2404,14 +2682,39 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
         function createScoredTokenCard(token, liveData, sectionType) {
             if (!liveData) {
                 return `
-                    <div class="scored-token-card error">
+                    <div class="scored-token-card error-state">
                         <div class="token-header">
-                            <h4>${token.symbol}</h4>
-                            <div class="ai-score">${token.score}/100</div>
+                            <div class="token-info">
+                                <h4>${token.symbol}</h4>
+                                <span class="token-symbol-badge error">${token.symbol}</span>
+                            </div>
+                            <div class="ai-score-badge">
+                                <div class="score-number">${token.score}</div>
+                                <div class="score-label">/100</div>
+                            </div>
                         </div>
-                        <div class="token-error">
-                            <p>❌ Live data not available</p>
-                            <p class="ai-reasoning">${token.description}</p>
+                        
+                        <div class="error-message">
+                            <div class="error-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="error-text">
+                                <span class="error-title">Live data unavailable</span>
+                                <span class="error-subtitle">Unable to fetch market data</span>
+                            </div>
+                        </div>
+                        
+                        <div class="content-divider"></div>
+                        
+                        <div class="ai-analysis-section">
+                            <div class="ai-analysis-header">
+                                <h5><i class="fas fa-brain"></i> AI Analysis</h5>
+                            </div>
+                            <div class="ai-analysis-content">
+                                <div class="analysis-preview">
+                                    ${createSmartSummary(cleanAnalysisText(token.description), 2).replace(/\*+/g, '')}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -2452,41 +2755,45 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
                         </div>
                     </div>
                     
-                    <div class="live-metrics">
-                        <div class="metric-row">
-                            <div class="metric-item">
-                                <span class="metric-label">Price</span>
-                                <span class="metric-value">$${formatPrice(price)}</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-label">24h Change</span>
-                                <span class="metric-value ${changeClass}">
-                                    ${changeIcon} ${change24h.toFixed(2)}%
-                                </span>
-                            </div>
+                    <div class="price-metrics-compact">
+                        <div class="price-block">
+                            <span class="price-value">$${formatPrice(price)}</span>
+                            <span class="change-value ${changeClass}">${changeIcon} ${change24h.toFixed(2)}%</span>
                         </div>
-                        <div class="metric-row">
-                            <div class="metric-item">
-                                <span class="metric-label">Market Cap</span>
-                                <span class="metric-value">$${formatLargeNumber(marketCap)}</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-label">Volume 24h</span>
-                                <span class="metric-value">$${formatLargeNumber(volume)}</span>
-                            </div>
+                        <div class="market-data-compact">
+                            <div class="market-cap-compact">Cap: $${formatLargeNumber(marketCap)}</div>
+                            <div class="volume-compact">Vol: $${formatLargeNumber(volume)}</div>
                         </div>
                     </div>
                     
-                    <div class="ai-reasoning">
-                        <h5>AI Analysis:</h5>
-                        <p>${token.description}</p>
-                    </div>
+                    <div class="content-divider"></div>
                     
-                    <div class="score-breakdown">
-                        <div class="score-bar">
-                            <div class="score-fill" style="width: ${token.score}%"></div>
+                    <div class="ai-analysis-section">
+                        <div class="ai-analysis-header">
+                            <h5><i class="fas fa-brain"></i> AI Analysis</h5>
+                            ${needsReadMoreButton(token.description) ? `
+                            <button class="read-more-btn" onclick="event.stopPropagation(); toggleAnalysisText('${cardId}')">
+                                <span id="${cardId}-toggle-text">Read More</span>
+                                <i id="${cardId}-toggle-icon" class="fas fa-chevron-down"></i>
+                            </button>
+                            ` : ''}
                         </div>
-                        <span class="score-category">${SCORING_SYSTEM[sectionType].name}</span>
+                        <div class="ai-analysis-content">
+                            <div class="analysis-preview" id="${cardId}-preview">
+                                ${createSmartSummary(cleanAnalysisText(token.description), 2).replace(/\*+/g, '')}
+                            </div>
+                            ${needsReadMoreButton(cleanAnalysisText(token.description)) ? `
+                            <div class="analysis-full" id="${cardId}-full" style="display: none;">
+                                ${cleanAnalysisText(token.description).replace(/\*+/g, '')}
+                                <div class="score-context">
+                                    <div class="score-bar">
+                                        <div class="score-fill" style="width: ${token.score}%"></div>
+                                    </div>
+                                    <span class="score-category">${SCORING_SYSTEM[sectionType].name} Score</span>
+                                </div>
+                            </div>
+                            ` : ''}
+                        </div>
                     </div>
                     
                     <div class="click-indicator">
@@ -2686,27 +2993,65 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
             }
         }
         
-        // Get detailed token analysis
+        // Get detailed token analysis with full text completion
         async function getDetailedTokenAnalysis(symbol, sectionType) {
             try {
+                const prompt = `Provide a comprehensive, complete analysis of ${symbol} cryptocurrency focusing on ${SCORING_SYSTEM[sectionType].name.toLowerCase()}. 
+
+Write as clean, professional text covering:
+- Current market position and recent performance
+- Technical fundamentals and strengths 
+- Risk factors and potential concerns
+- Recent developments and partnerships
+- Future outlook and growth potential
+- Specific metrics and data points
+
+CRITICAL FORMATTING RULES - ABSOLUTELY NO EXCEPTIONS:
+- NEVER use asterisks (*) or double asterisks (**) anywhere in your response
+- NEVER use bold, italic, underscores, backticks, or any markdown formatting
+- NEVER include numbered lists (1., 2., 3.) or bullet points
+- NEVER include reference numbers [1], [2] or citations
+- Write ONLY in clean, flowing paragraphs of plain text
+- Use proper sentences that end with periods
+- Do not truncate your analysis
+- RESPOND WITH CLEAN TEXT ONLY - NO FORMATTING SYMBOLS WHATSOEVER
+
+Provide a comprehensive analysis using only plain text without any special characters.`;
+
                 const response = await fetch('/api/perplexityScore', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                        token: `Provide a comprehensive analysis of ${symbol} cryptocurrency focusing on ${SCORING_SYSTEM[sectionType].name.toLowerCase()}. Include detailed reasoning for its strengths, potential risks, recent developments, and why it scores well in this category. Provide specific metrics and data points where possible.`
+                        token: prompt,
+                        maxTokens: 500  // Request longer response
                     })
                 });
                 
                 const data = await response.json();
-                if (data.choices && data.choices[0]) {
-                    return formatAnalysisText(data.choices[0].message.content);
+                let analysisText = null;
+                
+                // Try multiple response format extractions
+                if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
+                    analysisText = data.choices[0].message.content;
                 } else if (data.explanation) {
-                    return formatAnalysisText(data.explanation);
+                    analysisText = data.explanation;
+                } else if (data.message) {
+                    analysisText = data.message;
+                } else if (data.content) {
+                    analysisText = data.content;
+                } else if (typeof data === 'string') {
+                    analysisText = data;
+                }
+                
+                if (analysisText) {
+                    return formatAnalysisText(analysisText);
                 }
             } catch (error) {
                 console.error('Failed to get detailed analysis:', error);
             }
-            return null;
+            
+            // Return fallback analysis if API fails
+            return `Detailed analysis for ${symbol} in the ${SCORING_SYSTEM[sectionType].name} category is currently unavailable. This cryptocurrency has been selected based on its strong fundamentals and market position. Please check back later for a comprehensive analysis or refer to external sources for more information.`;
         }
         
         function displayMemeTokens(analysis) {
@@ -2760,13 +3105,10 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
             }
         }
         
-        // Format analysis text with better readability
+        // Format analysis text with better readability (uses new cleaning system)
         function formatAnalysisText(text) {
-            return text
-                .replace(/\n/g, '<br>')
-                .replace(/(\d+\.\s)/g, '<br><strong>$1</strong>')
-                .replace(/([A-Z][A-Z]+)\s*\(/g, '<strong>$1</strong> (')
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            const cleanText = cleanAnalysisText(text);
+            return cleanText.replace(/\n/g, '<br>');
         }
         
         // Show error for specific section
@@ -2969,6 +3311,123 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
             document.getElementById('minScoreDisplay').textContent = window.currentFilters.minScore;
             
             console.log('Filters updated:', window.currentFilters);
+            
+            // Automatically re-run analysis with new filters if data exists
+            if (window.currentFilters.category !== 'all' || 
+                window.currentFilters.excludeStablecoins || 
+                window.currentFilters.excludeMemecoins ||
+                window.currentFilters.marketCapRange !== 'all' ||
+                window.currentFilters.minScore > 0) {
+                console.log('🔄 Filters changed, re-running analysis with filter criteria...');
+                // Re-run analysis with filters after a short delay
+                setTimeout(() => {
+                    startFilteredAnalysis();
+                }, 500);
+            }
+        }
+
+        // Build filter-specific prompt additions
+        function buildFilterCriteria(sectionType) {
+            const filters = window.currentFilters || {};
+            let criteria = [];
+            
+            // Category filter
+            if (filters.category && filters.category !== 'all') {
+                const categoryMap = {
+                    'defi': 'DeFi and decentralized finance',
+                    'layer1': 'Layer 1 blockchain networks',
+                    'layer2': 'Layer 2 scaling solutions',
+                    'ai': 'AI and Big Data related',
+                    'gaming': 'Gaming and Metaverse',
+                    'infrastructure': 'Blockchain infrastructure',
+                    'privacy': 'Privacy-focused',
+                    'storage': 'Decentralized storage'
+                };
+                criteria.push(`focus only on ${categoryMap[filters.category]} tokens`);
+            }
+            
+            // Market cap filter
+            if (filters.marketCapRange && filters.marketCapRange !== 'all') {
+                const capMap = {
+                    'mega': 'with market cap above $10 billion',
+                    'large': 'with market cap between $1-10 billion', 
+                    'mid': 'with market cap between $100M-1B',
+                    'small': 'with market cap between $10M-100M',
+                    'micro': 'with market cap below $10 million'
+                };
+                criteria.push(capMap[filters.marketCapRange]);
+            }
+            
+            // Exclusion filters
+            if (filters.excludeStablecoins) {
+                criteria.push('exclude stablecoins like USDT, USDC, DAI, BUSD');
+            }
+            
+            if (filters.excludeMemecoins && sectionType !== 'meme') {
+                criteria.push('exclude meme coins like DOGE, SHIB, PEPE, FLOKI');
+            }
+            
+            // Score filter
+            if (filters.minScore && filters.minScore > 0) {
+                criteria.push(`with scores above ${filters.minScore}/100`);
+            }
+            
+            return criteria;
+        }
+
+        // Start filtered analysis that respects current filter settings
+        async function startFilteredAnalysis() {
+            if (!window.currentFilters) {
+                console.log('No filters set, running regular analysis');
+                return startFullAnalysis();
+            }
+            
+            updateAIStatus('Analyzing with filters...');
+            updateDataStatus('Loading...');
+            
+            try {
+                // Load crypto data first
+                await loadCryptoData();
+                
+                console.log('Starting filtered AI analysis with criteria:', window.currentFilters);
+                
+                // Run all analyses with filter-aware prompts
+                const analysisPromises = [
+                    analyzeNarrativeTokensWithFilters().catch(e => {
+                        console.error('Filtered narrative analysis failed:', e);
+                        return { tokens: [], fullAnalysis: 'Analysis failed' };
+                    }),
+                    analyseMemeTokensWithFilters().catch(e => {
+                        console.error('Filtered meme analysis failed:', e);
+                        return { tokens: [], fullAnalysis: 'Analysis failed' };
+                    }),
+                    analyzeNetworkTokensWithFilters().catch(e => {
+                        console.error('Filtered network analysis failed:', e);
+                        return { tokens: [], fullAnalysis: 'Analysis failed' };
+                    }),
+                    analyzeOverallTop3WithFilters().catch(e => {
+                        console.error('Filtered overall analysis failed:', e);
+                        return { tokens: [], fullAnalysis: 'Analysis failed' };
+                    })
+                ];
+                
+                const [narrativeResults, memeResults, networkResults, overallResults] = await Promise.all(analysisPromises);
+                
+                // Display results
+                await displaySectionResults('narrativeTokens', narrativeResults, 'narrative');
+                await displaySectionResults('memeTokens', memeResults, 'meme');
+                await displaySectionResults('networkTokens', networkResults, 'network');
+                await displaySectionResults('topThreeTokens', overallResults, 'overall');
+                
+                updateAIStatus('Complete');
+                updateDataStatus('Live');
+                updateLastUpdated();
+                
+            } catch (error) {
+                console.error('❌ Filtered analysis failed:', error);
+                updateAIStatus('Error');
+                updateDataStatus('Error');
+            }
         }
 
         function resetFilters() {
@@ -3382,10 +3841,125 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
             return filteredTokens;
         }
 
-        // Apply filtering to extracted results with better fallback logic
+        // Get filtered tokens directly from AI based on current filter criteria
+        async function getFilteredTokensFromAI(sectionType) {
+            console.log(`🤖 Re-querying Perplexity for ${sectionType} with filters:`, window.currentFilters);
+            
+            try {
+                // Build filter-specific prompt
+                let basePrompt = '';
+                let filterCriteria = [];
+                
+                // Set base prompt based on section type
+                switch (sectionType) {
+                    case 'narrative':
+                        basePrompt = 'List exactly 3 different altcoins driving trending crypto narratives';
+                        break;
+                    case 'meme':
+                        basePrompt = 'List exactly 3 different MEME cryptocurrencies ONLY (dog-themed, community-driven, speculative coins)';
+                        break;
+                    case 'network':
+                        basePrompt = 'List exactly 3 different blockchain networks with highest user adoption and TVL';
+                        break;
+                    case 'overall':
+                        basePrompt = 'List exactly 3 different best overall altcoins based on fundamentals and growth potential';
+                        break;
+                }
+                
+                // Add filter criteria to prompt
+                if (window.currentFilters.excludeStablecoins) {
+                    filterCriteria.push('exclude stablecoins like USDT, USDC, DAI');
+                }
+                if (window.currentFilters.excludeMemecoins && sectionType !== 'meme') {
+                    filterCriteria.push('exclude meme coins like DOGE, SHIB, PEPE');
+                }
+                if (window.currentFilters.category !== 'all') {
+                    filterCriteria.push(`focus on ${window.currentFilters.category} category tokens only`);
+                }
+                if (window.currentFilters.marketCapRange !== 'all') {
+                    const mcFilter = getMarketCapRangeText(window.currentFilters.marketCapRange);
+                    filterCriteria.push(`market cap ${mcFilter}`);
+                }
+                if (window.currentFilters.minScore > 0) {
+                    filterCriteria.push(`with strong fundamentals scoring above ${window.currentFilters.minScore}/100`);
+                }
+                
+                // Combine base prompt with filter criteria
+                let fullPrompt = basePrompt;
+                if (filterCriteria.length > 0) {
+                    fullPrompt += ` that meet the following criteria: ${filterCriteria.join(', ')}`;
+                }
+                
+                fullPrompt += `. Format each as clean, readable text:
+
+CoinName (SYMBOL) - Score: XX/100 - Brief description
+CoinName (SYMBOL) - Score: XX/100 - Brief description
+CoinName (SYMBOL) - Score: XX/100 - Brief description
+
+CRITICAL FORMATTING RULES - NEVER VIOLATE:
+- NEVER use asterisks (*) or double asterisks (**) anywhere in your response
+- NEVER use bold, italic, or any markdown formatting whatsoever  
+- NEVER include numbered lists (1., 2., 3.)
+- NEVER include reference numbers [1], [2] or citations
+- Write ONLY clean, plain text sentences without any special characters
+- Do not use underscores (_), backticks (`), or hash symbols (#)
+- Replace with 3 different actual tokens meeting the criteria with current scores
+- RESPOND WITH CLEAN TEXT ONLY - NO FORMATTING SYMBOLS`;
+                
+                console.log('🔍 Filtered query prompt:', fullPrompt);
+                
+                window.currentExtractionSection = sectionType;
+                
+                const response = await fetch('/api/perplexityScore', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        token: fullPrompt,
+                        maxTokens: 300
+                    })
+                });
+                
+                const data = await response.json();
+                const results = extractTokenRecommendations(data);
+                
+                console.log('🎯 Filtered AI results:', results);
+                return results;
+                
+            } catch (error) {
+                console.error('❌ Error getting filtered tokens from AI:', error);
+                // Fall back to regular fallbacks if API fails
+                return await getFallbackTokens(sectionType);
+            }
+        }
+        
+        // Helper function to convert market cap range to text
+        function getMarketCapRangeText(range) {
+            switch (range) {
+                case 'large': return 'above $10 billion';
+                case 'mid': return 'between $1-10 billion';
+                case 'small': return 'between $100M-1B';
+                case 'micro': return 'below $100 million';
+                default: return 'any size';
+            }
+        }
+
+        // Apply filtering with Perplexity re-querying when filters are active
         async function applyFilteringToResults(results, sectionType) {
             console.log(`🔍 Applying filters to ${sectionType} results:`, results);
             console.log('📊 Current filters:', window.currentFilters);
+            
+            // Check if filters are active (not default values)
+            const hasActiveFilters = window.currentFilters.excludeStablecoins || 
+                                   window.currentFilters.excludeMemecoins || 
+                                   window.currentFilters.category !== 'all' || 
+                                   window.currentFilters.marketCapRange !== 'all' || 
+                                   window.currentFilters.minScore > 0;
+            
+            // If filters are active, re-query Perplexity with filter criteria
+            if (hasActiveFilters) {
+                console.log('🔄 Active filters detected, re-querying Perplexity with filter criteria...');
+                return await getFilteredTokensFromAI(sectionType);
+            }
             
             // If no results from AI, use fallbacks immediately
             if (!results || !results.tokens || results.tokens.length === 0) {
@@ -3626,23 +4200,168 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
             }
         }
         
+        // Ultra-aggressive text cleaning to remove ALL formatting artifacts
+        function cleanAnalysisText(text) {
+            if (!text) return 'No analysis available.';
+            
+            let cleanText = text.toString().trim();
+            
+            // ULTRA-AGGRESSIVE ASTERISK REMOVAL - Multiple passes to catch everything
+            for (let i = 0; i < 5; i++) {
+                cleanText = cleanText
+                    // Remove numbered list formatting with any ** combinations
+                    .replace(/^\d+\.\s*\*\*.*?\*\*\s*-?\s*/gm, '')
+                    .replace(/^\d+\.\s*/gm, '')
+                    
+                    // Remove ALL ** combinations - multiple patterns
+                    .replace(/\*\*(.*?)\*\*/g, '$1')           // Standard **text**
+                    .replace(/\*\*([^*]*?)\*\*/g, '$1')       // Non-greedy **text**
+                    .replace(/\*\*(.+?)\*\*/g, '$1')          // Greedy **text**
+                    .replace(/\*\*([^*]+)\*\*/g, '$1')        // No asterisks inside
+                    .replace(/\*\*[^*]*\*\*/g, function(match) {
+                        return match.replace(/\*\*/g, '');     // Remove ** from any match
+                    })
+                    
+                    // Remove single asterisk formatting
+                    .replace(/\*([^*\n]+)\*/g, '$1')          // *text*
+                    .replace(/\*([^*]*?)\*/g, '$1')           // Non-greedy *text*
+                    
+                    // Remove underline formatting
+                    .replace(/__(.*?)__/g, '$1')              // __text__
+                    .replace(/_([^_\n]+)_/g, '$1')            // _text_
+                    
+                    // Nuclear option: Remove any remaining asterisks
+                    .replace(/\*{2,}/g, '')                   // Multiple asterisks
+                    .replace(/\*+([^*]*?)\*+/g, '$1')         // Any asterisk wrapping
+                    .replace(/\*/g, '')                       // ALL remaining asterisks
+                    .replace(/_+/g, '')                       // ALL remaining underscores
+                    
+                    // Remove any remaining markdown-like patterns
+                    .replace(/\[([^\]]*)\]/g, '')             // [text] or [1]
+                    .replace(/`([^`]*)`/g, '$1')              // `code`
+                    .replace(/#{1,6}\s*/g, '')                // # headers
+                    
+                    // Clean special characters and formatting
+                    .replace(/["""'']/g, '"')                 // Fancy quotes
+                    .replace(/[–—]/g, '-')                     // Em/en dashes
+                    .replace(/…/g, '...')                     // Ellipsis
+                    
+                    // Remove score and token patterns at start
+                    .replace(/^Score:\s*\d+\/100\s*-?\s*/g, '')
+                    .replace(/^\([A-Z]{2,10}\)\s*-?\s*/g, '')
+                    .replace(/^[A-Za-z\s]+\([A-Z]{2,10}\)\s*-\s*Score:\s*\d+\/100\s*-?\s*/g, '')
+                    
+                    // Normalize whitespace
+                    .replace(/\s+/g, ' ')
+                    .replace(/\n\s*\n/g, '\n')
+                    .replace(/\s*-\s*/g, ' - ')
+                    .trim();
+            }
+            
+            // Final cleanup pass - remove any remaining formatting artifacts
+            cleanText = cleanText
+                .replace(/[*_`#]{1,}/g, '')                    // Any remaining markdown chars
+                .replace(/\s+/g, ' ')                          // Multiple spaces
+                .replace(/^[-–—\s]+/, '')                      // Leading dashes/spaces
+                .replace(/[-–—\s]+$/, '')                      // Trailing dashes/spaces
+                .trim();
+            
+            // Ensure proper sentence completion
+            if (cleanText && cleanText.length > 5) {
+                if (!cleanText.match(/[.!?]$/)) {
+                    if (!cleanText.endsWith('...')) {
+                        // Find the last complete sentence
+                        const lastSentenceMatch = cleanText.match(/(.*[.!?])\s*[^.!?]*$/);
+                        if (lastSentenceMatch) {
+                            cleanText = lastSentenceMatch[1];
+                        } else {
+                            // Add period if text is substantial
+                            if (cleanText.length > 10) {
+                                cleanText += '.';
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Final safety check - remove any ** that might still exist
+            cleanText = cleanText.replace(/\*+/g, '');
+            
+            return cleanText || 'Analysis information available.';
+        }
+
         // Format analysis text for modal display
         function formatAnalysisTextForModal(text) {
-            if (!text) return 'No detailed analysis available.';
+            const cleanText = cleanAnalysisText(text);
             
-            // Clean up the text and format it properly
-            let formattedText = text
-                .replace(/\n\n/g, '</p><p>')
-                .replace(/\n/g, '<br>')
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.*?)\*/g, '<em>$1</em>');
+            // Format for HTML display with proper paragraphs
+            let formattedText = cleanText
+                .replace(/\n\n+/g, '</p><p>')
+                .replace(/\n/g, '<br>');
             
-            // Wrap in paragraph tags if not already
+            // Wrap in paragraph tags
             if (!formattedText.startsWith('<p>')) {
                 formattedText = '<p>' + formattedText + '</p>';
             }
             
             return formattedText;
+        }
+
+        // Create smart summary for card preview (2-3 sentences max)
+        function createSmartSummary(text, maxSentences = 2) {
+            const cleanText = cleanAnalysisText(text);
+            
+            // Split into sentences
+            const sentences = cleanText.split(/[.!?]+/)
+                .map(s => s.trim())
+                .filter(s => s.length > 10); // Filter out very short fragments
+            
+            if (sentences.length <= maxSentences) {
+                return cleanText;
+            }
+            
+            // Take first 2 sentences and ensure proper ending
+            let summary = sentences.slice(0, maxSentences).join('. ');
+            if (!summary.endsWith('.')) {
+                summary += '.';
+            }
+            
+            return summary;
+        }
+
+        // Check if text needs a "Read More" button
+        function needsReadMoreButton(text) {
+            const cleanText = cleanAnalysisText(text);
+            const summary = createSmartSummary(text, 2);
+            
+            // Show button if summary is significantly shorter than full text
+            return cleanText.length > summary.length + 20;
+        }
+
+        // Toggle analysis text in card
+        function toggleAnalysisText(cardId) {
+            const preview = document.getElementById(cardId + '-preview');
+            const full = document.getElementById(cardId + '-full');
+            const toggleText = document.getElementById(cardId + '-toggle-text');
+            const toggleIcon = document.getElementById(cardId + '-toggle-icon');
+            
+            if (preview && full && toggleText && toggleIcon) {
+                if (full.style.display === 'none') {
+                    // Show full text
+                    preview.style.display = 'none';
+                    full.style.display = 'block';
+                    toggleText.textContent = 'Read Less';
+                    toggleIcon.classList.remove('fa-chevron-down');
+                    toggleIcon.classList.add('fa-chevron-up');
+                } else {
+                    // Show preview
+                    preview.style.display = 'block';
+                    full.style.display = 'none';
+                    toggleText.textContent = 'Read More';
+                    toggleIcon.classList.remove('fa-chevron-up');
+                    toggleIcon.classList.add('fa-chevron-down');
+                }
+            }
         }
 
         console.log('🚀 Comprehensive Altcoin Strength Scoring System Loaded');
@@ -4274,6 +4993,354 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
         .methodology li {
             margin-bottom: 10px;
             line-height: 1.5;
+        }
+
+        /* ===== CLEANER CARD LAYOUT STYLES ===== */
+        
+        /* Compact price and market data block */
+        .price-metrics-compact {
+            background: var(--primary-bg);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .price-block {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .price-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .change-value {
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .change-value.positive {
+            background: rgba(0, 208, 132, 0.1);
+            color: #00D084;
+        }
+
+        .change-value.negative {
+            background: rgba(255, 68, 68, 0.1);
+            color: #FF4444;
+        }
+
+        .market-data-compact {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .market-cap-compact,
+        .volume-compact {
+            font-weight: 500;
+        }
+
+        /* Clean divider between sections */
+        .content-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+            margin: 20px 0;
+        }
+
+        /* AI Analysis section with expandable content */
+        .ai-analysis-section {
+            background: var(--secondary-bg);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .ai-analysis-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .ai-analysis-header h5 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-analysis-header h5 i {
+            color: var(--accent-primary);
+            font-size: 0.9rem;
+        }
+
+        .read-more-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .read-more-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .ai-analysis-content {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        .analysis-preview,
+        .analysis-full {
+            margin-bottom: 10px;
+        }
+
+        .score-context {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .score-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            transition: width 0.5s ease;
+        }
+
+        .score-category {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* ===== ERROR STATES STYLING ===== */
+        
+        .scored-token-card.error-state {
+            border-color: #FF6B6B;
+            background: var(--card-bg);
+        }
+        
+        .scored-token-card.error-state:hover {
+            border-color: #FF4444;
+            transform: none;
+            box-shadow: 0 4px 15px rgba(255, 68, 68, 0.1);
+        }
+        
+        .token-symbol-badge.error {
+            background: #FF6B6B;
+            color: white;
+        }
+        
+        .error-message {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: rgba(255, 107, 107, 0.05);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 107, 107, 0.2);
+            margin: 15px 0;
+        }
+        
+        .error-icon {
+            color: #FF6B6B;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .error-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .error-title {
+            font-weight: 600;
+            color: #FF6B6B;
+            font-size: 0.9rem;
+        }
+        
+        .error-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* ===== TEXT FORMATTING IMPROVEMENTS ===== */
+        
+        /* Ensure consistent heading styles */
+        .ai-analysis-header h5 {
+            color: var(--accent-primary) !important;
+            font-weight: 600 !important;
+            font-size: 1rem !important;
+        }
+        
+        /* Score consistency */
+        .score-number {
+            font-family: inherit !important;
+            font-weight: 800 !important;
+        }
+        
+        /* Clean text formatting */
+        .analysis-preview,
+        .analysis-full {
+            line-height: 1.6 !important;
+            color: var(--text-secondary) !important;
+            font-size: 0.9rem !important;
+        }
+        
+        /* Remove any residual markdown styling */
+        .ai-analysis-content strong,
+        .ai-analysis-content b {
+            font-weight: 600 !important;
+            color: var(--text-primary) !important;
+        }
+        
+        .ai-analysis-content em,
+        .ai-analysis-content i {
+            font-style: normal !important;
+            color: var(--text-primary) !important;
+        }
+
+        /* ===== NO RESULTS STATE STYLING ===== */
+        
+        .section-no-results {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--border-color);
+            margin: 20px 0;
+        }
+        
+        .no-results-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--secondary-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            color: var(--text-secondary);
+        }
+        
+        .no-results-content {
+            max-width: 400px;
+        }
+        
+        .no-results-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 10px 0;
+        }
+        
+        .no-results-message {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 0 0 25px 0;
+        }
+        
+        .retry-button {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 12px 24px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .retry-button:hover {
+            background: var(--accent-secondary);
+            transform: translateY(-2px);
+        }
+        
+        .retry-button i {
+            font-size: 0.8rem;
+        }
+
+        /* ===== RESPONSIVE ERROR STATES ===== */
+        
+        @media (max-width: 768px) {
+            .section-no-results {
+                padding: 40px 15px;
+            }
+            
+            .no-results-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+                margin-bottom: 15px;
+            }
+            
+            .no-results-title {
+                font-size: 1.1rem;
+            }
+            
+            .no-results-message {
+                font-size: 0.9rem;
+            }
+            
+            .error-message {
+                flex-direction: column;
+                text-align: center;
+                gap: 8px;
+                padding: 12px;
+            }
+            
+            .error-icon {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section-no-results {
+                padding: 30px 10px;
+            }
+            
+            .retry-button {
+                padding: 10px 20px;
+                font-size: 0.85rem;
+            }
         }
         
         .disclaimer {
