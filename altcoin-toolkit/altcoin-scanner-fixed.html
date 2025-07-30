@@ -1976,6 +1976,38 @@ Format with clear headings and bullet points. Focus on actionable insights for t
             }
         }
 
+        // Get chain from token symbol or name
+        function getChainFromToken(searchQuery) {
+            const symbol = searchQuery.toUpperCase();
+            
+            // Check direct mapping first
+            if (CHAIN_MAPPING[symbol]) {
+                return CHAIN_MAPPING[symbol];
+            }
+            
+            // Check if the search query itself is a chain name
+            const chainNames = Object.values(CHAIN_MAPPING);
+            const queryLower = searchQuery.toLowerCase();
+            
+            for (const chainName of chainNames) {
+                if (chainName.toLowerCase().includes(queryLower) || queryLower.includes(chainName.toLowerCase())) {
+                    return chainName;
+                }
+            }
+            
+            // Default fallback - try to detect from common patterns
+            if (queryLower.includes('ethereum') || queryLower.includes('eth')) return 'Ethereum';
+            if (queryLower.includes('bitcoin') || queryLower.includes('btc')) return 'Bitcoin';
+            if (queryLower.includes('solana') || queryLower.includes('sol')) return 'Solana';
+            if (queryLower.includes('binance') || queryLower.includes('bnb')) return 'BNB Smart Chain';
+            if (queryLower.includes('polygon') || queryLower.includes('matic')) return 'Polygon';
+            if (queryLower.includes('avalanche') || queryLower.includes('avax')) return 'Avalanche';
+            if (queryLower.includes('cardano') || queryLower.includes('ada')) return 'Cardano';
+            
+            // If no specific chain detected, default to Ethereum (most common)
+            return 'Ethereum';
+        }
+
         // Load chain analysis for search
         async function loadSearchChainAnalysis(searchQuery) {
             const chainTab = document.getElementById('chainSearchTab');
