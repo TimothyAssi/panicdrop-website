@@ -727,6 +727,77 @@
             opacity: 1;
         }
 
+        /* Search Analysis Styles */
+        .search-analysis-container {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-color);
+        }
+
+        .analysis-header {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .analysis-header h2 {
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        .analysis-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .analysis-badge {
+            background: var(--accent-primary);
+            color: var(--primary-bg);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .analysis-date {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .analysis-content {
+            line-height: 1.7;
+            color: var(--text-primary);
+        }
+
+        .analysis-content h3, .analysis-content h4 {
+            color: var(--accent-primary);
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        .analysis-content ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .analysis-content li {
+            margin-bottom: 8px;
+        }
+
+        .analysis-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
         /* Responsive search styles */
         @media (max-width: 768px) {
             .search-input-group {
@@ -1638,7 +1709,7 @@ Format as clean text with clear headings and specific numbers. NEVER use asteris
             }).join('');
         }
 
-        // Search specific coin functionality
+        // Search specific coin functionality with Perplexity AI
         async function searchSpecificCoin() {
             const searchInput = document.getElementById('coinSearchInput');
             const searchQuery = searchInput.value.trim();
@@ -1659,7 +1730,7 @@ Format as clean text with clear headings and specific numbers. NEVER use asteris
                     <section class="results-section" id="searchResultsSection" style="max-width: 1200px; margin: 20px auto; padding: 0 20px;">
                         <div class="section-title">
                             <i class="fas fa-search"></i>
-                            Search Results
+                            ${searchQuery} Analysis
                         </div>
                         <div id="searchResults" class="token-grid">
                             <!-- Search results will appear here -->
@@ -1675,201 +1746,119 @@ Format as clean text with clear headings and specific numbers. NEVER use asteris
                 searchSection = document.getElementById('searchResultsSection');
             }
             
+            // Update section title
+            searchSection.querySelector('.section-title').innerHTML = `
+                <i class="fas fa-search"></i>
+                ${searchQuery} Analysis
+            `;
+            
             // Show loading state
             searchSection.style.display = 'block';
             searchResults.innerHTML = `
                 <div class="search-loading">
                     <i class="fas fa-spinner"></i>
-                    <div>Searching for "${searchQuery}"...</div>
+                    <div>Analyzing "${searchQuery}" with AI...</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 10px;">
+                        Getting live data, price analysis, and market insights
+                    </div>
                 </div>
             `;
 
             try {
-                // Search using CMC API directly
-                console.log('🔍 Fetching crypto data for search:', searchQuery);
-                const response = await fetch('/.netlify/functions/cryptoListings');
+                console.log('🔍 Starting Perplexity search for:', searchQuery);
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                // Direct Perplexity analysis
+                const analysis = await getPerplexityAnalysis(searchQuery);
                 
-                const data = await response.json();
-                console.log('🔍 API Response structure:', Object.keys(data));
-                console.log('🔍 API Response:', data);
-                
-                // Check if data is an array (direct response) or has success property
-                let cryptoData;
-                if (Array.isArray(data)) {
-                    cryptoData = data;
-                } else if (data.success && data.data) {
-                    cryptoData = data.data;
-                } else if (data.data && Array.isArray(data.data)) {
-                    cryptoData = data.data;
-                } else {
-                    console.error('🔍 Unexpected API response format:', data);
-                    throw new Error('Invalid API response format');
-                }
-                
-                if (!cryptoData || cryptoData.length === 0) {
-                    throw new Error('No cryptocurrency data received');
-                }
-                
-                console.log('🔍 Total coins received:', cryptoData.length);
-                console.log('🔍 First 3 coins:', cryptoData.slice(0, 3).map(c => `${c.symbol} - ${c.name}`));
-                
-                // Create a normalized data object
-                const normalizedData = { success: true, data: cryptoData };
-                processSearchResults(normalizedData, searchQuery, searchResults);
+                // Display the comprehensive analysis
+                displaySearchAnalysis(searchQuery, analysis, searchResults);
 
             } catch (error) {
                 console.error('Search error:', error);
                 searchResults.innerHTML = `
                     <div class="error-state">
                         <i class="fas fa-exclamation-triangle"></i>
-                        <div class="error-text">Search failed</div>
-                        <div>Please try again or check your connection</div>
+                        <div class="error-text">Search Analysis Failed</div>
+                        <div>Unable to analyze "${searchQuery}". Please try again.</div>
                         <button class="retry-btn" onclick="searchSpecificCoin()">
                             <i class="fas fa-redo"></i>
-                            Retry Search
+                            Retry Analysis
                         </button>
                     </div>
                 `;
             }
         }
 
-        // Process search results
-        function processSearchResults(data, searchQuery, searchResults) {
-            if (!data.success || !data.data) {
-                throw new Error('Failed to fetch cryptocurrency data');
-            }
+        // Get comprehensive Perplexity analysis for any coin
+        async function getPerplexityAnalysis(searchQuery) {
+            const prompt = `Provide a comprehensive analysis of ${searchQuery} cryptocurrency with current market data. Include:
 
-            const query = searchQuery.toLowerCase().trim();
-            console.log('🔍 Searching for:', query);
-            
-            // Find matching coins with flexible matching
-            const matches = data.data.filter(coin => {
-                const symbol = coin.symbol.toLowerCase();
-                const name = coin.name.toLowerCase();
-                
-                // Exact matches first
-                if (symbol === query || name === query) return true;
-                
-                // Partial matches
-                if (symbol.includes(query) || name.includes(query)) return true;
-                
-                // Word boundary matches
-                const nameWords = name.split(/\s+/);
-                if (nameWords.some(word => word.startsWith(query))) return true;
-                
-                return false;
+1. **Current Price & Market Data**: Live price, market cap, 24h volume, circulating supply
+2. **Price Performance**: 24h, 7d, 30d price changes and performance metrics
+3. **Project Overview**: What the project does, key technology, use cases
+4. **Recent News & Developments**: Latest announcements, partnerships, updates (last 30 days)
+5. **Market Position**: Ranking, competition, sector analysis
+6. **Technical Indicators**: RSI, support/resistance levels, trend analysis
+7. **Investment Considerations**: Strengths, risks, token unlock schedules if any
+8. **Community & Adoption**: Social metrics, developer activity, ecosystem growth
+
+Format with clear headings and bullet points. Focus on actionable insights for traders and investors. Use current data from January 2025.`;
+
+            const response = await fetch('/.netlify/functions/perplexityQuery', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    query: prompt,
+                    model: 'sonar'
+                })
             });
 
-            console.log('🔍 Found matches:', matches.length);
-            console.log('🔍 Sample matches:', matches.slice(0, 3).map(m => `${m.symbol} - ${m.name}`));
-
-            if (matches.length === 0) {
-                searchResults.innerHTML = `
-                    <div class="no-results">
-                        <i class="fas fa-search"></i>
-                        <div class="no-results-text">No coins found for "${searchQuery}"</div>
-                        <div class="no-results-hint">Try searching with a different name or ticker symbol<br>Examples: Bitcoin, BTC, Ethereum, ETH, Solana, SOL</div>
-                    </div>
-                `;
-                return;
+            if (!response.ok) {
+                throw new Error(`Perplexity API error: ${response.status}`);
             }
 
-            // Sort by relevance (exact matches first, then partial)
-            matches.sort((a, b) => {
-                const aSymbol = a.symbol.toLowerCase();
-                const bSymbol = b.symbol.toLowerCase();
-                const aName = a.name.toLowerCase();
-                const bName = b.name.toLowerCase();
-                
-                // Exact symbol matches first
-                if (aSymbol === query && bSymbol !== query) return -1;
-                if (bSymbol === query && aSymbol !== query) return 1;
-                
-                // Exact name matches second
-                if (aName === query && bName !== query) return -1;
-                if (bName === query && aName !== query) return 1;
-                
-                // Then by market cap rank
-                return (a.cmc_rank || 999999) - (b.cmc_rank || 999999);
-            });
-
-            // Display results using the same format as other sections
-            displaySearchResults(matches, searchResults);
-        }
-
-        // Display search results in token card format
-        function displaySearchResults(coins, searchResultsElement) {
-            const searchResults = searchResultsElement || document.getElementById('searchResults');
+            const data = await response.json();
             
-            if (coins.length === 0) {
-                searchResults.innerHTML = `
-                    <div class="no-results">
-                        <i class="fas fa-search"></i>
-                        <div class="no-results-text">No results found</div>
-                    </div>
-                `;
-                return;
+            if (!data.success) {
+                throw new Error(data.error || 'Analysis failed');
             }
 
-            const tokensHtml = coins.map(token => {
-                const price = token.quote?.USD?.price || 0;
-                const change24h = token.quote?.USD?.percent_change_24h || 0;
-                const volume = token.quote?.USD?.volume_24h || 0;
-                const marketCap = token.quote?.USD?.market_cap || 0;
+            return data.response;
+        }
 
-                const changeClass = change24h >= 0 ? 'positive' : 'negative';
-                const changeSymbol = change24h >= 0 ? '+' : '';
-
-                return `
-                    <div class="token-card clickable-card" onclick="openDetailedAnalysis('${token.symbol}', '${token.name.replace(/'/g, "\\'")}')">
-                        <div class="token-header">
-                            <div class="token-info">
-                                <div class="token-symbol">${token.symbol}</div>
-                                <div class="token-name">${token.name}</div>
-                            </div>
-                            <div class="token-rank">#${token.cmc_rank || 'N/A'}</div>
-                        </div>
-                        
-                        <div class="token-metrics">
-                            <div class="metric">
-                                <div class="metric-label">Price</div>
-                                <div class="metric-value">$${price.toLocaleString('en-US', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: price > 1 ? 2 : 6
-                                })}</div>
-                            </div>
-                            
-                            <div class="metric">
-                                <div class="metric-label">24h Change</div>
-                                <div class="metric-value ${changeClass}">
-                                    ${changeSymbol}${change24h.toFixed(2)}%
-                                </div>
-                            </div>
-                            
-                            <div class="metric">
-                                <div class="metric-label">Volume (24h)</div>
-                                <div class="metric-value">$${formatNumber(volume)}</div>
-                            </div>
-                            
-                            <div class="metric">
-                                <div class="metric-label">Market Cap</div>
-                                <div class="metric-value">$${formatNumber(marketCap)}</div>
-                            </div>
-                        </div>
-                        
-                        <div class="token-footer">
-                            <div class="click-hint">🔍 Click for detailed analysis</div>
+        // Display comprehensive search analysis
+        function displaySearchAnalysis(searchQuery, analysis, searchResults) {
+            const cleanAnalysis = formatAnalysisText(analysis);
+            
+            searchResults.innerHTML = `
+                <div class="search-analysis-container">
+                    <div class="analysis-header">
+                        <h2><i class="fas fa-coins"></i> ${searchQuery.toUpperCase()} Comprehensive Analysis</h2>
+                        <div class="analysis-meta">
+                            <span class="analysis-badge">AI-Powered</span>
+                            <span class="analysis-badge">Live Data</span>
+                            <span class="analysis-date">Updated: ${new Date().toLocaleString()}</span>
                         </div>
                     </div>
-                `;
-            }).join('');
-
-            searchResults.innerHTML = tokensHtml;
+                    <div class="analysis-content">
+                        ${cleanAnalysis}
+                    </div>
+                    <div class="analysis-footer">
+                        <button class="btn btn-primary" onclick="searchSpecificCoin()" style="margin-right: 15px;">
+                            <i class="fas fa-redo"></i>
+                            Refresh Analysis
+                        </button>
+                        <button class="btn btn-secondary" onclick="document.getElementById('coinSearchInput').value = ''; document.getElementById('searchResultsSection').style.display = 'none';">
+                            <i class="fas fa-times"></i>
+                            Clear Results
+                        </button>
+                    </div>
+                </div>
+            `;
         }
+
 
         // Add Enter key support for search
         document.addEventListener('DOMContentLoaded', function() {
