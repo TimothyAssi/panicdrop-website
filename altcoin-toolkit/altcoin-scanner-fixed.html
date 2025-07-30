@@ -163,12 +163,30 @@
             border-radius: var(--border-radius-lg);
             padding: 20px;
             transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
         }
 
         .token-card:hover {
             transform: translateY(-5px);
             box-shadow: var(--shadow-heavy);
             border-color: var(--accent-primary);
+        }
+
+        .token-card::after {
+            content: '🔍 Click for detailed analysis';
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            color: var(--accent-primary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .token-card:hover::after {
+            opacity: 1;
         }
 
         .token-header {
@@ -303,24 +321,6 @@
             accent-color: var(--accent-primary);
         }
 
-        .analysis-btn {
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-            width: 100%;
-        }
-
-        .analysis-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-medium);
-        }
 
         /* Analysis Modal */
         .analysis-modal {
@@ -640,8 +640,7 @@
                         <a href="position-calculator.html">Position Calculator</a>
                         <a href="trade-journal.html">Trade Journal</a>
                         <a href="screenshot-analyzer.html">Screenshot Analyzer</a>
-                        <a href="altcoin-strength-scanner.html">Altcoin Strength Scanner</a>
-                        <a href="altcoin-scanner-fixed.html" class="active">Altcoin Scanner (Fixed)</a>
+                        <a href="altcoin-scanner-fixed.html" class="active">Altcoin Strength Scanner</a>
                     </div>
                 </li>
                 <li class="nav-item">
@@ -1037,7 +1036,7 @@ CRITICAL: NEVER use asterisks, bold formatting, or numbered lists. Provide clean
             }
 
             container.innerHTML = tokens.map(token => `
-                <div class="token-card">
+                <div class="token-card" onclick="openDetailedAnalysis('${token.symbol}', '${token.name}')">
                     <div class="token-header">
                         <div>
                             <div class="token-name">${token.name}</div>
@@ -1052,10 +1051,6 @@ CRITICAL: NEVER use asterisks, bold formatting, or numbered lists. Provide clean
                             ${token.change24h >= 0 ? '+' : ''}${token.change24h.toFixed(2)}%
                         </div>
                     </div>
-                    <button class="analysis-btn" onclick="openDetailedAnalysis('${token.symbol}', '${token.name}')">
-                        <i class="fas fa-chart-line"></i>
-                        Detailed Analysis
-                    </button>
                 </div>
             `).join('');
         }
