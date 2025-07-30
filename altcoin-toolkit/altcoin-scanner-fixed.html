@@ -798,6 +798,63 @@
             flex-wrap: wrap;
         }
 
+        /* Search Tab Styles */
+        .search-tab-pane {
+            display: none;
+        }
+
+        .search-tab-pane.active {
+            display: block;
+        }
+
+        .search-analysis-container .tab-nav {
+            margin: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .search-analysis-container .tab-btn {
+            background: none;
+            border: none;
+            padding: 15px 20px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-analysis-container .tab-btn:hover {
+            color: var(--accent-primary);
+            background: rgba(79, 172, 254, 0.1);
+        }
+
+        .search-analysis-container .tab-btn.active {
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-primary);
+            background: rgba(79, 172, 254, 0.1);
+        }
+
+        .search-analysis-container .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .search-analysis-container .loading-state i {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--accent-primary);
+            animation: spin 1s linear infinite;
+        }
+
         /* Responsive search styles */
         @media (max-width: 768px) {
             .search-input-group {
@@ -1828,7 +1885,7 @@ Format with clear headings and bullet points. Focus on actionable insights for t
             return data.response;
         }
 
-        // Display comprehensive search analysis
+        // Display comprehensive search analysis with tabs
         function displaySearchAnalysis(searchQuery, analysis, searchResults) {
             const cleanAnalysis = formatAnalysisText(analysis);
             
@@ -1842,9 +1899,44 @@ Format with clear headings and bullet points. Focus on actionable insights for t
                             <span class="analysis-date">Updated: ${new Date().toLocaleString()}</span>
                         </div>
                     </div>
-                    <div class="analysis-content">
-                        ${cleanAnalysis}
+                    
+                    <!-- Tab Navigation -->
+                    <div class="tab-nav">
+                        <button class="tab-btn active" onclick="switchSearchTab('overview', '${searchQuery}')">
+                            <i class="fas fa-chart-line"></i>
+                            Overview Analysis
+                        </button>
+                        <button class="tab-btn" onclick="switchSearchTab('chain', '${searchQuery}')">
+                            <i class="fas fa-network-wired"></i>
+                            Chain Analysis
+                        </button>
+                        <button class="tab-btn" onclick="switchSearchTab('token', '${searchQuery}')">
+                            <i class="fas fa-coins"></i>
+                            Token Analysis
+                        </button>
                     </div>
+                    
+                    <!-- Tab Content -->
+                    <div class="tab-content">
+                        <div id="overviewSearchTab" class="search-tab-pane active">
+                            <div class="analysis-content">
+                                ${cleanAnalysis}
+                            </div>
+                        </div>
+                        <div id="chainSearchTab" class="search-tab-pane">
+                            <div class="loading-state">
+                                <i class="fas fa-spinner"></i>
+                                <div>Click to load chain analysis...</div>
+                            </div>
+                        </div>
+                        <div id="tokenSearchTab" class="search-tab-pane">
+                            <div class="loading-state">
+                                <i class="fas fa-spinner"></i>
+                                <div>Click to load token analysis...</div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="analysis-footer">
                         <button class="btn btn-primary" onclick="searchSpecificCoin()" style="margin-right: 15px;">
                             <i class="fas fa-redo"></i>
@@ -1857,6 +1949,132 @@ Format with clear headings and bullet points. Focus on actionable insights for t
                     </div>
                 </div>
             `;
+        }
+
+        // Switch search analysis tabs
+        function switchSearchTab(tabType, searchQuery) {
+            // Update active tab
+            document.querySelectorAll('.search-analysis-container .tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelectorAll('.search-analysis-container .search-tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tabType}SearchTab`).classList.add('active');
+            
+            // Load content if needed
+            if (tabType === 'chain') {
+                loadSearchChainAnalysis(searchQuery);
+            } else if (tabType === 'token') {
+                loadSearchTokenAnalysis(searchQuery);
+            }
+        }
+
+        // Load chain analysis for search
+        async function loadSearchChainAnalysis(searchQuery) {
+            const chainTab = document.getElementById('chainSearchTab');
+            const chain = getChainFromToken(searchQuery);
+            
+            chainTab.innerHTML = `
+                <div class="loading-state">
+                    <i class="fas fa-spinner"></i>
+                    <div>Analyzing ${chain} chain...</div>
+                </div>
+            `;
+            
+            try {
+                const prompt = `Provide a comprehensive ${chain} blockchain analysis focusing on:
+
+1. **TVL Growth & DeFi Ecosystem**: Current total value locked, top protocols, growth trends over last 6 months
+2. **Network Performance**: Transaction throughput, fees, network utilization, recent upgrades
+3. **Developer Activity**: GitHub commits, active developers, new projects launching
+4. **Institutional Adoption**: Major partnerships, enterprise use cases, institutional investments
+5. **Technology & Roadmap**: Key technical features, upcoming upgrades, scaling solutions
+6. **Competition Analysis**: How it compares to other L1/L2 chains, market position
+7. **Risks & Challenges**: Technical risks, centralization concerns, regulatory issues
+
+Focus on current data from January 2025 and actionable insights for ${searchQuery} holders.`;
+
+                const response = await fetch('/.netlify/functions/perplexityQuery', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: prompt, model: 'sonar' })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    chainTab.innerHTML = `
+                        <div class="analysis-section">
+                            <h3><i class="fas fa-network-wired"></i>${chain} Chain Analysis</h3>
+                            <div class="analysis-content">${formatAnalysisText(data.response)}</div>
+                        </div>
+                    `;
+                } else {
+                    throw new Error('Analysis failed');
+                }
+            } catch (error) {
+                chainTab.innerHTML = `
+                    <div class="error-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div class="error-text">Chain analysis unavailable</div>
+                        <div>Please try again later</div>
+                    </div>
+                `;
+            }
+        }
+
+        // Load token analysis for search
+        async function loadSearchTokenAnalysis(searchQuery) {
+            const tokenTab = document.getElementById('tokenSearchTab');
+            
+            tokenTab.innerHTML = `
+                <div class="loading-state">
+                    <i class="fas fa-spinner"></i>
+                    <div>Analyzing ${searchQuery} token...</div>
+                </div>
+            `;
+            
+            try {
+                const prompt = `Provide detailed ${searchQuery} token analysis focusing on:
+
+1. **Token Unlock Schedule**: Upcoming token unlocks, vesting schedules, potential dilution events in next 12 months
+2. **Tokenomics Deep Dive**: Total supply, circulating supply, inflation rate, burn mechanisms, utility
+3. **Dilution Risk Assessment**: How token unlocks might affect price, major holders, insider selling pressure
+4. **Governance & Staking**: Governance token features, staking rewards, voting power distribution
+5. **Liquidity Analysis**: Exchange listings, trading pairs, liquidity depth, whale movements
+6. **Price Catalysts**: Upcoming events that could drive price (upgrades, partnerships, listings)
+7. **Technical Price Analysis**: Support/resistance levels, RSI, moving averages, trend analysis
+
+Use current January 2025 data and focus on investment implications.`;
+
+                const response = await fetch('/.netlify/functions/perplexityQuery', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: prompt, model: 'sonar' })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    tokenTab.innerHTML = `
+                        <div class="analysis-section">
+                            <h3><i class="fas fa-coins"></i>${searchQuery} Token Analysis</h3>
+                            <div class="analysis-content">${formatAnalysisText(data.response)}</div>
+                        </div>
+                    `;
+                } else {
+                    throw new Error('Analysis failed');
+                }
+            } catch (error) {
+                tokenTab.innerHTML = `
+                    <div class="error-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div class="error-text">Token analysis unavailable</div>
+                        <div>Please try again later</div>
+                    </div>
+                `;
+            }
         }
 
 
