@@ -1964,27 +1964,60 @@
         // Load live crypto data from CMC API
         async function loadCryptoData() {
             try {
-                console.log('🔍 Fetching live crypto data...');
+                console.log('🔍 Fetching live crypto data from /api/cryptoListings...');
                 const response = await fetch('/api/cryptoListings');
+                
+                console.log('📡 CMC API response status:', response.status, response.statusText);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ CMC API HTTP Error:', response.status, errorText);
+                    throw new Error(`CMC API Error ${response.status}: ${errorText}`);
+                }
+                
                 const data = await response.json();
+                console.log('📊 CMC API data received:', data);
+                
+                if (data.error) {
+                    console.error('❌ CMC API returned error:', data.error);
+                    throw new Error(`CMC API Error: ${data.error}`);
+                }
                 
                 if (data.data && data.data.length > 0) {
                     cryptoData = data.data;
+                    console.log(`✅ Successfully loaded ${cryptoData.length} cryptocurrencies`);
+                    
                     // Filter out stablecoins and focus on altcoins (skip BTC at position 0)
                     filteredData = cryptoData.slice(1).filter(coin => {
                         const symbol = coin.symbol.toLowerCase();
                         return !['usdt', 'usdc', 'busd', 'dai', 'tusd', 'frax'].includes(symbol);
                     }).slice(0, 20); // Show top 20 altcoins
                     
+                    console.log(`🎯 Filtered to ${filteredData.length} altcoins for display`);
                     displayCryptoData();
                     updateAPIStatus(true);
                 } else {
-                    throw new Error('No crypto data received');
+                    console.error('❌ No crypto data in response:', data);
+                    throw new Error('No crypto data received from CMC API');
                 }
             } catch (error) {
                 console.error('❌ Failed to load crypto data:', error);
                 updateAPIStatus(false);
                 showErrorMessage();
+                
+                // Try to display a helpful error message
+                const container = document.getElementById('cryptoContainer');
+                if (container) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: var(--accent-danger);">
+                            <h3>❌ Crypto Data Loading Failed</h3>
+                            <p>Error: ${error.message}</p>
+                            <p style="font-size: 0.9rem; margin-top: 1rem;">
+                                Check browser console for details or try refreshing the page.
+                            </p>
+                        </div>
+                    `;
+                }
             }
         }
         
