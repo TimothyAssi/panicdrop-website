@@ -996,26 +996,6 @@
 
     <!-- Main Scanner Content -->
         
-        <!-- Live Crypto Data Section -->
-        <section class="scanner-section crypto-section">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <i class="fas fa-chart-line"></i>
-                    Live Altcoin Market Data
-                </h2>
-                <p class="section-subtitle">
-                    Real-time cryptocurrency prices and market data from CoinMarketCap
-                </p>
-            </div>
-            <div id="cryptoContainer" class="crypto-grid">
-                <!-- Live crypto data will be populated here -->
-                <div class="loading-placeholder">
-                    <div class="loading-spinner-small"></div>
-                    <p>Loading live market data...</p>
-                </div>
-            </div>
-        </section>
-        
         <!-- Section 1: Trending Narratives -->
         <section class="scanner-section narrative-section">
             <div class="section-header">
@@ -1088,55 +1068,6 @@
                 </p>
             </div>
 
-            <!-- Filter Controls -->
-            <div class="filter-controls">
-                <div class="filter-group">
-                    <label for="marketCapFilter">Market Cap Range:</label>
-                    <select id="marketCapFilter" class="filter-select">
-                        <option value="all">All Market Caps</option>
-                        <option value="large">Large Cap (>$10B)</option>
-                        <option value="mid">Mid Cap ($1B - $10B)</option>
-                        <option value="small">Small Cap ($100M - $1B)</option>
-                        <option value="micro">Micro Cap (<$100M)</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="categoryFilter">Category:</label>
-                    <select id="categoryFilter" class="filter-select">
-                        <option value="all">All Categories</option>
-                        <option value="l1">Layer 1 (L1)</option>
-                        <option value="l2">Layer 2 (L2)</option>
-                        <option value="defi">DeFi</option>
-                        <option value="gaming">Gaming</option>
-                        <option value="nft">NFT</option>
-                        <option value="ai">AI/ML</option>
-                        <option value="metaverse">Metaverse</option>
-                        <option value="storage">Storage</option>
-                        <option value="privacy">Privacy</option>
-                        <option value="oracle">Oracle</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label>Exclude:</label>
-                    <div class="checkbox-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="excludeStablecoins" checked>
-                            <span>Stablecoins</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="excludeMemecoins" checked>
-                            <span>Meme Coins</span>
-                        </label>
-                    </div>
-                </div>
-
-                <button id="applyFilters" class="apply-filters-btn">
-                    <i class="fas fa-filter"></i>
-                    Apply Filters
-                </button>
-            </div>
 
             <div id="topThreeTokens" class="tokens-grid top-three-grid">
                 <!-- Top 3 filtered tokens will be populated here -->
@@ -1278,15 +1209,17 @@
         document.addEventListener('DOMContentLoaded', function() {
             const apiStatus = document.getElementById('apiStatus');
             if (apiStatus) {
-                apiStatus.textContent = '✅ Scanner Ready';
-                apiStatus.className = 'api-status live';
+                apiStatus.textContent = '🔄 Loading AI Analysis...';
+                apiStatus.className = 'api-status demo';
             }
             
-            updateDataStatus('Connected');
-            updateAIStatus('Ready');
+            updateDataStatus('Loading...');
+            updateAIStatus('Analyzing...');
             
-            // Load initial crypto data for reference
-            loadCryptoData();
+            // Auto-start analysis when page loads
+            setTimeout(() => {
+                startFullAnalysis();
+            }, 1000);
         });
         
         // Comprehensive Scoring System
@@ -1720,7 +1653,7 @@
             const changeIcon = change24h >= 0 ? '📈' : '📉';
             
             return `
-                <div class="scored-token-card">
+                <div class="scored-token-card" onclick="showDetailedAnalysis('${token.symbol}', '${sectionType}', ${token.score}, '${token.description.replace(/'/g, "\\'")}', ${JSON.stringify(liveData).replace(/'/g, "\\\'")})">
                     <div class="token-header">
                         <div class="token-info">
                             <h4>${liveData.name}</h4>
@@ -1769,8 +1702,124 @@
                         </div>
                         <span class="score-category">${SCORING_SYSTEM[sectionType].name}</span>
                     </div>
+                    
+                    <div class="click-indicator">
+                        <i class="fas fa-search-plus"></i>
+                        Click for detailed analysis
+                    </div>
                 </div>
             `;
+        }
+        
+        // Show detailed analysis modal
+        async function showDetailedAnalysis(symbol, sectionType, score, shortDescription, liveData) {
+            // Get additional detailed analysis from AI
+            const detailedAnalysis = await getDetailedTokenAnalysis(symbol, sectionType);
+            const sectionInfo = SCORING_SYSTEM[sectionType];
+            
+            const modal = document.createElement('div');
+            modal.className = 'detailed-analysis-modal';
+            modal.innerHTML = `
+                <div class="modal-content-detailed">
+                    <div class="modal-header">
+                        <div class="token-modal-header">
+                            <h2>${liveData.name} (${symbol})</h2>
+                            <div class="modal-score-badge">
+                                <div class="score-large">${score}</div>
+                                <div class="score-label">/100</div>
+                            </div>
+                        </div>
+                        <button class="close-btn" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
+                    </div>
+                    <div class="modal-body-detailed">
+                        <div class="analysis-section">
+                            <h3>🧠 AI Scoring Breakdown</h3>
+                            <div class="scoring-category-info">
+                                <h4>${sectionInfo.name}</h4>
+                                <p>${sectionInfo.description}</p>
+                            </div>
+                            <div class="criteria-breakdown">
+                                <h5>Scoring Criteria Used:</h5>
+                                <ul>
+                                    ${sectionInfo.criteria.map(criterion => `<li>${criterion}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="analysis-section">
+                            <h3>📊 Live Market Data</h3>
+                            <div class="detailed-metrics">
+                                <div class="metric-grid">
+                                    <div class="metric-detailed">
+                                        <span class="metric-label">Current Price</span>
+                                        <span class="metric-value">$${formatPrice(liveData.quote.USD.price)}</span>
+                                    </div>
+                                    <div class="metric-detailed">
+                                        <span class="metric-label">Market Cap</span>
+                                        <span class="metric-value">$${formatLargeNumber(liveData.quote.USD.market_cap)}</span>
+                                    </div>
+                                    <div class="metric-detailed">
+                                        <span class="metric-label">24h Volume</span>
+                                        <span class="metric-value">$${formatLargeNumber(liveData.quote.USD.volume_24h)}</span>
+                                    </div>
+                                    <div class="metric-detailed">
+                                        <span class="metric-label">Market Rank</span>
+                                        <span class="metric-value">#${liveData.cmc_rank}</span>
+                                    </div>
+                                    <div class="metric-detailed">
+                                        <span class="metric-label">Circulating Supply</span>
+                                        <span class="metric-value">${formatLargeNumber(liveData.circulating_supply)} ${symbol}</span>
+                                    </div>
+                                    <div class="metric-detailed">
+                                        <span class="metric-label">24h Change</span>
+                                        <span class="metric-value ${liveData.quote.USD.percent_change_24h >= 0 ? 'positive' : 'negative'}">
+                                            ${liveData.quote.USD.percent_change_24h >= 0 ? '📈' : '📉'} ${liveData.quote.USD.percent_change_24h.toFixed(2)}%
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="analysis-section">
+                            <h3>🔍 Detailed AI Analysis</h3>
+                            <div class="detailed-reasoning">
+                                <div class="analysis-text">
+                                    ${detailedAnalysis || shortDescription}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="disclaimer-section">
+                            <h4>⚠️ Investment Disclaimer</h4>
+                            <p>This analysis is for educational purposes only and should not be considered financial advice. Always conduct your own research before making investment decisions. Cryptocurrency investments carry significant risk.</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+        
+        // Get detailed token analysis
+        async function getDetailedTokenAnalysis(symbol, sectionType) {
+            try {
+                const response = await fetch('/api/perplexityScore', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        token: `Provide a comprehensive analysis of ${symbol} cryptocurrency focusing on ${SCORING_SYSTEM[sectionType].name.toLowerCase()}. Include detailed reasoning for its strengths, potential risks, recent developments, and why it scores well in this category. Provide specific metrics and data points where possible.`
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.choices && data.choices[0]) {
+                    return formatAnalysisText(data.choices[0].message.content);
+                } else if (data.explanation) {
+                    return formatAnalysisText(data.explanation);
+                }
+            } catch (error) {
+                console.error('Failed to get detailed analysis:', error);
+            }
+            return null;
         }
         
         function displayMemeTokens(analysis) {
@@ -2297,10 +2346,31 @@
             position: relative;
         }
         
+        .scored-token-card {
+            cursor: pointer;
+        }
+        
         .scored-token-card:hover {
             transform: translateY(-3px);
             box-shadow: var(--shadow-large);
             border-color: var(--accent-primary);
+        }
+        
+        .click-indicator {
+            text-align: center;
+            padding: 10px;
+            background: var(--primary-bg);
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+        
+        .scored-token-card:hover .click-indicator {
+            opacity: 1;
+            color: var(--accent-primary);
         }
         
         .token-header {
@@ -2565,6 +2635,180 @@
         .disclaimer h4 {
             color: var(--accent-danger);
             margin: 0 0 10px 0;
+        }
+        
+        /* Detailed Analysis Modal */
+        .detailed-analysis-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+        }
+        
+        .modal-content-detailed {
+            background: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            max-width: 900px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .token-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .token-modal-header h2 {
+            color: var(--text-primary);
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .modal-score-badge {
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            min-width: 80px;
+        }
+        
+        .score-large {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+        
+        .modal-body-detailed {
+            padding: 25px;
+            color: var(--text-primary);
+        }
+        
+        .analysis-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--primary-bg);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--accent-primary);
+        }
+        
+        .analysis-section h3 {
+            color: var(--accent-primary);
+            margin: 0 0 15px 0;
+            font-size: 1.3rem;
+        }
+        
+        .scoring-category-info h4 {
+            color: var(--text-primary);
+            margin: 0 0 10px 0;
+        }
+        
+        .criteria-breakdown {
+            margin-top: 15px;
+        }
+        
+        .criteria-breakdown h5 {
+            color: var(--accent-secondary);
+            margin: 0 0 10px 0;
+        }
+        
+        .criteria-breakdown ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .criteria-breakdown li {
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+        
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .metric-detailed {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .metric-detailed .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+        
+        .metric-detailed .metric-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .detailed-reasoning {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 20px;
+        }
+        
+        .analysis-text {
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+        
+        .disclaimer-section {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid var(--accent-danger);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .disclaimer-section h4 {
+            color: var(--accent-danger);
+            margin: 0 0 10px 0;
+        }
+        
+        /* Mobile responsive for detailed modal */
+        @media (max-width: 768px) {
+            .modal-content-detailed {
+                width: 98%;
+                max-height: 95vh;
+            }
+            
+            .token-modal-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .modal-body-detailed {
+                padding: 15px;
+            }
+            
+            .analysis-section {
+                padding: 15px;
+            }
+            
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
         }
         
         /* AI Analysis Cards */
