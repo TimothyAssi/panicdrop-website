@@ -1861,7 +1861,7 @@ Format as clean text with clear headings and specific numbers. NEVER use asteris
 
 Format with clear headings and bullet points. Focus on actionable insights for traders and investors. Use current data from January 2025.`;
 
-            const response = await fetch('/.netlify/functions/perplexityQuery', {
+            const response = await fetch('/.netlify/functions/perplexityScore', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1997,7 +1997,7 @@ Format with clear headings and bullet points. Focus on actionable insights for t
 
 Focus on current data from January 2025 and actionable insights for ${searchQuery} holders.`;
 
-                const response = await fetch('/.netlify/functions/perplexityQuery', {
+                const response = await fetch('/.netlify/functions/perplexityScore', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query: prompt, model: 'sonar' })
@@ -2049,7 +2049,7 @@ Focus on current data from January 2025 and actionable insights for ${searchQuer
 
 Use current January 2025 data and focus on investment implications.`;
 
-                const response = await fetch('/.netlify/functions/perplexityQuery', {
+                const response = await fetch('/.netlify/functions/perplexityScore', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query: prompt, model: 'sonar' })
