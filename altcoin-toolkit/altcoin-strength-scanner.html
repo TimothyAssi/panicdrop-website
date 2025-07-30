@@ -2241,7 +2241,15 @@ CRITICAL FORMATTING RULES - NEVER VIOLATE:
             const data = await response.json();
             const results = extractTokenRecommendations(data);
             
-            return results; // Return direct results since filtering is built into the prompt
+            console.log('🔍 Filtered narrative results:', results);
+            
+            // If filtered results are empty, try fallback analysis
+            if (!results || !results.tokens || results.tokens.length === 0) {
+                console.log('⚠️ No filtered narrative results, trying fallback...');
+                return await analyzeNarrativeTokens(); // Fallback to unfiltered
+            }
+            
+            return results;
         }
         
         // Analyze meme tokens with AI
@@ -2289,6 +2297,41 @@ CRITICAL FORMATTING RULES - NEVER VIOLATE:
             
             const data = await response.json();
             const results = extractTokenRecommendations(data);
+            
+            console.log('🔍 Filtered meme results:', results);
+            
+            // If filtered results are empty, try fallback analysis
+            if (!results || !results.tokens || results.tokens.length === 0) {
+                console.log('⚠️ No filtered meme results, trying fallback...');
+                // Prevent infinite loop by calling original function
+                const prompt = `List exactly 3 different trending meme cryptocurrencies with high social engagement and community activity. Format each as clean, readable text without markdown or references:
+
+Dogecoin (DOGE) - Score: 75/100 - Original meme coin with strong community
+Shiba Inu (SHIB) - Score: 72/100 - Popular dog-themed token with ecosystem
+Pepe (PEPE) - Score: 69/100 - Viral meme token with trading momentum
+
+CRITICAL FORMATTING RULES - NEVER VIOLATE:
+- NEVER use asterisks (*) or double asterisks (**) anywhere in your response
+- NEVER use bold, italic, or any markdown formatting whatsoever  
+- NEVER include numbered lists (1., 2., 3.)
+- NEVER include reference numbers [1], [2] or citations
+- Write ONLY clean, plain text sentences without any special characters
+- Do not use underscores (_), backticks (\`), or hash symbols (#)
+- Replace with 3 different actual MEME COINS ONLY
+- RESPOND WITH CLEAN TEXT ONLY - NO FORMATTING SYMBOLS`;
+                
+                const fallbackResponse = await fetch('/api/perplexityScore', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        token: prompt,
+                        maxTokens: 250
+                    })
+                });
+                
+                const fallbackData = await fallbackResponse.json();
+                return extractTokenRecommendations(fallbackData);
+            }
             
             return results;
         }
@@ -2339,6 +2382,40 @@ CRITICAL FORMATTING RULES - NEVER VIOLATE:
             const data = await response.json();
             const results = extractTokenRecommendations(data);
             
+            console.log('🔍 Filtered network results:', results);
+            
+            // If filtered results are empty, try fallback analysis
+            if (!results || !results.tokens || results.tokens.length === 0) {
+                console.log('⚠️ No filtered network results, trying fallback...');
+                const prompt = `List exactly 3 different top blockchain networks with strong user adoption and development activity. Format each as clean, readable text without markdown or references:
+
+Ethereum (ETH) - Score: 85/100 - Leading smart contract platform with vast ecosystem
+Binance Smart Chain (BNB) - Score: 78/100 - High-performance network with low fees
+Polygon (MATIC) - Score: 75/100 - Layer 2 scaling solution for Ethereum
+
+CRITICAL FORMATTING RULES - NEVER VIOLATE:
+- NEVER use asterisks (*) or double asterisks (**) anywhere in your response
+- NEVER use bold, italic, or any markdown formatting whatsoever  
+- NEVER include numbered lists (1., 2., 3.)
+- NEVER include reference numbers [1], [2] or citations
+- Write ONLY clean, plain text sentences without any special characters
+- Do not use underscores (_), backticks (\`), or hash symbols (#)
+- Replace with 3 different actual NETWORK/BLOCKCHAIN tokens
+- RESPOND WITH CLEAN TEXT ONLY - NO FORMATTING SYMBOLS`;
+                
+                const fallbackResponse = await fetch('/api/perplexityScore', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        token: prompt,
+                        maxTokens: 250
+                    })
+                });
+                
+                const fallbackData = await fallbackResponse.json();
+                return extractTokenRecommendations(fallbackData);
+            }
+            
             return results;
         }
         
@@ -2387,6 +2464,40 @@ CRITICAL FORMATTING RULES - NEVER VIOLATE:
             
             const data = await response.json();
             const results = extractTokenRecommendations(data);
+            
+            console.log('🔍 Filtered overall results:', results);
+            
+            // If filtered results are empty, try fallback analysis
+            if (!results || !results.tokens || results.tokens.length === 0) {
+                console.log('⚠️ No filtered overall results, trying fallback...');
+                const prompt = `List exactly 3 different best overall altcoins based on fundamentals and growth potential. Format each as clean, readable text without markdown or references:
+
+Ethereum (ETH) - Score: 88/100 - Leading smart contract platform with strong fundamentals
+Chainlink (LINK) - Score: 82/100 - Oracle network connecting blockchains with real data
+Polygon (MATIC) - Score: 79/100 - Layer 2 scaling solution with growing adoption
+
+CRITICAL FORMATTING RULES - NEVER VIOLATE:
+- NEVER use asterisks (*) or double asterisks (**) anywhere in your response
+- NEVER use bold, italic, or any markdown formatting whatsoever  
+- NEVER include numbered lists (1., 2., 3.)
+- NEVER include reference numbers [1], [2] or citations
+- Write ONLY clean, plain text sentences without any special characters
+- Do not use underscores (_), backticks (\`), or hash symbols (#)
+- Replace with 3 different actual top altcoins with strong fundamentals
+- RESPOND WITH CLEAN TEXT ONLY - NO FORMATTING SYMBOLS`;
+                
+                const fallbackResponse = await fetch('/api/perplexityScore', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        token: prompt,
+                        maxTokens: 250
+                    })
+                });
+                
+                const fallbackData = await fallbackResponse.json();
+                return extractTokenRecommendations(fallbackData);
+            }
             
             return results;
         }
@@ -3444,7 +3555,23 @@ Provide a comprehensive analysis using only plain text without any special chara
 
         function applyFiltersAndAnalyze() {
             updateFilters();
-            startFullAnalysis();
+            
+            // Check if any filters are active
+            const hasActiveFilters = window.currentFilters && (
+                window.currentFilters.category !== 'all' || 
+                window.currentFilters.excludeStablecoins || 
+                window.currentFilters.excludeMemecoins ||
+                window.currentFilters.marketCapRange !== 'all' ||
+                window.currentFilters.minScore > 0
+            );
+            
+            if (hasActiveFilters) {
+                console.log('🔍 Running filtered analysis with criteria:', window.currentFilters);
+                startFilteredAnalysis();
+            } else {
+                console.log('📊 No filters active, running standard analysis');
+                startFullAnalysis();
+            }
         }
 
         // Comprehensive Scoring Functions
