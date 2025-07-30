@@ -795,14 +795,6 @@
         <h1><i class="fas fa-chart-line"></i>Altcoin Strength Scanner</h1>
         <p>AI-powered analysis of the strongest altcoins based on comprehensive market intelligence and real-time data.</p>
         
-        <!-- SIMPLE SEARCH TEST -->
-        <div style="background: red; color: white; padding: 20px; margin: 20px 0; font-size: 20px; text-align: center;">
-            <h2>🔍 SEARCH ANY COIN</h2>
-            <input type="text" id="coinSearchInput" placeholder="Enter coin name (e.g. Bitcoin)" style="padding: 10px; margin: 10px; font-size: 16px; width: 300px;">
-            <button onclick="searchSpecificCoin()" style="padding: 10px 20px; font-size: 16px; background: blue; color: white; border: none;">SEARCH</button>
-            <div id="searchResults" style="margin-top: 20px; background: white; color: black; padding: 20px;">Search results will appear here</div>
-        </div>
-        <!-- END SEARCH TEST -->
     </section>
 
     <!-- Coin Search Section -->
@@ -1656,8 +1648,32 @@ Format as clean text with clear headings and specific numbers. NEVER use asteris
                 return;
             }
 
-            const searchResults = document.getElementById('searchResults');
-            const searchSection = document.getElementById('searchResultsSection');
+            let searchResults = document.getElementById('searchResults');
+            let searchSection = document.getElementById('searchResultsSection');
+            
+            // If elements don't exist, create them
+            if (!searchResults || !searchSection) {
+                // Create search results container
+                const searchContainer = document.createElement('div');
+                searchContainer.innerHTML = `
+                    <section class="results-section" id="searchResultsSection" style="max-width: 1200px; margin: 20px auto; padding: 0 20px;">
+                        <div class="section-title">
+                            <i class="fas fa-search"></i>
+                            Search Results
+                        </div>
+                        <div id="searchResults" class="token-grid">
+                            <!-- Search results will appear here -->
+                        </div>
+                    </section>
+                `;
+                
+                // Insert after the search input
+                const searchPanel = searchInput.closest('.control-panel');
+                searchPanel.parentNode.appendChild(searchContainer);
+                
+                searchResults = document.getElementById('searchResults');
+                searchSection = document.getElementById('searchResultsSection');
+            }
             
             // Show loading state
             searchSection.style.display = 'block';
@@ -1669,33 +1685,20 @@ Format as clean text with clear headings and specific numbers. NEVER use asteris
             `;
 
             try {
+                // Use the same crypto data that's already loaded
+                if (window.cryptoData && window.cryptoData.length > 0) {
+                    console.log('🔍 Using cached crypto data for search');
+                    const data = { success: true, data: window.cryptoData };
+                    processSearchResults(data, searchQuery, searchResults);
+                    return;
+                }
+                
                 // Search using CMC API
+                console.log('🔍 Fetching fresh crypto data for search');
                 const response = await fetch('/.netlify/functions/cryptoListings');
                 const data = await response.json();
                 
-                if (!data.success || !data.data) {
-                    throw new Error('Failed to fetch cryptocurrency data');
-                }
-
-                // Find matching coins
-                const matches = data.data.filter(coin => 
-                    coin.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    coin.name.toLowerCase().includes(searchQuery.toLowerCase())
-                );
-
-                if (matches.length === 0) {
-                    searchResults.innerHTML = `
-                        <div class="no-results">
-                            <i class="fas fa-search"></i>
-                            <div class="no-results-text">No coins found for "${searchQuery}"</div>
-                            <div class="no-results-hint">Try searching with a different name or ticker symbol</div>
-                        </div>
-                    `;
-                    return;
-                }
-
-                // Display results using the same format as other sections
-                displaySearchResults(matches);
+                processSearchResults(data, searchQuery, searchResults);
 
             } catch (error) {
                 console.error('Search error:', error);
@@ -1713,9 +1716,36 @@ Format as clean text with clear headings and specific numbers. NEVER use asteris
             }
         }
 
+        // Process search results
+        function processSearchResults(data, searchQuery, searchResults) {
+            if (!data.success || !data.data) {
+                throw new Error('Failed to fetch cryptocurrency data');
+            }
+
+            // Find matching coins
+            const matches = data.data.filter(coin => 
+                coin.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                coin.name.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+
+            if (matches.length === 0) {
+                searchResults.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <div class="no-results-text">No coins found for "${searchQuery}"</div>
+                        <div class="no-results-hint">Try searching with a different name or ticker symbol</div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Display results using the same format as other sections
+            displaySearchResults(matches, searchResults);
+        }
+
         // Display search results in token card format
-        function displaySearchResults(coins) {
-            const searchResults = document.getElementById('searchResults');
+        function displaySearchResults(coins, searchResultsElement) {
+            const searchResults = searchResultsElement || document.getElementById('searchResults');
             
             if (coins.length === 0) {
                 searchResults.innerHTML = `
