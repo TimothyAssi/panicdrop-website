@@ -1694,18 +1694,32 @@ Format as clean text with clear headings and specific numbers. NEVER use asteris
                 }
                 
                 const data = await response.json();
+                console.log('🔍 API Response structure:', Object.keys(data));
                 console.log('🔍 API Response:', data);
                 
-                if (!data.success) {
-                    throw new Error(data.error || 'API request failed');
+                // Check if data is an array (direct response) or has success property
+                let cryptoData;
+                if (Array.isArray(data)) {
+                    cryptoData = data;
+                } else if (data.success && data.data) {
+                    cryptoData = data.data;
+                } else if (data.data && Array.isArray(data.data)) {
+                    cryptoData = data.data;
+                } else {
+                    console.error('🔍 Unexpected API response format:', data);
+                    throw new Error('Invalid API response format');
                 }
                 
-                if (!data.data || data.data.length === 0) {
+                if (!cryptoData || cryptoData.length === 0) {
                     throw new Error('No cryptocurrency data received');
                 }
                 
-                console.log('🔍 Total coins received:', data.data.length);
-                processSearchResults(data, searchQuery, searchResults);
+                console.log('🔍 Total coins received:', cryptoData.length);
+                console.log('🔍 First 3 coins:', cryptoData.slice(0, 3).map(c => `${c.symbol} - ${c.name}`));
+                
+                // Create a normalized data object
+                const normalizedData = { success: true, data: cryptoData };
+                processSearchResults(normalizedData, searchQuery, searchResults);
 
             } catch (error) {
                 console.error('Search error:', error);
