@@ -985,6 +985,180 @@
                 max-width: 320px;
             }
         }
+
+        /* ===== ADVANCED FILTER PANEL ===== */
+        
+        .filter-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: var(--secondary-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .filter-header h3 {
+            color: var(--text-primary);
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filter-header h3 i {
+            color: var(--accent-primary);
+        }
+        
+        .filter-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-toggle:hover {
+            color: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+        
+        .filter-content {
+            padding: 25px;
+            display: none;
+        }
+        
+        .filter-content.active {
+            display: block;
+        }
+        
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .filter-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+        
+        .checkbox-label input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent-primary);
+        }
+        
+        .filter-group select {
+            background: var(--primary-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+        
+        .score-slider {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .score-slider input[type="range"] {
+            flex: 1;
+            height: 6px;
+            background: var(--secondary-bg);
+            border-radius: 3px;
+            outline: none;
+            accent-color: var(--accent-primary);
+        }
+        
+        .score-slider span {
+            font-weight: 600;
+            color: var(--accent-primary);
+            min-width: 50px;
+            text-align: center;
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+        
+        .filter-actions button {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        
+        /* Mobile Responsive for Filters */
+        @media (max-width: 768px) {
+            .filter-row {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .filter-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .filter-actions button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1076,6 +1250,91 @@
                 <div class="status-item">
                     <span class="status-label">Last Updated:</span>
                     <span id="lastUpdated" class="status-value">Never</span>
+                </div>
+            </div>
+            
+            <!-- Advanced Filter Box -->
+            <div class="filter-panel">
+                <div class="filter-header">
+                    <h3><i class="fas fa-filter"></i> Advanced Filters & Scoring</h3>
+                    <button class="filter-toggle" onclick="toggleFilterPanel()">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+                <div class="filter-content" id="filterContent">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label class="filter-label">Coin Type Exclusions</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="excludeStablecoins" onchange="updateFilters()">
+                                    <span>Exclude Stablecoins</span>
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="excludeMemecoins" onchange="updateFilters()">
+                                    <span>Exclude Memecoins</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label class="filter-label" for="categoryFilter">Category Search</label>
+                            <select id="categoryFilter" onchange="updateFilters()">
+                                <option value="all">All Categories</option>
+                                <option value="defi">DeFi</option>
+                                <option value="layer1">Layer 1</option>
+                                <option value="layer2">Layer 2</option>
+                                <option value="ai">AI & Big Data</option>
+                                <option value="gaming">Gaming & Metaverse</option>
+                                <option value="infrastructure">Infrastructure</option>
+                                <option value="privacy">Privacy</option>
+                                <option value="storage">Storage</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label class="filter-label">Market Cap Range</label>
+                            <div class="range-group">
+                                <select id="marketCapRange" onchange="updateFilters()">
+                                    <option value="all">All Market Caps</option>
+                                    <option value="mega">Mega Cap (>$10B)</option>
+                                    <option value="large">Large Cap ($1B-$10B)</option>
+                                    <option value="mid">Mid Cap ($100M-$1B)</option>
+                                    <option value="small">Small Cap ($10M-$100M)</option>
+                                    <option value="micro">Micro Cap (<$10M)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label class="filter-label">Minimum Score Threshold</label>
+                            <div class="score-slider">
+                                <input type="range" id="minScoreThreshold" min="0" max="100" value="0" onchange="updateFilters()">
+                                <span id="minScoreDisplay">0</span>/100
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label class="filter-label">Data Quality</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="hideIncompleteData" onchange="updateFilters()">
+                                    <span>Hide Incomplete Data</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-actions">
+                            <button class="btn-secondary" onclick="resetFilters()">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                            <button class="btn-primary" onclick="applyFiltersAndAnalyze()">
+                                <i class="fas fa-search"></i> Apply & Analyze
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2294,6 +2553,483 @@ Replace with 3 different actual top altcoins and comprehensive scores.`
                 startFullAnalysis();
             }
         }, 600000);
+
+        // ===== COMPREHENSIVE ALTCOIN STRENGTH SCORING SYSTEM =====
+        
+        // Global filter state
+        window.currentFilters = {
+            excludeStablecoins: false,
+            excludeMemecoins: false,
+            category: 'all',
+            marketCapRange: 'all',
+            minScore: 0,
+            hideIncompleteData: false
+        };
+
+        // Comprehensive Scoring System Configuration
+        const COMPREHENSIVE_SCORING = {
+            weights: {
+                marketPerformance: 0.25,    // 25%
+                onChainStrength: 0.20,      // 20%
+                tokenomics: 0.15,           // 15%
+                communitySentiment: 0.15,   // 15%
+                developmentSecurity: 0.15,  // 15%
+                relativeStrength: 0.10      // 10%
+            },
+            categories: {
+                defi: ['decentralized', 'defi', 'dex', 'lending', 'yield', 'farming', 'liquidity'],
+                layer1: ['blockchain', 'layer 1', 'platform', 'protocol', 'consensus'],
+                layer2: ['layer 2', 'scaling', 'rollup', 'sidechain', 'plasma'],
+                ai: ['artificial intelligence', 'ai', 'machine learning', 'data', 'analytics'],
+                gaming: ['gaming', 'metaverse', 'nft', 'virtual', 'play-to-earn'],
+                infrastructure: ['infrastructure', 'oracle', 'storage', 'compute', 'network'],
+                privacy: ['privacy', 'anonymous', 'private', 'zero-knowledge', 'zk'],
+                storage: ['storage', 'file', 'data storage', 'distributed storage']
+            }
+        };
+
+        // Filter Panel Functions
+        function toggleFilterPanel() {
+            const content = document.getElementById('filterContent');
+            const toggle = document.querySelector('.filter-toggle i');
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                toggle.className = 'fas fa-chevron-down';
+            } else {
+                content.classList.add('active');
+                toggle.className = 'fas fa-chevron-up';
+            }
+        }
+
+        function updateFilters() {
+            window.currentFilters = {
+                excludeStablecoins: document.getElementById('excludeStablecoins').checked,
+                excludeMemecoins: document.getElementById('excludeMemecoins').checked,
+                category: document.getElementById('categoryFilter').value,
+                marketCapRange: document.getElementById('marketCapRange').value,
+                minScore: parseInt(document.getElementById('minScoreThreshold').value),
+                hideIncompleteData: document.getElementById('hideIncompleteData').checked
+            };
+            
+            // Update score display
+            document.getElementById('minScoreDisplay').textContent = window.currentFilters.minScore;
+            
+            console.log('Filters updated:', window.currentFilters);
+        }
+
+        function resetFilters() {
+            document.getElementById('excludeStablecoins').checked = false;
+            document.getElementById('excludeMemecoins').checked = false;
+            document.getElementById('categoryFilter').value = 'all';
+            document.getElementById('marketCapRange').value = 'all';
+            document.getElementById('minScoreThreshold').value = 0;
+            document.getElementById('hideIncompleteData').checked = false;
+            document.getElementById('minScoreDisplay').textContent = '0';
+            
+            updateFilters();
+        }
+
+        function applyFiltersAndAnalyze() {
+            updateFilters();
+            startFullAnalysis();
+        }
+
+        // Comprehensive Scoring Functions
+        async function calculateComprehensiveScore(tokenData, liveData, aiAnalysis) {
+            const scores = {
+                marketPerformance: await scoreMarketPerformance(liveData),
+                onChainStrength: await scoreOnChainStrength(tokenData, aiAnalysis),
+                tokenomics: await scoreTokenomics(liveData, aiAnalysis),
+                communitySentiment: await scoreCommunitySentiment(tokenData, aiAnalysis),
+                developmentSecurity: await scoreDevelopmentSecurity(tokenData, aiAnalysis),
+                relativeStrength: await scoreRelativeStrength(liveData)
+            };
+
+            // Calculate weighted total
+            let totalScore = 0;
+            let totalWeight = 0;
+            const breakdown = {};
+
+            for (const [category, score] of Object.entries(scores)) {
+                if (score !== null && !isNaN(score)) {
+                    const weight = COMPREHENSIVE_SCORING.weights[category];
+                    totalScore += score * weight;
+                    totalWeight += weight;
+                    breakdown[category] = {
+                        score: Math.round(score * 10) / 10,
+                        weight: weight * 100,
+                        contribution: Math.round(score * weight * 10) / 10
+                    };
+                }
+            }
+
+            // Normalize if some categories are missing
+            const finalScore = totalWeight > 0 ? (totalScore / totalWeight) * 100 : 50;
+
+            // Apply risk adjustments and bonuses
+            const adjustedScore = applyRiskAdjustments(finalScore, liveData, aiAnalysis, breakdown);
+
+            return {
+                totalScore: Math.max(0, Math.min(100, Math.round(adjustedScore))),
+                breakdown: breakdown,
+                reliability: totalWeight / Object.keys(COMPREHENSIVE_SCORING.weights).length,
+                flags: generateScoreFlags(liveData, aiAnalysis, adjustedScore)
+            };
+        }
+
+        // Market Performance Scoring (25%)
+        async function scoreMarketPerformance(liveData) {
+            try {
+                const volumeToMcRatio = liveData.quote.USD.volume_24h / liveData.quote.USD.market_cap;
+                const priceChange30d = liveData.quote.USD.percent_change_30d || 0;
+                const marketRank = liveData.cmc_rank;
+
+                // Volume/MC Ratio (0-10)
+                let volumeScore = 0;
+                if (volumeToMcRatio > 1) volumeScore = 10;
+                else if (volumeToMcRatio > 0.5) volumeScore = 7;
+                else if (volumeToMcRatio > 0.1) volumeScore = 5;
+                else volumeScore = 3;
+
+                // Price Performance (0-10)
+                let priceScore = 0;
+                if (priceChange30d > 20) priceScore = 10;
+                else if (priceChange30d > 10) priceScore = 8;
+                else if (priceChange30d > 0) priceScore = 6;
+                else if (priceChange30d > -10) priceScore = 4;
+                else priceScore = 2;
+
+                // Market Rank (0-10)
+                let rankScore = 0;
+                if (marketRank <= 50) rankScore = 10;
+                else if (marketRank <= 100) rankScore = 8;
+                else if (marketRank <= 200) rankScore = 6;
+                else if (marketRank <= 500) rankScore = 4;
+                else rankScore = 2;
+
+                return (volumeScore + priceScore + rankScore) / 3;
+            } catch (error) {
+                console.error('Error scoring market performance:', error);
+                return 5; // Default neutral score
+            }
+        }
+
+        // On-Chain Strength Scoring (20%)
+        async function scoreOnChainStrength(tokenData, aiAnalysis) {
+            // This would typically integrate with on-chain APIs
+            // For now, we'll use AI analysis and CMC data as proxies
+            try {
+                const analysisText = aiAnalysis.toLowerCase();
+                let score = 5; // Default
+
+                // TVL indicators
+                if (analysisText.includes('tvl') || analysisText.includes('total value locked')) {
+                    if (analysisText.includes('billion')) score += 3;
+                    else if (analysisText.includes('million')) score += 2;
+                    else score += 1;
+                }
+
+                // Activity indicators
+                if (analysisText.includes('active') && analysisText.includes('user')) score += 2;
+                if (analysisText.includes('transaction') && analysisText.includes('volume')) score += 2;
+                if (analysisText.includes('adoption') || analysisText.includes('usage')) score += 1;
+
+                return Math.min(10, score);
+            } catch (error) {
+                console.error('Error scoring on-chain strength:', error);
+                return 5;
+            }
+        }
+
+        // Tokenomics Scoring (15%)
+        async function scoreTokenomics(liveData, aiAnalysis) {
+            try {
+                let score = 5; // Start neutral
+
+                // FDV/MC Ratio
+                const circulatingSupply = liveData.circulating_supply;
+                const totalSupply = liveData.total_supply;
+                
+                if (totalSupply && circulatingSupply) {
+                    const fdvMcRatio = totalSupply / circulatingSupply;
+                    if (fdvMcRatio < 2) score += 3;
+                    else if (fdvMcRatio < 5) score += 1;
+                    else if (fdvMcRatio > 10) score -= 2;
+                }
+
+                // Circulating percentage
+                if (totalSupply && circulatingSupply) {
+                    const circPercentage = (circulatingSupply / totalSupply) * 100;
+                    if (circPercentage > 70) score += 2;
+                    else if (circPercentage < 40) score -= 1;
+                }
+
+                // Check for unlock mentions in AI analysis
+                const analysisText = aiAnalysis.toLowerCase();
+                if (analysisText.includes('unlock') || analysisText.includes('vesting')) {
+                    if (analysisText.includes('major') || analysisText.includes('large')) score -= 2;
+                }
+
+                return Math.max(0, Math.min(10, score));
+            } catch (error) {
+                console.error('Error scoring tokenomics:', error);
+                return 5;
+            }
+        }
+
+        // Community & Sentiment Scoring (15%)
+        async function scoreCommunitySentiment(tokenData, aiAnalysis) {
+            try {
+                const analysisText = aiAnalysis.toLowerCase();
+                let score = 5;
+
+                // Positive sentiment indicators
+                const positiveWords = ['strong', 'bullish', 'positive', 'growing', 'active', 'engaged'];
+                const negativeWords = ['weak', 'bearish', 'negative', 'declining', 'inactive'];
+
+                let positiveCount = 0;
+                let negativeCount = 0;
+
+                positiveWords.forEach(word => {
+                    if (analysisText.includes(word)) positiveCount++;
+                });
+
+                negativeWords.forEach(word => {
+                    if (analysisText.includes(word)) negativeCount++;
+                });
+
+                score += Math.min(3, positiveCount) - Math.min(3, negativeCount);
+
+                // Community size indicators
+                if (analysisText.includes('million') && analysisText.includes('community')) score += 2;
+                if (analysisText.includes('social') || analysisText.includes('twitter')) score += 1;
+
+                return Math.max(0, Math.min(10, score));
+            } catch (error) {
+                console.error('Error scoring community sentiment:', error);
+                return 5;
+            }
+        }
+
+        // Development & Security Scoring (15%)
+        async function scoreDevelopmentSecurity(tokenData, aiAnalysis) {
+            try {
+                const analysisText = aiAnalysis.toLowerCase();
+                let score = 5;
+
+                // Development activity indicators
+                if (analysisText.includes('github') || analysisText.includes('development')) score += 1;
+                if (analysisText.includes('audit') || analysisText.includes('audited')) score += 2;
+                if (analysisText.includes('partnership') || analysisText.includes('integration')) score += 1;
+                if (analysisText.includes('update') || analysisText.includes('upgrade')) score += 1;
+
+                // Security indicators
+                if (analysisText.includes('secure') || analysisText.includes('security')) score += 1;
+                if (analysisText.includes('hack') || analysisText.includes('exploit')) score -= 3;
+
+                return Math.max(0, Math.min(10, score));
+            } catch (error) {
+                console.error('Error scoring development & security:', error);
+                return 5;
+            }
+        }
+
+        // Relative Strength Scoring (10%)
+        async function scoreRelativeStrength(liveData) {
+            try {
+                // Use price changes as proxy for relative strength
+                const change24h = liveData.quote.USD.percent_change_24h || 0;
+                const change7d = liveData.quote.USD.percent_change_7d || 0;
+
+                let score = 5;
+
+                // 24h performance
+                if (change24h > 5) score += 2;
+                else if (change24h > 0) score += 1;
+                else if (change24h < -5) score -= 1;
+
+                // 7d performance
+                if (change7d > 10) score += 2;
+                else if (change7d > 0) score += 1;
+                else if (change7d < -10) score -= 1;
+
+                return Math.max(0, Math.min(10, score));
+            } catch (error) {
+                console.error('Error scoring relative strength:', error);
+                return 5;
+            }
+        }
+
+        // Risk Adjustments and Bonuses
+        function applyRiskAdjustments(baseScore, liveData, aiAnalysis, breakdown) {
+            let adjustedScore = baseScore;
+            const analysisText = aiAnalysis.toLowerCase();
+
+            // High-risk penalties
+            if (analysisText.includes('high risk') || analysisText.includes('risky')) {
+                adjustedScore -= 10;
+            }
+
+            // Major unlock penalty
+            if (analysisText.includes('major unlock') || analysisText.includes('large vesting')) {
+                adjustedScore -= 10;
+            }
+
+            // Cross-category synergy bonus
+            let strongCategories = 0;
+            Object.values(breakdown).forEach(category => {
+                if (category.score > 7) strongCategories++;
+            });
+
+            if (strongCategories >= 3) {
+                adjustedScore += 5; // Synergy bonus
+            }
+
+            return adjustedScore;
+        }
+
+        // Generate score flags
+        function generateScoreFlags(liveData, aiAnalysis, score) {
+            const flags = [];
+            const analysisText = aiAnalysis.toLowerCase();
+
+            if (score < 50) flags.push('Low Score');
+            if (score > 80) flags.push('High Potential');
+            
+            if (isStablecoin(liveData, aiAnalysis)) flags.push('Stablecoin');
+            if (isMemecoin(liveData, aiAnalysis)) flags.push('Memecoin');
+            
+            if (analysisText.includes('insufficient') || analysisText.includes('limited data')) {
+                flags.push('Incomplete Data');
+            }
+
+            return flags;
+        }
+
+        // Coin type detection
+        function isStablecoin(liveData, aiAnalysis) {
+            const symbol = liveData.symbol.toLowerCase();
+            const name = liveData.name.toLowerCase();
+            const analysisText = aiAnalysis.toLowerCase();
+            
+            // Check common stablecoin symbols
+            const stablecoinSymbols = ['usdt', 'usdc', 'busd', 'dai', 'usdd', 'tusd', 'usdh'];
+            if (stablecoinSymbols.includes(symbol)) return true;
+            
+            // Check if name contains stablecoin indicators
+            if (name.includes('usd') || name.includes('dollar') || name.includes('stable')) return true;
+            
+            // Check AI analysis
+            if (analysisText.includes('stablecoin') || analysisText.includes('pegged')) return true;
+            
+            // Check price stability (< 1% change over 30 days)
+            const priceChange = Math.abs(liveData.quote.USD.percent_change_30d || 0);
+            if (priceChange < 1) return true;
+            
+            return false;
+        }
+
+        function isMemecoin(liveData, aiAnalysis) {
+            const symbol = liveData.symbol.toLowerCase();
+            const name = liveData.name.toLowerCase();
+            const analysisText = aiAnalysis.toLowerCase();
+            
+            // Check common memecoin symbols
+            const memecoinSymbols = ['doge', 'shib', 'pepe', 'floki', 'bonk'];
+            if (memecoinSymbols.includes(symbol)) return true;
+            
+            // Check name for meme indicators
+            const memeNames = ['dog', 'shiba', 'pepe', 'meme', 'safe', 'moon'];
+            if (memeNames.some(meme => name.includes(meme))) return true;
+            
+            // Check AI analysis
+            if (analysisText.includes('meme') || analysisText.includes('community-driven') && !analysisText.includes('fundamentals')) return true;
+            
+            return false;
+        }
+
+        // Category matching
+        function matchesCategory(tokenData, aiAnalysis, category) {
+            if (category === 'all') return true;
+            
+            const analysisText = aiAnalysis.toLowerCase();
+            const name = tokenData.name.toLowerCase();
+            
+            const categoryKeywords = COMPREHENSIVE_SCORING.categories[category];
+            if (!categoryKeywords) return false;
+            
+            return categoryKeywords.some(keyword => 
+                analysisText.includes(keyword) || name.includes(keyword)
+            );
+        }
+
+        // Market cap filtering
+        function matchesMarketCapRange(liveData, range) {
+            if (range === 'all') return true;
+            
+            const marketCap = liveData.quote.USD.market_cap;
+            
+            switch (range) {
+                case 'mega': return marketCap > 10_000_000_000;
+                case 'large': return marketCap >= 1_000_000_000 && marketCap <= 10_000_000_000;
+                case 'mid': return marketCap >= 100_000_000 && marketCap < 1_000_000_000;
+                case 'small': return marketCap >= 10_000_000 && marketCap < 100_000_000;
+                case 'micro': return marketCap < 10_000_000;
+                default: return true;
+            }
+        }
+
+        // Apply comprehensive filtering
+        async function applyComprehensiveFiltering(tokens) {
+            const filteredTokens = [];
+            
+            for (const token of tokens) {
+                const { liveData, aiAnalysis } = token;
+                
+                // Apply filters
+                if (window.currentFilters.excludeStablecoins && isStablecoin(liveData, aiAnalysis)) {
+                    console.log(`Filtered out stablecoin: ${liveData.symbol}`);
+                    continue;
+                }
+                
+                if (window.currentFilters.excludeMemecoins && isMemecoin(liveData, aiAnalysis)) {
+                    console.log(`Filtered out memecoin: ${liveData.symbol}`);
+                    continue;
+                }
+                
+                if (!matchesCategory(liveData, aiAnalysis, window.currentFilters.category)) {
+                    console.log(`Filtered out by category: ${liveData.symbol}`);
+                    continue;
+                }
+                
+                if (!matchesMarketCapRange(liveData, window.currentFilters.marketCapRange)) {
+                    console.log(`Filtered out by market cap: ${liveData.symbol}`);
+                    continue;
+                }
+                
+                // Calculate comprehensive score
+                const comprehensiveScore = await calculateComprehensiveScore(liveData, liveData, aiAnalysis);
+                
+                if (comprehensiveScore.totalScore < window.currentFilters.minScore) {
+                    console.log(`Filtered out by score: ${liveData.symbol} (${comprehensiveScore.totalScore})`);
+                    continue;
+                }
+                
+                if (window.currentFilters.hideIncompleteData && comprehensiveScore.reliability < 0.7) {
+                    console.log(`Filtered out by data quality: ${liveData.symbol}`);
+                    continue;
+                }
+                
+                // Add comprehensive score to token
+                token.comprehensiveScore = comprehensiveScore;
+                filteredTokens.push(token);
+            }
+            
+            return filteredTokens;
+        }
+
+        console.log('🚀 Comprehensive Altcoin Strength Scoring System Loaded');
     </script>
     
     <style>
