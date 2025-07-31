@@ -2,6 +2,29 @@ const fetch = require('node-fetch');
 
 exports.handler = async (event, context) => {
   try {
+    // Security check: Only allow requests from panicdrop.com
+    const origin = event.headers.origin || event.headers.Origin;
+    const referer = event.headers.referer || event.headers.Referer;
+    
+    const allowedDomain = 'https://panicdrop.com';
+    const isValidOrigin = origin === allowedDomain;
+    const isValidReferer = referer && referer.startsWith(allowedDomain);
+    
+    // Block requests that don't come from the allowed domain
+    if (!isValidOrigin && !isValidReferer) {
+      console.log('🚫 Blocked unauthorized CMC request:', { origin, referer });
+      return {
+        statusCode: 403,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({
+          success: false,
+          error: 'Forbidden: Invalid request origin',
+          data: []
+        })
+      };
+    }
+    
+    console.log('✅ Authorized CMC request from:', origin || referer);
     console.log('🔍 CMC API function called');
     const apiKey = process.env.CMC_API_KEY;
     if (!apiKey) {
