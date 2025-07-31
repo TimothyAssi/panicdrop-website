@@ -931,7 +931,22 @@
     </section>
 
     <!-- Coin Search Section -->
-    <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 20px;" class="tool-container">
+        <!-- Tool Lock Overlay -->
+        <div class="tool-overlay">
+            <div class="tool-lock-content">
+                <div class="tool-lock-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="tool-lock-title">Locked – Available only for course members</div>
+                <div class="tool-lock-subtitle">Sign in to unlock coin search functionality</div>
+                <button class="tool-unlock-button" onclick="PanicDropAuth.showLoginModal()">
+                    Sign in to unlock
+                </button>
+            </div>
+        </div>
+        
+        <div class="tool-content">
         <section class="control-panel">
             <div class="control-header">
                 <div class="control-title">
@@ -964,6 +979,7 @@
                 <!-- Search results will appear here -->
             </div>
         </section>
+        </div> <!-- End tool-content -->
     </div>
 
     <!-- Main Scanner Interface -->
