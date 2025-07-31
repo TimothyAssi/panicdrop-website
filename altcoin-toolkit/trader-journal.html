@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/intellectia-rebrand.css">
     <link rel="stylesheet" href="../css/trade-journal.css">
+    <link rel="stylesheet" href="../css/auth-modal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
@@ -613,6 +614,10 @@
                     <a href="../contact.html" class="nav-link">Contact</a>
                 </li>
             </ul>
+            <div class="auth-info">
+                <div id="user-info" class="user-info"></div>
+                <button id="auth-button" class="auth-button-nav">Sign In</button>
+            </div>
             <div class="hamburger">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -665,7 +670,22 @@
 
     <!-- Tool Section -->
     <section class="tool-section" id="journal-tool">
-        <div class="container">
+        <div class="container tool-container">
+            <!-- Tool Lock Overlay -->
+            <div class="tool-overlay">
+                <div class="tool-lock-content">
+                    <div class="tool-lock-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="tool-lock-title">Locked – Available only for course members</div>
+                    <div class="tool-lock-subtitle">Sign in to unlock this comprehensive trading journal</div>
+                    <button class="tool-unlock-button" onclick="PanicDropAuth.showLoginModal()">
+                        Sign in to unlock
+                    </button>
+                </div>
+            </div>
+            
+            <div class="tool-content">
             <!-- Trade Form -->
             <div class="trade-form-container">
                 <h2><i class="fas fa-plus-circle"></i> Add New Trade</h2>
@@ -875,6 +895,7 @@
                     </div>
                 </div>
             </div>
+            </div> <!-- End tool-content -->
         </div>
     </section>
 
@@ -939,5 +960,7 @@
 
     <script src="../js/script.js"></script>
     <script src="../js/trade-journal.js"></script>
+    <script type="module" src="../js/firebase-config.js"></script>
+    <script type="module" src="../js/login-modal.js"></script>
 </body>
 </html>

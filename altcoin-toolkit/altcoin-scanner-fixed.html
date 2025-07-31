@@ -6,6 +6,7 @@
     <title>Altcoin Strength Scanner - Panic Drop | Trading Tool</title>
     <meta name="description" content="Advanced crypto market intelligence and strength analysis tool by Timothy Assi, eToro Elite Popular Investor.">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/auth-modal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
@@ -904,6 +905,10 @@
                     <a href="../contact.html" class="nav-link">Contact</a>
                 </li>
             </ul>
+            <div class="auth-info">
+                <div id="user-info" class="user-info"></div>
+                <button id="auth-button" class="auth-button-nav">Sign In</button>
+            </div>
             <div class="hamburger">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -962,7 +967,22 @@
     </div>
 
     <!-- Main Scanner Interface -->
-    <main class="scanner-main">
+    <main class="scanner-main tool-container">
+        <!-- Tool Lock Overlay -->
+        <div class="tool-overlay">
+            <div class="tool-lock-content">
+                <div class="tool-lock-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="tool-lock-title">Locked – Available only for course members</div>
+                <div class="tool-lock-subtitle">Sign in to unlock this advanced altcoin strength scanner</div>
+                <button class="tool-unlock-button" onclick="PanicDropAuth.showLoginModal()">
+                    Sign in to unlock
+                </button>
+            </div>
+        </div>
+        
+        <div class="tool-content">
         <!-- Control Panel -->
         <section class="control-panel">
             <div class="control-header">
@@ -1068,6 +1088,7 @@
                 </div>
             </div>
         </section>
+        </div> <!-- End tool-content -->
     </main>
 
     <script>
@@ -2149,5 +2170,7 @@ Use current January 2025 data and focus on investment implications.`;
             }
         });
     </script>
+    <script type="module" src="../js/firebase-config.js"></script>
+    <script type="module" src="../js/login-modal.js"></script>
 </body>
 </html>
