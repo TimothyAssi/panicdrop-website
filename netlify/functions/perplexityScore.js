@@ -38,7 +38,7 @@ exports.handler = async (event, context) => {
       messages: [
         { role: 'user', content: promptContent }
       ],
-      max_tokens: maxTokens || 100,
+      max_tokens: maxTokens || 1000,
       temperature: 0.3
     };
 

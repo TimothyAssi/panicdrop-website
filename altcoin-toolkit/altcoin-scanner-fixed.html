@@ -1242,12 +1242,12 @@ CRITICAL: NEVER use asterisks, bold formatting, or numbered lists. Provide clean
         // Get AI analysis from Perplexity
         async function getAIAnalysis(prompt) {
             try {
-                const response = await fetch('/api/perplexityScore', {
+                const response = await fetch('/.netlify/functions/perplexityScore', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         token: prompt,
-                        maxTokens: 200
+                        maxTokens: 1000
                     })
                 });
 
@@ -1542,12 +1542,12 @@ Provide analysis covering:
 
 Format as clean text with clear headings and bullet points. NEVER use asterisks (*) or markdown formatting.`;
 
-                const response = await fetch('/api/perplexityScore', {
+                const response = await fetch('/.netlify/functions/perplexityScore', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         token: prompt,
-                        maxTokens: 400
+                        maxTokens: 1500
                     })
                 });
 
@@ -1601,12 +1601,12 @@ Provide detailed analysis covering:
 
 Format as clean text with clear headings and specific numbers. NEVER use asterisks (*) or markdown formatting.`;
 
-                const response = await fetch('/api/perplexityScore', {
+                const response = await fetch('/.netlify/functions/perplexityScore', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         token: prompt,
-                        maxTokens: 400
+                        maxTokens: 1500
                     })
                 });
 
