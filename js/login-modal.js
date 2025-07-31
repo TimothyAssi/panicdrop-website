@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 
                 <div class="auth-modal-footer">
-                    <p><strong>Note:</strong> Tools are available only for course members. <a href="course.html">Get course access</a></p>
+                    <p><strong>Note:</strong> Tools are available only for course members. <a href="https://panicdrop.thrivecart.com/apt/" target="_blank">Get course access</a></p>
                 </div>
             </div>
         </div>
@@ -204,8 +204,14 @@ function setupAuthEventListeners() {
     // Google sign in buttons
     const googleSigninBtn = document.getElementById('google-signin');
     if (googleSigninBtn) {
-        googleSigninBtn.addEventListener('click', async () => {
+        googleSigninBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
             console.log('Google sign in clicked');
+            
+            // Provide immediate feedback
+            const originalText = googleSigninBtn.innerHTML;
+            googleSigninBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+            googleSigninBtn.disabled = true;
             
             try {
                 if (window.PanicDropAuth && window.PanicDropAuth.signInWithGoogle) {
@@ -215,6 +221,7 @@ function setupAuthEventListeners() {
                         document.getElementById('signin-error').textContent = result.error;
                     } else {
                         console.log('Google sign in successful!');
+                        // Modal should close automatically from the auth system
                     }
                 } else {
                     console.error('PanicDropAuth not available');
@@ -223,14 +230,26 @@ function setupAuthEventListeners() {
             } catch (error) {
                 console.error('Google sign in error:', error);
                 document.getElementById('signin-error').textContent = 'Google sign in failed. Please try again.';
+            } finally {
+                // Restore button state after a delay
+                setTimeout(() => {
+                    googleSigninBtn.innerHTML = originalText;
+                    googleSigninBtn.disabled = false;
+                }, 1000);
             }
         });
     }
     
     const googleSignupBtn = document.getElementById('google-signup');
     if (googleSignupBtn) {
-        googleSignupBtn.addEventListener('click', async () => {
+        googleSignupBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
             console.log('Google sign up clicked');
+            
+            // Provide immediate feedback
+            const originalText = googleSignupBtn.innerHTML;
+            googleSignupBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing up...';
+            googleSignupBtn.disabled = true;
             
             try {
                 if (window.PanicDropAuth && window.PanicDropAuth.signInWithGoogle) {
@@ -240,6 +259,7 @@ function setupAuthEventListeners() {
                         document.getElementById('signup-error').textContent = result.error;
                     } else {
                         console.log('Google sign up successful!');
+                        // Modal should close automatically from the auth system
                     }
                 } else {
                     console.error('PanicDropAuth not available');
@@ -248,6 +268,12 @@ function setupAuthEventListeners() {
             } catch (error) {
                 console.error('Google sign up error:', error);
                 document.getElementById('signup-error').textContent = 'Google sign up failed. Please try again.';
+            } finally {
+                // Restore button state after a delay
+                setTimeout(() => {
+                    googleSignupBtn.innerHTML = originalText;
+                    googleSignupBtn.disabled = false;
+                }, 1000);
             }
         });
     }

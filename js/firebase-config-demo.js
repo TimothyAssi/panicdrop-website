@@ -135,20 +135,37 @@ async function signInWithGoogle() {
     console.log('Demo: Google sign in attempt');
     
     try {
-        // Simulate Google auth delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        // Show user that something is happening
+        const buttons = document.querySelectorAll('#google-signin, #google-signup');
+        buttons.forEach(btn => {
+            btn.textContent = 'Signing in...';
+            btn.disabled = true;
+        });
         
-        // Demo: Simulate successful Google auth
-        const demoGoogleUser = 'demo@gmail.com';
+        // Simulate Google auth delay (shorter for better UX)
+        await new Promise(resolve => setTimeout(resolve, 800));
+        
+        // Demo: Simulate successful Google auth with a member email
+        const demoGoogleUser = 'member@example.com'; // This is in our demo members list
         currentUser = { email: demoGoogleUser };
         isMember = await checkMembership(demoGoogleUser);
         updateToolsAccess(true, isMember);
         hideLoginModal();
-        console.log('Demo: Google sign in successful');
+        
+        console.log('Demo: Google sign in successful for:', demoGoogleUser);
+        console.log('Demo: User is member:', isMember);
+        
         return { success: true };
     } catch (error) {
         console.error('Demo: Google sign in error:', error);
         return { success: false, error: error.message };
+    } finally {
+        // Restore button states
+        const buttons = document.querySelectorAll('#google-signin, #google-signup');
+        buttons.forEach(btn => {
+            btn.innerHTML = '<i class="fab fa-google"></i> Sign in with Google';
+            btn.disabled = false;
+        });
     }
 }
 
