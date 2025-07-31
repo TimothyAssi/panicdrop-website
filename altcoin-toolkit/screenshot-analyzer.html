@@ -731,10 +731,9 @@
 
     <script src="../js/script.js"></script>
     <script>
-        // Configuration - Note: In production, API key should be secured server-side
+        // Configuration
         const CONFIG = {
-            API_KEY: 'YOUR_OPENAI_API_KEY',
-            API_URL: 'https://api.openai.com/v1/chat/completions',
+            API_URL: '/.netlify/functions/analyzeScreenshot',
             STORAGE_KEY: 'altcoin_analyses_history',
             MAX_HISTORY: 3
         };
@@ -896,24 +895,17 @@
             const response = await fetch(CONFIG.API_URL, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${CONFIG.API_KEY}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    model: "gpt-4o",
-                    messages: [{
-                        role: "user",
-                        content: [
-                            { type: "text", text: prompt },
-                            { type: "image_url", image_url: { url: `data:image/jpeg;base64,${base64Image}` } }
-                        ]
-                    }],
-                    max_tokens: 1000
+                    base64Image: base64Image,
+                    prompt: prompt
                 })
             });
 
             if (!response.ok) {
-                throw new Error('API request failed');
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'API request failed');
             }
 
             const data = await response.json();
