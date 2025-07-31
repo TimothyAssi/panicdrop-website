@@ -1247,7 +1247,7 @@ CRITICAL: NEVER use asterisks, bold formatting, or numbered lists. Provide clean
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         token: prompt,
-                        maxTokens: 1000
+                        maxTokens: 2000
                     })
                 });
 
@@ -1850,16 +1850,25 @@ Format as clean text with clear headings and specific numbers. NEVER use asteris
         async function getPerplexityAnalysis(searchQuery) {
             const prompt = `Provide a comprehensive analysis of ${searchQuery} cryptocurrency with current market data. Include:
 
-1. **Current Price & Market Data**: Live price, market cap, 24h volume, circulating supply
-2. **Price Performance**: 24h, 7d, 30d price changes and performance metrics
-3. **Project Overview**: What the project does, key technology, use cases
-4. **Recent News & Developments**: Latest announcements, partnerships, updates (last 30 days)
-5. **Market Position**: Ranking, competition, sector analysis
-6. **Technical Indicators**: RSI, support/resistance levels, trend analysis
-7. **Investment Considerations**: Strengths, risks, token unlock schedules if any
-8. **Community & Adoption**: Social metrics, developer activity, ecosystem growth
+1. CURRENT PRICE & MARKET DATA: Live price, market cap, 24h volume, circulating supply
+2. PRICE PERFORMANCE: 24h, 7d, 30d price changes and performance metrics
+3. PROJECT OVERVIEW: What the project does, key technology, use cases
+4. RECENT NEWS & DEVELOPMENTS: Latest announcements, partnerships, updates (last 30 days)
+5. MARKET POSITION: Ranking, competition, sector analysis
+6. TECHNICAL INDICATORS: RSI, support/resistance levels, trend analysis
+7. INVESTMENT CONSIDERATIONS: Strengths, risks, token unlock schedules if any
+8. COMMUNITY & ADOPTION: Social metrics, developer activity, ecosystem growth
 
-Format with clear headings and bullet points. Focus on actionable insights for traders and investors. Use current data from January 2025.`;
+CRITICAL FORMATTING RULES:
+- NEVER use asterisks (*) for bold formatting
+- NEVER use markdown formatting (**text**)
+- Use CAPS for headings instead of bold
+- Use bullet points with dashes (-)
+- Provide clean, readable text only
+- Focus on actionable insights for traders and investors
+- Use current data from January 2025
+
+Format as clean text with clear headings. Avoid all markdown symbols.`;
 
             const response = await fetch('/.netlify/functions/perplexityScore', {
                 method: 'POST',
@@ -1868,7 +1877,7 @@ Format with clear headings and bullet points. Focus on actionable insights for t
                 },
                 body: JSON.stringify({
                     token: prompt,
-                    maxTokens: 1000
+                    maxTokens: 2000
                 })
             });
 
@@ -2023,20 +2032,27 @@ Format with clear headings and bullet points. Focus on actionable insights for t
             try {
                 const prompt = `Provide a comprehensive ${chain} blockchain analysis focusing on:
 
-1. **TVL Growth & DeFi Ecosystem**: Current total value locked, top protocols, growth trends over last 6 months
-2. **Network Performance**: Transaction throughput, fees, network utilization, recent upgrades
-3. **Developer Activity**: GitHub commits, active developers, new projects launching
-4. **Institutional Adoption**: Major partnerships, enterprise use cases, institutional investments
-5. **Technology & Roadmap**: Key technical features, upcoming upgrades, scaling solutions
-6. **Competition Analysis**: How it compares to other L1/L2 chains, market position
-7. **Risks & Challenges**: Technical risks, centralization concerns, regulatory issues
+1. TVL GROWTH & DEFI ECOSYSTEM: Current total value locked, top protocols, growth trends over last 6 months
+2. NETWORK PERFORMANCE: Transaction throughput, fees, network utilization, recent upgrades
+3. DEVELOPER ACTIVITY: GitHub commits, active developers, new projects launching
+4. INSTITUTIONAL ADOPTION: Major partnerships, enterprise use cases, institutional investments
+5. TECHNOLOGY & ROADMAP: Key technical features, upcoming upgrades, scaling solutions
+6. COMPETITION ANALYSIS: How it compares to other L1/L2 chains, market position
+7. RISKS & CHALLENGES: Technical risks, centralization concerns, regulatory issues
+
+CRITICAL FORMATTING RULES:
+- NEVER use asterisks (*) or markdown formatting
+- Use CAPS for headings instead of bold
+- Use bullet points with dashes (-)
+- Provide clean, readable text only
+- No markdown symbols anywhere
 
 Focus on current data from January 2025 and actionable insights for ${searchQuery} holders.`;
 
                 const response = await fetch('/.netlify/functions/perplexityScore', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token: prompt, maxTokens: 1000 })
+                    body: JSON.stringify({ token: prompt, maxTokens: 2000 })
                 });
 
                 const data = await response.json();
@@ -2075,20 +2091,27 @@ Focus on current data from January 2025 and actionable insights for ${searchQuer
             try {
                 const prompt = `Provide detailed ${searchQuery} token analysis focusing on:
 
-1. **Token Unlock Schedule**: Upcoming token unlocks, vesting schedules, potential dilution events in next 12 months
-2. **Tokenomics Deep Dive**: Total supply, circulating supply, inflation rate, burn mechanisms, utility
-3. **Dilution Risk Assessment**: How token unlocks might affect price, major holders, insider selling pressure
-4. **Governance & Staking**: Governance token features, staking rewards, voting power distribution
-5. **Liquidity Analysis**: Exchange listings, trading pairs, liquidity depth, whale movements
-6. **Price Catalysts**: Upcoming events that could drive price (upgrades, partnerships, listings)
-7. **Technical Price Analysis**: Support/resistance levels, RSI, moving averages, trend analysis
+1. TOKEN UNLOCK SCHEDULE: Upcoming token unlocks, vesting schedules, potential dilution events in next 12 months
+2. TOKENOMICS DEEP DIVE: Total supply, circulating supply, inflation rate, burn mechanisms, utility
+3. DILUTION RISK ASSESSMENT: How token unlocks might affect price, major holders, insider selling pressure
+4. GOVERNANCE & STAKING: Governance token features, staking rewards, voting power distribution
+5. LIQUIDITY ANALYSIS: Exchange listings, trading pairs, liquidity depth, whale movements
+6. PRICE CATALYSTS: Upcoming events that could drive price (upgrades, partnerships, listings)
+7. TECHNICAL PRICE ANALYSIS: Support/resistance levels, RSI, moving averages, trend analysis
+
+CRITICAL FORMATTING RULES:
+- NEVER use asterisks (*) or markdown formatting
+- Use CAPS for headings instead of bold
+- Use bullet points with dashes (-)
+- Provide clean, readable text only
+- No markdown symbols anywhere
 
 Use current January 2025 data and focus on investment implications.`;
 
                 const response = await fetch('/.netlify/functions/perplexityScore', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token: prompt, maxTokens: 1000 })
+                    body: JSON.stringify({ token: prompt, maxTokens: 2000 })
                 });
 
                 const data = await response.json();
