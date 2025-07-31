@@ -132,8 +132,14 @@ async function logout() {
 
 // Show login modal
 function showLoginModal() {
+    console.log('showLoginModal called from Firebase config');
     const modal = document.getElementById('login-modal');
-    if (modal) modal.style.display = 'flex';
+    if (modal) {
+        modal.style.display = 'flex';
+        console.log('Login modal opened from Firebase config');
+    } else {
+        console.error('Login modal not found in Firebase config!');
+    }
 }
 
 // Hide login modal
@@ -167,6 +173,12 @@ window.PanicDropAuth = {
     getCurrentUser: () => currentUser,
     getIsMember: () => isMember
 };
+
+// Also make showLoginModal directly available for onclick handlers
+window.showLoginModal = showLoginModal;
+window.hideLoginModal = hideLoginModal;
+
+console.log('PanicDropAuth initialized:', window.PanicDropAuth);
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {

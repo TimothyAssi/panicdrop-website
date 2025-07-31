@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="auth-modal-content">
                 <div class="auth-modal-header">
                     <h2>Sign In to Access Tools</h2>
-                    <button class="auth-modal-close" onclick="PanicDropAuth.hideLoginModal()">&times;</button>
+                    <button class="auth-modal-close" onclick="hideLoginModal()">&times;</button>
                 </div>
                 
                 <div class="auth-tabs">
@@ -82,79 +82,190 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Show/hide auth tabs
 function showAuthTab(tabName) {
+    console.log('Switching to tab:', tabName);
+    
     const tabs = document.querySelectorAll('.auth-tab');
     const contents = document.querySelectorAll('.auth-tab-content');
     
     tabs.forEach(tab => tab.classList.remove('active'));
     contents.forEach(content => content.classList.remove('active'));
     
-    document.querySelector(\`[onclick="showAuthTab('\${tabName}')"]\`).classList.add('active');
-    document.getElementById(\`\${tabName}-tab\`).classList.add('active');
+    // Use proper string interpolation
+    const activeTab = document.querySelector(`[onclick="showAuthTab('${tabName}')"]`);
+    const activeContent = document.getElementById(`${tabName}-tab`);
+    
+    if (activeTab) activeTab.classList.add('active');
+    if (activeContent) activeContent.classList.add('active');
     
     // Clear any error messages
     document.querySelectorAll('.auth-error').forEach(error => error.textContent = '');
 }
 
-// Set up event listeners for auth forms
-function setupAuthEventListeners() {
-    // Sign in form
-    document.getElementById('signin-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('signin-email').value;
-        const password = document.getElementById('signin-password').value;
-        const errorElement = document.getElementById('signin-error');
-        
-        errorElement.textContent = '';
-        
-        const result = await PanicDropAuth.signInWithEmail(email, password);
-        if (!result.success) {
-            errorElement.textContent = result.error;
-        }
-    });
-    
-    // Sign up form
-    document.getElementById('signup-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('signup-email').value;
-        const password = document.getElementById('signup-password').value;
-        const confirm = document.getElementById('signup-confirm').value;
-        const errorElement = document.getElementById('signup-error');
-        
-        errorElement.textContent = '';
-        
-        if (password !== confirm) {
-            errorElement.textContent = 'Passwords do not match';
-            return;
-        }
-        
-        const result = await PanicDropAuth.createAccountWithEmail(email, password);
-        if (!result.success) {
-            errorElement.textContent = result.error;
-        }
-    });
-    
-    // Google sign in buttons
-    document.getElementById('google-signin').addEventListener('click', async () => {
-        const result = await PanicDropAuth.signInWithGoogle();
-        if (!result.success) {
-            document.getElementById('signin-error').textContent = result.error;
-        }
-    });
-    
-    document.getElementById('google-signup').addEventListener('click', async () => {
-        const result = await PanicDropAuth.signInWithGoogle();
-        if (!result.success) {
-            document.getElementById('signup-error').textContent = result.error;
-        }
-    });
-    
-    // Close modal when clicking outside
-    document.getElementById('login-modal').addEventListener('click', (e) => {
-        if (e.target.id === 'login-modal') {
-            PanicDropAuth.hideLoginModal();
-        }
-    });
+// Show login modal
+function showLoginModal() {
+    console.log('Opening login modal...');
+    const modal = document.getElementById('login-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        console.log('Login modal opened');
+    } else {
+        console.error('Login modal not found!');
+    }
 }
 
-// Make showAuthTab global
+// Hide login modal
+function hideLoginModal() {
+    console.log('Closing login modal...');
+    const modal = document.getElementById('login-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        console.log('Login modal closed');
+    }
+}
+
+// Set up event listeners for auth forms
+function setupAuthEventListeners() {
+    console.log('Setting up authentication event listeners...');
+    
+    // Sign in form
+    const signinForm = document.getElementById('signin-form');
+    if (signinForm) {
+        signinForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log('Sign in form submitted');
+            
+            const email = document.getElementById('signin-email').value;
+            const password = document.getElementById('signin-password').value;
+            const errorElement = document.getElementById('signin-error');
+            
+            console.log('Attempting to sign in with email:', email);
+            errorElement.textContent = '';
+            
+            try {
+                if (window.PanicDropAuth && window.PanicDropAuth.signInWithEmail) {
+                    const result = await window.PanicDropAuth.signInWithEmail(email, password);
+                    if (!result.success) {
+                        console.error('Sign in failed:', result.error);
+                        errorElement.textContent = result.error;
+                    } else {
+                        console.log('Sign in successful!');
+                    }
+                } else {
+                    console.error('PanicDropAuth not available');
+                    errorElement.textContent = 'Authentication system not ready. Please refresh the page.';
+                }
+            } catch (error) {
+                console.error('Sign in error:', error);
+                errorElement.textContent = 'Sign in failed. Please try again.';
+            }
+        });
+    }
+    
+    // Sign up form
+    const signupForm = document.getElementById('signup-form');
+    if (signupForm) {
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log('Sign up form submitted');
+            
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirm = document.getElementById('signup-confirm').value;
+            const errorElement = document.getElementById('signup-error');
+            
+            console.log('Attempting to create account with email:', email);
+            errorElement.textContent = '';
+            
+            if (password !== confirm) {
+                errorElement.textContent = 'Passwords do not match';
+                return;
+            }
+            
+            try {
+                if (window.PanicDropAuth && window.PanicDropAuth.createAccountWithEmail) {
+                    const result = await window.PanicDropAuth.createAccountWithEmail(email, password);
+                    if (!result.success) {
+                        console.error('Sign up failed:', result.error);
+                        errorElement.textContent = result.error;
+                    } else {
+                        console.log('Account created successfully!');
+                    }
+                } else {
+                    console.error('PanicDropAuth not available');
+                    errorElement.textContent = 'Authentication system not ready. Please refresh the page.';
+                }
+            } catch (error) {
+                console.error('Sign up error:', error);
+                errorElement.textContent = 'Account creation failed. Please try again.';
+            }
+        });
+    }
+    
+    // Google sign in buttons
+    const googleSigninBtn = document.getElementById('google-signin');
+    if (googleSigninBtn) {
+        googleSigninBtn.addEventListener('click', async () => {
+            console.log('Google sign in clicked');
+            
+            try {
+                if (window.PanicDropAuth && window.PanicDropAuth.signInWithGoogle) {
+                    const result = await window.PanicDropAuth.signInWithGoogle();
+                    if (!result.success) {
+                        console.error('Google sign in failed:', result.error);
+                        document.getElementById('signin-error').textContent = result.error;
+                    } else {
+                        console.log('Google sign in successful!');
+                    }
+                } else {
+                    console.error('PanicDropAuth not available');
+                    document.getElementById('signin-error').textContent = 'Authentication system not ready. Please refresh the page.';
+                }
+            } catch (error) {
+                console.error('Google sign in error:', error);
+                document.getElementById('signin-error').textContent = 'Google sign in failed. Please try again.';
+            }
+        });
+    }
+    
+    const googleSignupBtn = document.getElementById('google-signup');
+    if (googleSignupBtn) {
+        googleSignupBtn.addEventListener('click', async () => {
+            console.log('Google sign up clicked');
+            
+            try {
+                if (window.PanicDropAuth && window.PanicDropAuth.signInWithGoogle) {
+                    const result = await window.PanicDropAuth.signInWithGoogle();
+                    if (!result.success) {
+                        console.error('Google sign up failed:', result.error);
+                        document.getElementById('signup-error').textContent = result.error;
+                    } else {
+                        console.log('Google sign up successful!');
+                    }
+                } else {
+                    console.error('PanicDropAuth not available');
+                    document.getElementById('signup-error').textContent = 'Authentication system not ready. Please refresh the page.';
+                }
+            } catch (error) {
+                console.error('Google sign up error:', error);
+                document.getElementById('signup-error').textContent = 'Google sign up failed. Please try again.';
+            }
+        });
+    }
+    
+    // Close modal when clicking outside
+    const modal = document.getElementById('login-modal');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target.id === 'login-modal') {
+                hideLoginModal();
+            }
+        });
+    }
+    
+    console.log('Authentication event listeners set up successfully');
+}
+
+// Make functions globally available
 window.showAuthTab = showAuthTab;
+window.showLoginModal = showLoginModal;
+window.hideLoginModal = hideLoginModal;
