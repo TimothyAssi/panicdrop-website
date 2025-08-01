@@ -9,7 +9,7 @@ console.log('🚨 If you see member@example.com user, there is a bug!');
 
 // Firebase configuration - REAL CREDENTIALS FOR PRODUCTION
 const firebaseConfig = {
-    apiKey: "AIzaSyBXIv6PIgPmisPEykxGlM4geKJyRRrk1-o",
+    apiKey: "AIzaSyA-18uTObXYAasADexIKv_6bkZt5M320tA",
     authDomain: "altcoinprofittoolkit.firebaseapp.com",
     projectId: "altcoinprofittoolkit",
     storageBucket: "altcoinprofittoolkit.firebasestorage.app",
