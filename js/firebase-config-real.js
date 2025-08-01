@@ -9,12 +9,13 @@ console.log('🚨 If you see member@example.com user, there is a bug!');
 
 // Firebase configuration - REAL CREDENTIALS FOR PRODUCTION
 const firebaseConfig = {
-    apiKey: "YOUR_REAL_API_KEY",
+    apiKey: "AIzaSyBXIv6PIgPmisPEykxGlM4geKJyRRrk1-o",
     authDomain: "altcoinprofittoolkit.firebaseapp.com",
     projectId: "altcoinprofittoolkit",
-    storageBucket: "altcoinprofittoolkit.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    storageBucket: "altcoinprofittoolkit.firebasestorage.app",
+    messagingSenderId: "149868892734",
+    appId: "1:149868892734:web:472de9d46c7a5f8362f76f",
+    measurementId: "G-34Q90ZPHNT"
 };
 
 // Initialize Firebase
@@ -23,22 +24,15 @@ let currentUser = null;
 let isMember = false;
 
 try {
-    // Check if config has placeholder values
-    if (firebaseConfig.apiKey === "YOUR_REAL_API_KEY" || 
-        firebaseConfig.messagingSenderId === "YOUR_SENDER_ID" ||
-        firebaseConfig.appId === "YOUR_APP_ID") {
-        throw new Error('Firebase config still contains placeholder values. Please update with your actual Firebase credentials.');
-    }
-    
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
     db = getFirestore(app);
     googleProvider = new GoogleAuthProvider();
-    console.log('✅ Firebase initialized successfully with real credentials');
+    console.log('✅ Firebase initialized successfully with REAL production credentials');
+    console.log('🔥 Project: altcoinprofittoolkit');
 } catch (error) {
     console.error('❌ Firebase initialization failed:', error);
-    console.error('Please check your Firebase configuration in firebase-config-real.js');
-    console.error('Update the placeholder values with your actual Firebase credentials.');
+    console.error('Please check your Firebase project settings and credentials.');
     
     // Prevent any authentication functionality when Firebase fails
     auth = null;
