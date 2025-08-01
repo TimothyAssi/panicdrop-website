@@ -7,16 +7,14 @@ import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10
 console.log('🔥 Loading REAL Firebase Configuration - DEMO SHOULD BE GONE...');
 console.log('🚨 If you see member@example.com user, there is a bug!');
 
-// Firebase configuration - REPLACE WITH YOUR ACTUAL VALUES FROM FIREBASE CONSOLE
-// Get these from: Firebase Console → Project Settings → General → Your apps → Web App
+// Firebase configuration - REAL CREDENTIALS FOR PRODUCTION
 const firebaseConfig = {
-    apiKey: "your-api-key-here",                    // Replace with your actual API key
-    authDomain: "your-project.firebaseapp.com",    // Replace with your auth domain
-    projectId: "your-project-id",                  // Replace with your project ID
-    storageBucket: "your-project.appspot.com",     // Replace with your storage bucket
-    messagingSenderId: "123456789012",             // Replace with your sender ID
-    appId: "1:123456789012:web:abcdef123456",      // Replace with your app ID
-    measurementId: "G-XXXXXXX"                     // Optional: Google Analytics ID
+    apiKey: "YOUR_REAL_API_KEY",
+    authDomain: "altcoinprofittoolkit.firebaseapp.com",
+    projectId: "altcoinprofittoolkit",
+    storageBucket: "altcoinprofittoolkit.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
 };
 
 // Initialize Firebase
@@ -26,20 +24,21 @@ let isMember = false;
 
 try {
     // Check if config has placeholder values
-    if (firebaseConfig.apiKey === "your-api-key-here" || 
-        firebaseConfig.projectId === "your-project-id") {
-        throw new Error('Firebase config contains placeholder values. Please update with your real Firebase credentials.');
+    if (firebaseConfig.apiKey === "YOUR_REAL_API_KEY" || 
+        firebaseConfig.messagingSenderId === "YOUR_SENDER_ID" ||
+        firebaseConfig.appId === "YOUR_APP_ID") {
+        throw new Error('Firebase config still contains placeholder values. Please update with your actual Firebase credentials.');
     }
     
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
     db = getFirestore(app);
     googleProvider = new GoogleAuthProvider();
-    console.log('✅ Firebase initialized successfully');
+    console.log('✅ Firebase initialized successfully with real credentials');
 } catch (error) {
     console.error('❌ Firebase initialization failed:', error);
     console.error('Please check your Firebase configuration in firebase-config-real.js');
-    console.error('Update the placeholder values with your real Firebase credentials.');
+    console.error('Update the placeholder values with your actual Firebase credentials.');
     
     // Prevent any authentication functionality when Firebase fails
     auth = null;
