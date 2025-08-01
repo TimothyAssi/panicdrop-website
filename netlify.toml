@@ -1,6 +1,7 @@
 [build]
   publish = "."
   functions = "netlify/functions"
+  # Force cache refresh
 
 [functions]
   directory = "netlify/functions"
