@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Test</title>
+</head>
+<body>
+    <h1>Authentication Test Page</h1>
+    <p>Check console for authentication state</p>
+    
+    <div>
+        <button onclick="checkAuthState()">Check Auth State</button>
+        <button onclick="trySignIn()">Try Sign In</button>
+        <button onclick="forceLogout()" style="background: #ff4444; color: white;">Force Logout</button>
+    </div>
+    
+    <div id="result"></div>
+    
+    <script type="module" src="js/firebase-config-real.js"></script>
+    <script type="module" src="js/login-modal.js"></script>
+    
+    <script>
+        function checkAuthState() {
+            console.log('=== AUTH STATE CHECK ===');
+            console.log('PanicDropAuth exists:', !!window.PanicDropAuth);
+            
+            if (window.PanicDropAuth) {
+                const user = window.PanicDropAuth.getCurrentUser();
+                const isMember = window.PanicDropAuth.getIsMember();
+                
+                console.log('Current User:', user);
+                console.log('Is Member:', isMember);
+                
+                document.getElementById('result').innerHTML = `
+                    <p>User: ${user ? user.email : 'None'}</p>
+                    <p>Is Member: ${isMember}</p>
+                `;
+                
+                if (user && user.email === 'member@example.com') {
+                    console.error('🚨 DEMO USER DETECTED - THIS SHOULD NOT HAPPEN!');
+                    document.getElementById('result').innerHTML += '<p style="color: red;">🚨 DEMO USER DETECTED!</p>';
+                }
+            } else {
+                console.log('PanicDropAuth not available');
+                document.getElementById('result').innerHTML = '<p>PanicDropAuth not available</p>';
+            }
+        }
+        
+        function trySignIn() {
+            console.log('=== SIGN IN TEST ===');
+            if (window.PanicDropAuth) {
+                window.PanicDropAuth.signInWithGoogle().then(result => {
+                    console.log('Sign in result:', result);
+                });
+            }
+        }
+        
+        function forceLogout() {
+            console.log('=== FORCE LOGOUT ===');
+            if (window.PanicDropAuth) {
+                window.PanicDropAuth.logout().then(result => {
+                    console.log('Logout result:', result);
+                    setTimeout(() => {
+                        checkAuthState();
+                    }, 500);
+                });
+            } else {
+                console.log('PanicDropAuth not available, clearing manually...');
+                // Manual clear
+                const keys = Object.keys(localStorage);
+                keys.forEach(key => {
+                    if (key.includes('firebase') || key.includes('auth') || key.includes('user')) {
+                        localStorage.removeItem(key);
+                        console.log('Cleared:', key);
+                    }
+                });
+                location.reload();
+            }
+        }
+        
+        // Auto-check after 2 seconds
+        setTimeout(checkAuthState, 2000);
+    </script>
+</body>
+</html>

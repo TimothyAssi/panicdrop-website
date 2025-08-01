@@ -1,10 +1,15 @@
 [build]
   publish = "."
   functions = "netlify/functions"
-  # Force cache refresh
+  # Force cache refresh - demo elimination
 
 [functions]
   directory = "netlify/functions"
+
+[[redirects]]
+  from = "/js/firebase-config-demo.js"
+  to = "/js/firebase-config-real.js"
+  status = 301
 
 [[redirects]]
   from = "/api/*"

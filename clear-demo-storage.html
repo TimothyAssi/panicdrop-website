@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Demo Storage</title>
+</head>
+<body>
+    <h1>Clear Demo Authentication Storage</h1>
+    <p>This page will clear any cached authentication data.</p>
+    
+    <button onclick="clearAllStorage()" style="padding: 10px 20px; font-size: 16px; background: #ff4444; color: white; border: none; border-radius: 5px;">
+        🧹 Clear All Storage
+    </button>
+    
+    <div id="result" style="margin-top: 20px; padding: 10px; border: 1px solid #ccc;"></div>
+    
+    <script>
+        function clearAllStorage() {
+            console.log('🧹 Clearing all storage...');
+            const result = document.getElementById('result');
+            let messages = [];
+            
+            // Clear localStorage
+            try {
+                const localKeys = Object.keys(localStorage);
+                messages.push(`LocalStorage keys found: ${localKeys.join(', ')}`);
+                localStorage.clear();
+                messages.push('✅ LocalStorage cleared');
+            } catch (e) {
+                messages.push('❌ Error clearing localStorage: ' + e.message);
+            }
+            
+            // Clear sessionStorage
+            try {
+                const sessionKeys = Object.keys(sessionStorage);
+                messages.push(`SessionStorage keys found: ${sessionKeys.join(', ')}`);
+                sessionStorage.clear();
+                messages.push('✅ SessionStorage cleared');
+            } catch (e) {
+                messages.push('❌ Error clearing sessionStorage: ' + e.message);
+            }
+            
+            // Clear IndexedDB (Firebase might use this)
+            try {
+                if ('indexedDB' in window) {
+                    indexedDB.databases().then(databases => {
+                        databases.forEach(db => {
+                            if (db.name.includes('firebase') || db.name.includes('auth')) {
+                                messages.push(`Found Firebase database: ${db.name}`);
+                                indexedDB.deleteDatabase(db.name);
+                                messages.push(`✅ Deleted database: ${db.name}`);
+                            }
+                        });
+                    });
+                }
+            } catch (e) {
+                messages.push('❌ Error with IndexedDB: ' + e.message);
+            }
+            
+            // Try to clear any Firebase auth persistence
+            try {
+                // Check if there are any Firebase auth keys
+                const firebaseKeys = Object.keys(localStorage).filter(key => 
+                    key.includes('firebase') || key.includes('auth') || key.includes('user')
+                );
+                if (firebaseKeys.length > 0) {
+                    messages.push(`Firebase-related keys: ${firebaseKeys.join(', ')}`);
+                    firebaseKeys.forEach(key => localStorage.removeItem(key));
+                    messages.push('✅ Firebase keys removed');
+                }
+            } catch (e) {
+                messages.push('❌ Error clearing Firebase data: ' + e.message);
+            }
+            
+            result.innerHTML = '<h3>Storage Clearing Results:</h3><ul>' + 
+                messages.map(msg => `<li>${msg}</li>`).join('') + 
+                '</ul><p><strong>Now refresh the page and test authentication!</strong></p>';
+        }
+        
+        // Auto-run on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🔍 Checking current storage...');
+            console.log('LocalStorage keys:', Object.keys(localStorage));
+            console.log('SessionStorage keys:', Object.keys(sessionStorage));
+        });
+    </script>
+</body>
+</html>
