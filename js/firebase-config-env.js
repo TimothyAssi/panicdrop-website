@@ -3,6 +3,6 @@
 // Do not edit manually - run 'npm run generate-firebase-config' instead
 
 export const firebaseEnvConfig = {
-    apiKey: "AIzaSyBMssl0NNN-RGhSUqAErsHM1TpkVFT6cvc",
+    apiKey: "AIzaSyAxNs--Sp9hHL5FMatMnXzLx2ofwhFntuA",
     // Other config values are loaded from firebase-config-real.js
 };
