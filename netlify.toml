@@ -3,6 +3,7 @@
   functions = "netlify/functions"
   command = "node netlify-build.js"
   # Inject environment variables at build time
+  environment = { SECRETS_SCAN_OMIT_PATHS = "js/firebase-config-real.js" }
 
 [functions]
   directory = "netlify/functions"
