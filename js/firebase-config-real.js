@@ -3,13 +3,14 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+// import { firebaseEnvConfig } from './firebase-config-env.js'; // Not used - using hardcoded key
 
 console.log('🔥 Loading REAL Firebase Configuration - DEMO SHOULD BE GONE...');
 console.log('🚨 If you see member@example.com user, there is a bug!');
 
-// Firebase configuration - REAL CREDENTIALS FOR PRODUCTION
+// Firebase configuration - SECURE CREDENTIALS FOR PRODUCTION
 const firebaseConfig = {
-    apiKey: "AIzaSyA-18uTObXYAasADexIKv_6bkZt5M320tA",
+    apiKey: "AIzaSyCVEHZMqM1qiyFxrnA0nOtNSZH_tuCVcMQ", // TEMP: Direct key for deployment
     authDomain: "altcoinprofittoolkit.firebaseapp.com",
     projectId: "altcoinprofittoolkit",
     storageBucket: "altcoinprofittoolkit.firebasestorage.app",
