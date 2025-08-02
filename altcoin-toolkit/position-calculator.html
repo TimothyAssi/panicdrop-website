@@ -7,7 +7,6 @@
     <meta name="description" content="Optimize your altcoin trades with the Position Size Calculator by Timothy Assi.">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/position-calculator.css">
-    <link rel="stylesheet" href="../css/auth-modal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
@@ -274,10 +273,6 @@
                     <a href="../contact.html" class="nav-link">Contact</a>
                 </li>
             </ul>
-            <div class="auth-info">
-                <div id="user-info" class="user-info"></div>
-                <button id="auth-button" class="auth-button-nav">Sign In</button>
-            </div>
             <div class="hamburger">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -297,19 +292,6 @@
     <!-- Tool Section -->
     <section class="tool-section">
         <div class="tool-container">
-            <!-- Tool Lock Overlay -->
-            <div class="tool-overlay">
-                <div class="tool-lock-content">
-                    <div class="tool-lock-icon">
-                        <i class="fas fa-lock"></i>
-                    </div>
-                    <div class="tool-lock-title">Locked – Available only for course members</div>
-                    <div class="tool-lock-subtitle">Sign in to unlock this professional trading tool</div>
-                    <button class="tool-unlock-button" onclick="PanicDropAuth.showLoginModal()">
-                        Sign in to unlock
-                    </button>
-                </div>
-            </div>
             
             <div class="tool-content">
             <div class="calculator-form">
@@ -454,6 +436,5 @@
     <script src="../js/script.js"></script>
     <script src="../js/position-calculator.js"></script>
     <script type="module" src="../js/firebase-config-real.js?v=2"></script>
-    <script type="module" src="../js/login-modal.js"></script>
 </body>
 </html>

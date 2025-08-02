@@ -53,6 +53,9 @@ typings/
 .env
 .env.test
 
+# Firebase sensitive configuration
+js/firebase-config-env.js
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache

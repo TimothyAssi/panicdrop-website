@@ -34,7 +34,10 @@
       "WebFetch(domain:timothyassi-panicdrop-website.netlify.app)",
       "WebFetch(domain:panicdrop-com.netlify.app)",
       "WebFetch(domain:bright-kelpie-f1234.netlify.app)",
-      "WebFetch(domain:docs.perplexity.ai)"
+      "WebFetch(domain:docs.perplexity.ai)",
+      "Bash(git rm:*)",
+      "Bash(npm run generate-firebase-config:*)",
+      "Bash(git check-ignore:*)"
     ],
     "deny": []
   }
