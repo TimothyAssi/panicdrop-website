@@ -7,9 +7,10 @@ import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase
 console.log('🔥 Loading Firebase Configuration for Analytics...');
 
 // Firebase configuration - for analytics only
+// API key loaded from Netlify environment variables
 const firebaseConfig = {
-    apiKey: "AIzaSyCVEHZMqM1qiyFxrnA0nOtNSZH_tuCVcMQ",
-    authDomain: "altcoinprofittoolkit.firebaseapp.com",
+    apiKey: window.FIREBASE_API_KEY || "demo-key-replace-in-production",
+    authDomain: "altcoinprofittoolkit.firebaseapp.com", 
     projectId: "altcoinprofittoolkit",
     storageBucket: "altcoinprofittoolkit.firebasestorage.app",
     messagingSenderId: "149868892734",
