@@ -346,7 +346,11 @@
     <section class="contact-form-section">
         <div class="contact-form">
             <h2>Send a Message</h2>
-            <form action="mailto:timothy@panicdrop.com" method="post" enctype="text/plain">
+            <form name="contact" method="POST" action="/thank-you.html" data-netlify="true" netlify-honeypot="bot-field">
+                <input type="hidden" name="form-name" value="contact" />
+                <div style="display: none;">
+                    <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+                </div>
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" id="name" name="name" required>

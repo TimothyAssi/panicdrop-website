@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You - Panic Drop | Message Received</title>
+    <meta name="description" content="Thank you for contacting Timothy Assi. Your message has been received and we'll get back to you soon.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/intellectia-rebrand.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        .thank-you-hero {
+            padding: 100px 20px;
+            text-align: center;
+            background: var(--primary-bg);
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .thank-you-hero .success-icon {
+            font-size: 4rem;
+            color: var(--accent-success);
+            margin-bottom: 2rem;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        .thank-you-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+        
+        .thank-you-hero p {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .home-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            background: var(--accent-primary);
+            color: var(--primary-bg);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .home-button:hover {
+            background: var(--accent-secondary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .additional-info {
+            padding: 60px 20px;
+            background: var(--secondary-bg);
+            text-align: center;
+        }
+        
+        .additional-info h2 {
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+        
+        .additional-info p {
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .quick-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
+        .quick-link {
+            padding: 12px 24px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .quick-link:hover {
+            background: var(--accent-primary);
+            color: var(--primary-bg);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .thank-you-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .thank-you-hero .success-icon {
+                font-size: 3rem;
+            }
+            
+            .quick-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .quick-link {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html">
+                    <img src="images/logo.png" alt="Panic Drop Logo" onerror="this.style.display='none'">
+                    <span class="logo-text">Panic Drop</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="course.html" class="nav-link">Course</a>
+                </li>
+                <li class="nav-item">
+                    <a href="blog.html" class="nav-link">Blog</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <div class="nav-link dropdown-toggle">
+                        <a href="#" class="main-link">Tools</a>
+                        <span class="toggle-arrow"></span>
+                    </div>
+                    <div class="dropdown-content">
+                        <a href="altcoin-toolkit/altcoin-scanner-fixed.html">Altcoin Strength Scanner</a>
+                        <a href="altcoin-toolkit/screenshot-analyzer.html">Screenshot Analyzer</a>
+                        <a href="altcoin-toolkit/position-calculator.html">Position Size Calculator</a>
+                        <a href="altcoin-toolkit/trader-journal.html">Trader Journal</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="contact.html" class="nav-link">Contact</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Thank You Hero Section -->
+    <section class="thank-you-hero">
+        <div class="container">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1>Thank You!</h1>
+            <p>Thank you for your message! We'll get back to you as soon as possible. Your inquiry is important to us and we appreciate your interest in our altcoin trading education.</p>
+            <a href="index.html" class="home-button">
+                <i class="fas fa-home"></i>
+                Return to Homepage
+            </a>
+        </div>
+    </section>
+
+    <!-- Additional Information -->
+    <section class="additional-info">
+        <div class="container">
+            <h2>What happens next?</h2>
+            <p>Timothy personally reviews all messages and typically responds within 24-48 hours. In the meantime, feel free to explore our resources or check out the Altcoin Profit Toolkit course.</p>
+            
+            <div class="quick-links">
+                <a href="course.html" class="quick-link">
+                    <i class="fas fa-graduation-cap"></i>
+                    View Course
+                </a>
+                <a href="blog.html" class="quick-link">
+                    <i class="fas fa-blog"></i>
+                    Read Blog
+                </a>
+                <a href="altcoin-toolkit/altcoin-scanner-fixed.html" class="quick-link">
+                    <i class="fas fa-tools"></i>
+                    Try Tools
+                </a>
+                <a href="https://panicdrop.substack.com" target="_blank" class="quick-link">
+                    <i class="fas fa-external-link-alt"></i>
+                    Substack
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-main">
+                    <div class="footer-brand">
+                        <div class="footer-logo">
+                            <img src="images/logo.png" alt="Panic Drop Logo" onerror="this.style.display='none'">
+                            <span class="logo-text">Panic Drop</span>
+                        </div>
+                        <p class="footer-description">
+                            Professional altcoin trading education and crypto investment strategies by Timothy Assi, eToro Elite Popular Investor since 2021.
+                        </p>
+                    </div>
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4>Navigation</h4>
+                            <ul>
+                                <li><a href="index.html">Home</a></li>
+                                <li><a href="course.html">Altcoin Trading Course</a></li>
+                                <li><a href="blog.html">Blog</a></li>
+                                <li><a href="contact.html">Contact</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-column">
+                            <h4>Tools</h4>
+                            <ul>
+                                <li><a href="altcoin-toolkit/position-calculator.html">Position Calculator</a></li>
+                                <li><a href="altcoin-toolkit/trader-journal.html">Trade Journal</a></li>
+                                <li><a href="altcoin-toolkit/screenshot-analyzer.html">Screenshot Analyzer</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-column">
+                            <h4>Resources</h4>
+                            <ul>
+                                <li><a href="https://panicdrop.substack.com" target="_blank">Substack Blog</a></li>
+                                <li><a href="about.html">About Timothy</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2024 Timothy Assi - Panic Drop. All rights reserved.</p>
+                    <p>Professional altcoin trading education and crypto investment strategies.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
