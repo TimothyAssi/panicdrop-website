@@ -1907,7 +1907,18 @@ details p {
 @media (max-width: 768px) {
   :root { --nav-h: 60px; }
 
+  /* Remove backdrop-filter on mobile — in Safari/WebKit it creates a containing block
+     for position:fixed children, trapping the nav-menu inside the 60px navbar and
+     giving it 0 height. The background is already opaque so blur is not needed. */
+  .navbar {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Switch from transform-slide to display toggle — avoids all transform/stacking
+     context issues across browsers. Fade-in animation keeps UX smooth. */
   .nav-menu {
+    display: none;
     position: fixed;
     top: var(--nav-h); left: 0; right: 0; bottom: 0;
     background: var(--bg-1);
@@ -1915,13 +1926,18 @@ details p {
     align-items: flex-start;
     padding: 1.5rem;
     gap: 0;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
     overflow-y: auto;
     border-top: 1px solid var(--border);
-    z-index: 1001; /* Must sit above all page content */
+    z-index: 99999;
   }
-  .nav-menu.active { transform: translateX(0); }
+  .nav-menu.active {
+    display: flex !important;
+    animation: mobileMenuIn 0.22s ease;
+  }
+  @keyframes mobileMenuIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
   .nav-item { width: 100%; border-bottom: 1px solid var(--border); }
   .nav-link { padding: 0.9rem 0; width: 100%; font-size: 0.95rem; }
   .dropdown-content {
