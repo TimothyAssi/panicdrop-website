@@ -689,6 +689,7 @@ section.social-proof {
   justify-content: space-between;
   gap: 1.5rem;
   border-radius: 0 !important;
+  min-width: 0; /* Prevent grid blowout from long text */
 }
 .quote-icon i {
   font-size: 1.4rem;
@@ -1705,6 +1706,9 @@ details p {
   .about-image { display: none; }
   .achievements-grid { grid-template-columns: repeat(2, 1fr); }
   .contact-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  /* Stack all testimonials so none are hidden on mid-range screens */
+  .testimonials-grid { grid-template-columns: 1fr !important; }
+  .testimonial { max-width: 680px; margin: 0 auto; width: 100%; }
 }
 
 @media (max-width: 768px) {
