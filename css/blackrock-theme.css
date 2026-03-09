@@ -1919,6 +1919,7 @@ details p {
     transition: transform 0.3s ease;
     overflow-y: auto;
     border-top: 1px solid var(--border);
+    z-index: 1001; /* Must sit above all page content */
   }
   .nav-menu.active { transform: translateX(0); }
   .nav-item { width: 100%; border-bottom: 1px solid var(--border); }
