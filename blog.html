@@ -3,235 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog - Panic Drop | Stock & Crypto Insights</title>
-    <meta name="description" content="Master markets with Panic Drop's insights on stocks, altcoins, and Bitcoin by Timothy Assi.">
-    <meta name="keywords" content="panic drop blog, crypto insights, stock analysis, altcoin trading, Timothy Assi">
+    <title>Blog - Panic Drop | Stock & Crypto Insights by Timothy Assi</title>
+    <meta name="description" content="In-depth stock analysis, altcoin playbooks, Bitcoin on-chain data and market insights by Timothy Assi — eToro Elite Popular Investor since 2021.">
+    <meta name="keywords" content="panic drop blog, crypto insights, stock analysis, altcoin trading, Timothy Assi, bitcoin on-chain, substack">
     <link rel="stylesheet" href="css/blackrock-theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <style>
-        .blog-hero {
-            padding: 100px 20px 60px;
-            text-align: center;
-            background: var(--primary-bg);
-        }
-        
-        .blog-hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--text-primary);
-            font-weight: 800;
-        }
-        
-        .blog-hero p {
-            font-size: 1.3rem;
-            color: var(--text-secondary);
-            max-width: 700px;
-            margin: 0 auto 2rem;
-            line-height: 1.6;
-        }
-        
-        .blog-content {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 50px 20px;
-            background: var(--secondary-bg);
-        }
-        
-        .content-section h2 {
-            font-size: 2.2rem;
-            margin: 40px 0 20px;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .content-section h2:first-child {
-            margin-top: 0;
-        }
-        
-        .content-section h2 i {
-            color: var(--accent-primary);
-            font-size: 1.8rem;
-        }
-        
-        .content-section p {
-            margin-bottom: 1.5rem;
-            color: var(--text-secondary);
-            line-height: 1.7;
-            font-size: 1.1rem;
-        }
-        
-        .check-list {
-            margin: 20px 0;
-        }
-        
-        .check-list li {
-            margin-bottom: 12px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-        }
-        
-        .check-list i {
-            color: var(--accent-primary);
-            margin-top: 4px;
-            flex-shrink: 0;
-        }
-        
-        .quote-highlight {
-            text-align: center;
-            margin: 40px 0;
-            padding: 30px;
-            background: var(--card-bg);
-            border-left: 4px solid var(--accent-primary);
-            border-radius: 8px;
-        }
-        
-        .quote-highlight p {
-            font-size: 1.4rem;
-            font-style: italic;
-            color: var(--accent-primary);
-            margin: 0;
-            font-weight: 600;
-        }
-        
-        .insights-section {
-            padding: 60px 20px;
-            background: var(--primary-bg);
-        }
-        
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: var(--text-primary);
-        }
-        
-        .post-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .post-card {
-            padding: 25px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-        
-        .post-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-medium);
-            border-color: var(--accent-primary);
-        }
-        
-        .post-card h3 {
-            color: var(--text-primary);
-            margin-bottom: 12px;
-            font-size: 1.2rem;
-            line-height: 1.4;
-        }
-        
-        .post-card p {
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-            font-size: 0.95rem;
-        }
-        
-        .post-card a {
-            color: var(--accent-primary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s ease;
-        }
-        
-        .post-card a:hover {
-            color: var(--accent-secondary);
-        }
-        
-        .cta-section {
-            padding: 60px 20px;
-            background: var(--secondary-bg);
-            text-align: center;
-        }
-        
-        .cta-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin: 2rem 0;
-            flex-wrap: wrap;
-        }
-        
-        .cta-buttons .cta-button {
-            padding: 15px 30px;
-            font-size: 1.1rem;
-            min-width: 200px;
-        }
-        
-        .social-proof {
-            display: flex;
-            justify-content: space-around;
-            margin: 40px 0;
-            flex-wrap: wrap;
-            gap: 20px;
-            padding: 0 20px;
-        }
-        
-        .badge {
-            padding: 20px;
-            background: var(--accent-primary);
-            color: var(--primary-bg);
-            border-radius: 12px;
-            font-weight: 600;
-            text-align: center;
-            flex: 1;
-            min-width: 220px;
-        }
-        
-        .badge i {
-            font-size: 1.5rem;
-            margin-bottom: 8px;
-            display: block;
-        }
-        
-        @media (max-width: 768px) {
-            .blog-hero h1 {
-                font-size: 2.8rem;
-            }
-            
-            .content-section h2 {
-                font-size: 1.8rem;
-                flex-direction: column;
-                text-align: center;
-                gap: 10px;
-            }
-            
-            .cta-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .social-proof {
-                flex-direction: column;
-            }
-            
-            .post-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
 </head>
 <body>
+
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
@@ -274,191 +54,287 @@
         </div>
     </nav>
 
-    <!-- Blog Hero -->
+    <!-- ── HERO ──────────────────────────────────── -->
     <section class="blog-hero">
         <div class="container">
-            <h1>Panic Drop Insights: Master the Markets with Confidence</h1>
-            <p>Unlock the secrets to profitable trading with Panic Drop. Designed for beginners and busy investors, I deliver actionable strategies to navigate stocks and crypto. Subscribe now to gain the edge!</p>
-            <button class="cta-button primary large" onclick="window.location.href='https://panicdrop.substack.com';">
+            <span class="section-label">Published weekly on Substack · 4,200+ subscribers</span>
+            <h1>Panic Drop Insights</h1>
+            <p>Stock analysis, altcoin playbooks and Bitcoin on-chain data — built for investors who want an edge. Written by Timothy Assi, eToro Elite Popular Investor.</p>
+            <a href="https://panicdrop.substack.com" target="_blank" class="cta-button primary large">
                 <i class="fas fa-external-link-alt"></i>
-                Subscribe Now
-            </button>
+                Subscribe Free on Substack
+            </a>
         </div>
     </section>
 
-    <!-- Content Section -->
-    <section class="content-section">
-        <div class="blog-content">
-            <h2><i class="fas fa-users"></i> Who Is Panic Drop For?</h2>
-            <p>Panic Drop is for:</p>
-            
-            <ul class="check-list">
-                <li>
-                    <i class="fas fa-check"></i>
-                    <strong>Beginner Stock Investors:</strong> Start from scratch and become a Panic-Proof Investor with in-depth analyses and educational content.
-                </li>
-                <li>
-                    <i class="fas fa-check"></i>
-                    <strong>Crypto Traders:</strong> Leverage my scans for top altcoins to ride trends weekly with detailed trading plans.
-                </li>
-                <li>
-                    <i class="fas fa-check"></i>
-                    <strong>Busy Investors:</strong> Save time with my research, pinpointing opportunities without endless analysis.
-                </li>
-            </ul>
-
-            <h2><i class="fas fa-user"></i> Who am I?</h2>
-            <p>Panic Drop is crafted by Timothy Assi, known as Panic Drop.</p>
-            
-            <p><strong>Elite Popular Investor on eToro:</strong> Over 110k followers and 320 copiers, consistently outperforming the S&P 500.</p>
-            
-            <p><strong>Crypto and Stock Market Analyst:</strong> My market journey began in 2017, blending crypto and stocks.</p>
-            
-            <p>Investing transformed my life, building wealth through research I love sharing. With the AI boom looming, now is the time to act.</p>
-
-            <div class="quote-highlight">
-                <p>"The best time to invest was yesterday, the second-best time is now"</p>
-            </div>
-
-            <h2><i class="fas fa-star"></i> Best Issues!</h2>
-            <p>Hesitant about joining? Explore these standout reports:</p>
-            
-            <p><strong>ASML - A Wonderful Business at a Fair Price:</strong> A deep dive into ASML's business model, financial health, and market position.</p>
-            
-            <p><strong>Top Altcoins - 12/12/2024:</strong> Weekly report with a detailed trading plan for top altcoins.</p>
-            
-            <p><strong>How to Value Tech Stocks:</strong> Decode P/E ratios and use free cash flow to spot tech winners.</p>
-            
-            <p>Join today for instant access to new tips and past insights to power your market moves.</p>
-
-            <h2><i class="fas fa-gift"></i> What You Get as a Premium Subscriber</h2>
-            <p><strong>Consistent Delivery:</strong></p>
-            
-            <ul class="check-list">
-                <li>
-                    <i class="fas fa-chart-line"></i>
-                    <strong>Stock Market Pulse:</strong> Monthly in-depth stock analysis.
-                </li>
-                <li>
-                    <i class="fas fa-vault"></i>
-                    <strong>Top Stocks Vault:</strong> Monthly updates on high-potential stocks.
-                </li>
-                <li>
-                    <i class="fas fa-bullseye"></i>
-                    <strong>Top Altcoin Playbook:</strong> Weekly insights on leading altcoins.
-                </li>
-                <li>
-                    <i class="fab fa-bitcoin"></i>
-                    <strong>Bitcoin On-Chain Data Report:</strong> Monthly blockchain insights for a market edge.
-                </li>
-            </ul>
-            
-            <ul class="check-list">
-                <li>
-                    <i class="fas fa-book"></i>
-                    <strong>Access to the Panic Drop Library:</strong> Unlock a wealth of resources.
-                </li>
-                <li>
-                    <i class="fas fa-comments"></i>
-                    <strong>Feedback-Driven Content:</strong> Your questions shape my content—ask away!
-                </li>
-            </ul>
-            
-            <p>Stay updated via Substack or let reports land in your inbox.</p>
+    <!-- ── FEATURED POST ─────────────────────────── -->
+    <section class="featured-post">
+        <div class="container">
+            <span class="section-label">Latest Analysis</span>
+            <a href="https://panicdrop.substack.com/p/markets-on-fire-what-80-years-of" target="_blank" class="featured-card">
+                <span class="post-tag">Stock Market Pulse — March 2026</span>
+                <span class="post-date"><i class="fas fa-calendar-alt" style="margin-right:0.4rem;"></i>March 7, 2026</span>
+                <h3>Markets on Fire: What 80 Years of History Tells Us to Do Right Now</h3>
+                <p>With markets under pressure and volatility spiking, I looked at 80 years of market history to find what actually works when everything feels uncertain. The data points to a clear playbook — and it's not what most investors expect.</p>
+                <span class="read-link">
+                    <i class="fas fa-external-link-alt"></i>
+                    Read on Substack
+                </span>
+            </a>
         </div>
     </section>
 
-    <!-- Recent Insights -->
+    <!-- ── RECENT INSIGHTS ───────────────────────── -->
     <section class="insights-section">
         <div class="container">
             <h2 class="section-title">Recent Insights</h2>
             <div class="post-grid">
+
                 <div class="post-card">
-                    <h3>Bear Market Plan</h3>
-                    <p>Navigate downturns with a solid strategy and protect your portfolio during market volatility.</p>
-                    <a href="https://panicdrop.substack.com/p/bear-market-plan" target="_blank">
-                        <i class="fas fa-external-link-alt"></i> Read More
+                    <span class="post-tag">Bitcoin Roadmap</span>
+                    <span class="post-date"><i class="fas fa-calendar-alt" style="margin-right:0.4rem;"></i>March 8, 2026</span>
+                    <h3>Bitcoin Rejected At $72K. That's Not A Good Sign</h3>
+                    <p>Breaking down what Bitcoin's $72K rejection means for the near-term trend — and the key levels to watch before making any moves.</p>
+                    <a href="https://panicdrop.substack.com/p/bitcoin-rejected-at-72k-thats-not" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Read on Substack
                     </a>
                 </div>
-                
+
                 <div class="post-card">
-                    <h3>Top Stocks Vault</h3>
-                    <p>Discover top stock picks monthly with detailed analysis and valuation insights.</p>
-                    <a href="https://panicdrop.substack.com/p/top-stocks-vault" target="_blank">
-                        <i class="fas fa-external-link-alt"></i> Read More
+                    <span class="post-tag">Top Altcoin Playbook</span>
+                    <span class="post-date"><i class="fas fa-calendar-alt" style="margin-right:0.4rem;"></i>March 5, 2026</span>
+                    <h3>Bitcoin Is Back at $71K. Now What?</h3>
+                    <p>Bitcoin bounced back. Which altcoins are holding strength in the recovery — and which are ready to move? Full analysis and setups inside.</p>
+                    <a href="https://panicdrop.substack.com/p/bitcoin-is-back-at-71k-now-what" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Read on Substack
                     </a>
                 </div>
-                
+
                 <div class="post-card">
-                    <h3>Don't Chase Bitcoin</h3>
-                    <p>Avoid common pitfalls in crypto trading and learn when to stay patient.</p>
-                    <a href="https://panicdrop.substack.com/p/dont-chase-bitcoin" target="_blank">
-                        <i class="fas fa-external-link-alt"></i> Read More
+                    <span class="post-tag">Panic Drop Library</span>
+                    <span class="post-date"><i class="fas fa-calendar-alt" style="margin-right:0.4rem;"></i>March 4, 2026</span>
+                    <h3>How to Time the Market Like a Pro Using Moving Averages</h3>
+                    <p>A practical guide to using moving averages for smarter entries and exits — without overcomplicating your strategy.</p>
+                    <a href="https://panicdrop.substack.com/p/how-to-time-the-market-like-a-pro" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Read on Substack
                     </a>
                 </div>
-                
+
                 <div class="post-card">
-                    <h3>My Bitcoin Sell Target</h3>
-                    <p>Set clear profit targets and learn strategic exit points for Bitcoin positions.</p>
-                    <a href="https://panicdrop.substack.com/p/my-bitcoin-sell-target" target="_blank">
-                        <i class="fas fa-external-link-alt"></i> Read More
+                    <span class="post-tag">Top Altcoin Playbook</span>
+                    <span class="post-date"><i class="fas fa-calendar-alt" style="margin-right:0.4rem;"></i>March 20, 2025</span>
+                    <h3>Top Altcoin Playbook — 9 Picks</h3>
+                    <p>9 altcoins holding strong in uptrends during market recovery — with entry zones, targets and risk levels for each setup.</p>
+                    <a href="https://panicdrop.substack.com/p/top-altcoins-9-picks" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Read on Substack
                     </a>
                 </div>
-                
+
                 <div class="post-card">
-                    <h3>Weekly Altcoin Update (19/6/2024)</h3>
-                    <p>Latest altcoin trends and opportunities with systematic analysis and trading plans.</p>
-                    <a href="https://panicdrop.substack.com/p/weekly-altcoin-update-1962024" target="_blank">
-                        <i class="fas fa-external-link-alt"></i> Read More
+                    <span class="post-tag">Stock Market Pulse</span>
+                    <span class="post-date"><i class="fas fa-calendar-alt" style="margin-right:0.4rem;"></i>November 9, 2025</span>
+                    <h3>Stellar Earnings, Beaten Down Prices: The November Opportunity</h3>
+                    <p>High-quality stocks at significant discounts following October's pullback — the case for adding exposure before the year-end rally.</p>
+                    <a href="https://panicdrop.substack.com/p/stellar-earnings-beaten-down-prices" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Read on Substack
                     </a>
                 </div>
-                
+
                 <div class="post-card">
-                    <h3>Unpacking PayPal: A Comprehensive Deep Dive</h3>
-                    <p>Analyze PayPal's potential with detailed financial analysis and market positioning.</p>
-                    <a href="https://panicdrop.substack.com/p/unpacking-paypal-a-comprehensive" target="_blank">
-                        <i class="fas fa-external-link-alt"></i> Read More
+                    <span class="post-tag">BTC On-Chain Data</span>
+                    <span class="post-date"><i class="fas fa-calendar-alt" style="margin-right:0.4rem;"></i>October 18, 2025</span>
+                    <h3>Reading the Fear: What Bitcoin's On-Chain Data Actually Shows</h3>
+                    <p>Following a $16K Bitcoin decline and $19B in liquidations — what on-chain metrics reveal about where we really are in the cycle.</p>
+                    <a href="https://panicdrop.substack.com/p/reading-the-fear-what-bitcoins-on" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Read on Substack
                     </a>
                 </div>
+
+            </div>
+
+            <div class="archive-cta">
+                <a href="https://panicdrop.substack.com/archive" target="_blank" class="cta-button secondary">
+                    <i class="fas fa-archive"></i>
+                    View Full Archive
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="cta-section">
+    <!-- ── WHAT'S INSIDE ─────────────────────────── -->
+    <section class="content-types">
         <div class="container">
-            <h2 class="section-title">Ready to Start Learning?</h2>
-            <p>Get access to premium insights and systematic trading education to accelerate your success.</p>
-            <div class="cta-buttons">
-                <button class="cta-button primary" onclick="window.location.href='https://panicdrop.substack.com';">
-                    <i class="fas fa-external-link-alt"></i>
-                    Subscribe on Substack
-                </button>
-                <button class="cta-button secondary" onclick="window.location.href='https://panicdrop.thrivecart.com/apt/';">
-                    <i class="fas fa-rocket"></i>
-                    Get Course Access
-                </button>
+            <h2 class="section-title">What You Get as a Subscriber</h2>
+            <div class="types-grid">
+                <div class="type-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Stock Market Pulse</h3>
+                    <p>In-depth stock analysis and market outlooks. Which sectors to watch, which stocks are at fair value, and what history says to do next.</p>
+                    <span class="type-freq">Monthly</span>
+                </div>
+                <div class="type-card">
+                    <i class="fas fa-bullseye"></i>
+                    <h3>Top Altcoin Playbook</h3>
+                    <p>Weekly altcoin setups with entry zones, price targets and risk levels. Systematic analysis — no guesswork, no hype.</p>
+                    <span class="type-freq">Weekly</span>
+                </div>
+                <div class="type-card">
+                    <i class="fab fa-bitcoin"></i>
+                    <h3>Bitcoin On-Chain Data</h3>
+                    <p>Monthly blockchain analysis using on-chain metrics to read exactly where Bitcoin is in its cycle — before price confirms it.</p>
+                    <span class="type-freq">Monthly</span>
+                </div>
+                <div class="type-card">
+                    <i class="fas fa-book"></i>
+                    <h3>Panic Drop Library</h3>
+                    <p>Deep-dive educational content: valuation methods, technical analysis frameworks, trading psychology and risk management.</p>
+                    <span class="type-freq">Ongoing</span>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Social Proof -->
-    <section class="social-proof">
-        <div class="badge">
-            <i class="fas fa-users"></i>
-            110,000+ followers on eToro
-        </div>
-        <div class="badge">
-            <i class="fas fa-copy"></i>
-            320+ Active Copiers
-        </div>
-        <div class="badge">
-            <i class="fas fa-star"></i>
-            eToro Elite Popular Investor Since 2021
+    <!-- ── WHO IT'S FOR + BEST ISSUES ───────────── -->
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-grid">
+
+                <div class="newsletter-col">
+                    <span class="section-label">About the Newsletter</span>
+                    <h2>Who Is Panic Drop For?</h2>
+                    <p>Whether you're building your first portfolio or looking for systematic altcoin setups — Panic Drop delivers research-backed insights you can actually act on.</p>
+                    <ul class="check-list">
+                        <li>
+                            <i class="fas fa-check"></i>
+                            <span><strong>Beginner investors</strong> — build confidence with in-depth stock analyses and clear explanations</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            <span><strong>Crypto traders</strong> — get weekly altcoin scans with full trading plans and risk levels</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            <span><strong>Busy investors</strong> — save hours of research, act on curated setups delivered to your inbox</span>
+                        </li>
+                    </ul>
+                    <div style="margin-top:2rem;">
+                        <a href="https://panicdrop.substack.com" target="_blank" class="cta-button primary">
+                            <i class="fas fa-external-link-alt"></i>
+                            Start Reading Free
+                        </a>
+                    </div>
+                </div>
+
+                <div class="newsletter-col">
+                    <span class="section-label">Editor's Picks</span>
+                    <h2>Best Issues to Start With</h2>
+                    <p>Not sure where to begin? These are the most-read reports from the archive:</p>
+                    <div class="best-issues">
+                        <a href="https://panicdrop.substack.com/p/bear-market-plan" target="_blank" class="best-issue-link">
+                            <i class="fas fa-arrow-right"></i>
+                            <span>
+                                <strong>Bear Market Plan</strong>
+                                How to protect and grow your portfolio when markets fall
+                            </span>
+                        </a>
+                        <a href="https://panicdrop.substack.com/p/dont-chase-bitcoin" target="_blank" class="best-issue-link">
+                            <i class="fas fa-arrow-right"></i>
+                            <span>
+                                <strong>Don't Chase Bitcoin</strong>
+                                Why patience beats FOMO — and how to time your entries
+                            </span>
+                        </a>
+                        <a href="https://panicdrop.substack.com/p/my-bitcoin-sell-target" target="_blank" class="best-issue-link">
+                            <i class="fas fa-arrow-right"></i>
+                            <span>
+                                <strong>My Bitcoin Sell Target</strong>
+                                Setting clear profit targets and strategic exit points
+                            </span>
+                        </a>
+                        <a href="https://panicdrop.substack.com/p/unpacking-paypal-a-comprehensive" target="_blank" class="best-issue-link">
+                            <i class="fas fa-arrow-right"></i>
+                            <span>
+                                <strong>Unpacking PayPal</strong>
+                                Full financial deep-dive into a beaten-down tech stock
+                            </span>
+                        </a>
+                        <a href="https://panicdrop.substack.com/p/how-to-time-the-market-like-a-pro" target="_blank" class="best-issue-link">
+                            <i class="fas fa-arrow-right"></i>
+                            <span>
+                                <strong>How to Time the Market Like a Pro</strong>
+                                Using moving averages to sharpen your trade entries
+                            </span>
+                        </a>
+                        <a href="https://panicdrop.substack.com/p/top-stocks-vault" target="_blank" class="best-issue-link">
+                            <i class="fas fa-arrow-right"></i>
+                            <span>
+                                <strong>Top Stocks Vault</strong>
+                                Monthly stock picks with detailed valuations and targets
+                            </span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- ── FINAL CTA ──────────────────────────────── -->
+    <section class="final-cta">
+        <div class="container">
+            <div class="cta-content">
+                <span class="section-label">Free to start · Premium for full access</span>
+                <h2 class="cta-title">Get the Edge Every Week</h2>
+                <p class="cta-subtitle">Join 4,200+ investors who receive Timothy's market research, altcoin setups and Bitcoin on-chain analysis — straight to their inbox.</p>
+                <div class="cta-buttons">
+                    <a href="https://panicdrop.substack.com" target="_blank" class="cta-button primary large">
+                        <i class="fas fa-external-link-alt"></i>
+                        Subscribe on Substack
+                    </a>
+                    <a href="course.html" class="cta-button secondary large">
+                        <i class="fas fa-rocket"></i>
+                        Explore the Course
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── SOCIAL PROOF ───────────────────────────── -->
+    <section class="social-proof">
+        <div class="badges-grid">
+            <div class="badge">
+                <i class="fas fa-users"></i>
+                <div class="badge-content">
+                    <span class="badge-number">110,000+</span>
+                    <span class="badge-label">Followers on eToro</span>
+                </div>
+            </div>
+            <div class="badge">
+                <i class="fas fa-newspaper"></i>
+                <div class="badge-content">
+                    <span class="badge-number">4,200+</span>
+                    <span class="badge-label">Newsletter Subscribers</span>
+                </div>
+            </div>
+            <div class="badge">
+                <i class="fas fa-star"></i>
+                <div class="badge-content">
+                    <span class="badge-number">Since 2021</span>
+                    <span class="badge-label">eToro Elite Investor</span>
+                </div>
+            </div>
+            <div class="badge">
+                <i class="fas fa-pen-nib"></i>
+                <div class="badge-content">
+                    <span class="badge-number">Weekly</span>
+                    <span class="badge-label">New Market Insights</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── FOOTER ─────────────────────────────────── -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -479,6 +355,7 @@
                                 <li><a href="index.html">Home</a></li>
                                 <li><a href="course.html">Altcoin Trading Course</a></li>
                                 <li><a href="blog.html">Blog</a></li>
+                                <li><a href="about.html">About Timothy</a></li>
                                 <li><a href="contact.html">Contact</a></li>
                             </ul>
                         </div>
@@ -486,21 +363,22 @@
                             <h4>Tools</h4>
                             <ul>
                                 <li><a href="altcoin-toolkit/position-calculator.html">Position Calculator</a></li>
-                                <li><a href="altcoin-toolkit/trade-journal.html">Trade Journal</a></li>
+                                <li><a href="altcoin-toolkit/trader-journal.html">Trade Journal</a></li>
                                 <li><a href="altcoin-toolkit/screenshot-analyzer.html">Screenshot Analyzer</a></li>
                             </ul>
                         </div>
                         <div class="footer-column">
                             <h4>Resources</h4>
                             <ul>
-                                <li><a href="https://panicdrop.substack.com" target="_blank">Substack Blog</a></li>
-                                <li><a href="about.html">About Timothy</a></li>
+                                <li><a href="https://panicdrop.substack.com" target="_blank">Substack Newsletter</a></li>
+                                <li><a href="https://panicdrop.substack.com/archive" target="_blank">Full Archive</a></li>
+                                <li><a href="https://www.etoro.com/people/panicdrop" target="_blank">eToro Profile</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
                 <div class="footer-bottom">
-                    <p>&copy; 2024 Timothy Assi - Panic Drop. All rights reserved.</p>
+                    <p>&copy; 2026 Timothy Assi — Panic Drop. All rights reserved.</p>
                     <p>Professional altcoin trading education and crypto investment strategies.</p>
                 </div>
             </div>
