@@ -542,7 +542,7 @@ section.social-proof {
 .step-number {
   font-size: 2.75rem;
   font-weight: 800;
-  color: var(--bg-4);
+  color: rgba(118, 255, 3, 0.18);
   line-height: 1;
   font-family: 'Plus Jakarta Sans', sans-serif;
   margin-left: auto;
