@@ -143,7 +143,31 @@
   }
 
   /* ── Animation loop ────────────────────────────── */
+  const DURATION   = 10000;       // stop spawning after 10 s
+  const FADE_START =  8000;       // begin fading at 8 s
+  const startTime  = performance.now();
+
   function frame(now) {
+    const elapsed = now - startTime;
+
+    // After 10 s, let remaining meteors drain off-screen then stop
+    if (elapsed > DURATION) {
+      // Check if all meteors have left the viewport
+      const allGone = meteors.every(m =>
+        !m.active || m.x < -m.tail * 2 || m.y > H + m.tail * 2
+      );
+      if (allGone) {
+        ctx.clearRect(0, 0, W, H);
+        canvas.remove();          // clean up DOM entirely
+        return;                   // stop animation loop
+      }
+    }
+
+    // Global fade-out from 8–10 s
+    const globalAlpha = elapsed < FADE_START ? 1
+      : elapsed < DURATION ? 1 - (elapsed - FADE_START) / (DURATION - FADE_START)
+      : 0;
+
     ctx.clearRect(0, 0, W, H);
 
     for (let i = 0; i < meteors.length; i++) {
@@ -162,15 +186,20 @@
       m.x += m.vx;
       m.y += m.vy;
 
-      // Draw
+      // Draw (with fade-out multiplier)
+      const origOpacity = m.opacity;
+      m.opacity *= globalAlpha;
       drawMeteor(m);
+      m.opacity = origOpacity;
 
-      // Off-screen? → reset
+      // Off-screen? → respawn only if still within duration
       if (m.x < -m.tail * 2 || m.y > H + m.tail * 2) {
-        meteors[i] = createMeteor(false);
-        meteors[i].delay = rand(200, 2500);   // small re-entry pause
-        meteors[i].active = false;
-        meteors[i].born = now;
+        if (elapsed < DURATION) {
+          meteors[i] = createMeteor(false);
+          meteors[i].delay = rand(200, 2500);
+          meteors[i].active = false;
+          meteors[i].born = now;
+        }
       }
     }
 
