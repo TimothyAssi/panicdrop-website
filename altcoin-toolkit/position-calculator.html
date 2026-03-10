@@ -1,243 +1,175 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Position Size Calculator - Panic Drop | Trading Tool</title>
     <meta name="description" content="Optimize your altcoin trades with the Position Size Calculator by Timothy Assi.">
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/position-calculator.css">
+    <link rel="stylesheet" href="../css/blackrock-theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
     <style>
+        /* ── TOOL HERO ──────────────────────────────── */
         .tool-hero {
-            padding: 20px 20px 50px;
+            padding: calc(var(--nav-h) + 3.5rem) 0 3.5rem;
+            background: var(--bg-0);
+            border-bottom: 1px solid var(--border);
             text-align: center;
-            background: var(--primary-bg);
         }
-        
-        .tool-hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-            font-weight: 800;
+        .tool-label {
+            display: inline-block;
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--green);
+            border: 1px solid var(--green-border);
+            background: var(--green-dim);
+            padding: 0.25rem 0.9rem;
+            margin-bottom: 1.5rem;
         }
-        
-        .tool-hero h1 i {
-            color: var(--accent-primary);
-            margin-right: 15px;
-        }
-        
-        .tool-hero p {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto 2rem;
-            line-height: 1.6;
-        }
-        
-        .tool-section {
-            padding: 40px 20px;
-            background: var(--secondary-bg);
-        }
-        
+        .tool-hero h1 { margin-bottom: 1rem; }
+        .tool-hero h1 i { color: var(--green); margin-right: 0.5rem; font-size: 0.8em; }
+        .tool-hero p { max-width: 560px; margin: 0 auto; font-size: 1.05rem; }
+
+        /* ── TOOL SECTION ───────────────────────────── */
+        .tool-section { padding: 4rem 0; background: var(--bg-1); }
         .tool-container {
-            max-width: 1000px;
-            margin: 0 auto;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 40px;
+            gap: 2rem;
             align-items: start;
         }
-        
-        .calculator-form {
-            padding: 30px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            border-bottom: 3px solid var(--accent-primary);
+        .calculator-form,
+        .results-container {
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--green);
+            padding: 2rem;
         }
-        
-        .calculator-form h2 {
-            color: var(--accent-primary);
+        .calculator-form h2,
+        .results-container h2 {
+            font-size: 1.1rem;
+            color: var(--text-1);
             margin-bottom: 1.5rem;
-            font-size: 1.5rem;
+            display: flex; align-items: center; gap: 0.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            letter-spacing: 0;
         }
-        
-        .input-group {
-            margin-bottom: 20px;
-        }
-        
+        .calculator-form h2 i,
+        .results-container h2 i { color: var(--green); font-size: 0.9rem; }
+
+        /* ── FORM ──────────────────────────────────── */
+        .input-group { margin-bottom: 1.25rem; }
         .input-group label {
             display: block;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-            font-weight: 600;
+            font-size: 0.72rem; font-weight: 700;
+            letter-spacing: 0.07em; text-transform: uppercase;
+            color: var(--text-3);
+            margin-bottom: 0.45rem;
         }
-        
         .input-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: var(--secondary-bg);
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
+            width: 100%; padding: 0.75rem 0.9rem;
+            background: var(--bg-3);
+            border: 1px solid var(--border);
+            border-radius: 0 !important;
+            color: var(--text-1);
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
         }
-        
-        .input-group input:focus {
-            border-color: var(--accent-primary);
-            outline: none;
-        }
-        
+        .input-group input:focus { outline: none; border-color: var(--green); }
+        .input-group input::placeholder { color: var(--text-3); }
+        .optional { color: var(--text-3); font-weight: 400; font-size: 0.8em; }
+        .target-hint { font-size: 0.8rem; color: var(--green); margin-top: 0.4rem; display: none; }
+        .target-hint.show { display: block; }
+
+        /* ── BUTTON ────────────────────────────────── */
         .btn {
-            width: 100%;
-            padding: 15px;
-            background: var(--accent-primary);
-            color: var(--primary-bg);
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 0.5rem; padding: 0.85rem 1.75rem;
+            border: none; border-radius: 0 !important;
+            font-size: 0.875rem; font-weight: 700;
+            letter-spacing: 0.02em; cursor: pointer;
+            transition: opacity 0.2s;
+            font-family: 'Inter', sans-serif;
+            width: 100%; margin-top: 0.5rem;
         }
-        
-        .btn:hover {
-            background: var(--accent-secondary);
-            transform: translateY(-2px);
-        }
-        
-        .results-container {
-            padding: 30px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            border-bottom: 3px solid var(--accent-secondary);
-        }
-        
-        .results-container h2 {
-            color: var(--accent-secondary);
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-        }
-        
-        .results-grid {
-            display: grid;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-        
-        .result-card {
-            padding: 15px;
-            background: var(--secondary-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-        }
-        
-        .result-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 5px;
-        }
-        
-        .result-value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--accent-primary);
-        }
-        
+        .btn-primary { background: var(--green); color: #000; }
+        .btn-primary:hover { opacity: 0.88; }
+
+        /* ── WARNING ───────────────────────────────── */
         .warning-message {
-            padding: 15px;
-            background: #fee;
-            border: 1px solid #fcc;
-            border-radius: 8px;
-            color: #c33;
-            margin-bottom: 20px;
+            background: rgba(255,193,7,0.06);
+            border: 1px solid rgba(255,193,7,0.3);
+            padding: 0.875rem 1rem;
+            margin-bottom: 1.25rem;
+            color: #ffc107; font-size: 0.875rem;
+            gap: 0.5rem; align-items: flex-start;
             display: none;
         }
-        
+        .warning-message[style*="block"] { display: flex !important; }
+
+        /* ── RESULTS ───────────────────────────────── */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem; margin-bottom: 1.5rem;
+        }
+        .results-grid .result-card:nth-child(5) {
+            grid-column: span 2; max-width: 260px; margin: 0 auto;
+        }
+        .result-card {
+            background: var(--bg-3);
+            border: 1px solid var(--border);
+            padding: 1.25rem; text-align: center;
+        }
+        .result-label {
+            font-size: 0.72rem; font-weight: 700;
+            letter-spacing: 0.07em; text-transform: uppercase;
+            color: var(--text-3); margin-bottom: 0.4rem;
+        }
+        .result-value { font-size: 1.35rem; font-weight: 700; color: var(--green); }
+
+        /* ── FORMULA ───────────────────────────────── */
         .formula-section {
-            padding: 20px;
-            background: var(--secondary-bg);
-            border-radius: 8px;
-            border-left: 4px solid var(--accent-primary);
+            margin-top: 1.5rem; padding: 1.25rem;
+            background: var(--bg-3);
+            border: 1px solid var(--border);
+            border-left: 2px solid var(--green-border);
         }
-        
         .formula-section h3 {
-            color: var(--text-primary);
-            margin-bottom: 15px;
+            font-size: 0.72rem; font-weight: 700;
+            letter-spacing: 0.07em; text-transform: uppercase;
+            color: var(--text-3); margin-bottom: 0.75rem;
         }
-        
         .formula-line {
-            margin-bottom: 8px;
+            font-size: 0.85rem; color: var(--text-2);
             font-family: monospace;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
+            padding: 0.3rem 0;
+            border-bottom: 1px solid var(--border);
         }
-        
-        .social-proof {
-            display: flex;
-            justify-content: space-around;
-            margin: 40px 0;
-            flex-wrap: wrap;
-            gap: 20px;
-            padding: 0 20px;
+        .formula-line:last-child { border-bottom: none; }
+
+        /* ── CTA ────────────────────────────────────── */
+        .tool-cta {
+            padding: 5rem 0; text-align: center;
+            background: var(--bg-0);
+            border-top: 1px solid var(--border);
         }
-        
-        .badge {
-            padding: 15px 20px;
-            background: var(--accent-primary);
-            color: var(--primary-bg);
-            border-radius: 8px;
-            font-weight: 600;
-            text-align: center;
-            flex: 1;
-            min-width: 200px;
-        }
-        
-        .badge i {
-            margin-right: 8px;
-        }
-        
-        .final-cta {
-            padding: 40px 20px;
-            background: var(--primary-bg);
-            text-align: center;
-        }
-        
-        .final-cta h2 {
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-        }
-        
-        .final-cta p {
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
+        .tool-cta h2 { margin-bottom: 1rem; }
+        .tool-cta p { max-width: 560px; margin: 0 auto 2rem; }
+        .disclaimer { font-size: 0.8rem !important; color: var(--text-3) !important; font-style: italic; margin-top: 0.5rem !important; }
+
         @media (max-width: 768px) {
-            .tool-hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .tool-container {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .social-proof {
-                flex-direction: column;
-            }
+            .tool-container { grid-template-columns: 1fr; }
+            .results-grid { grid-template-columns: 1fr; }
+            .results-grid .result-card:nth-child(5) { grid-column: auto; max-width: unset; }
         }
     </style>
 </head>
 <body>
+
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
@@ -248,15 +180,9 @@
                 </a>
             </div>
             <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="../index.html" class="nav-link">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a href="../course.html" class="nav-link">Course</a>
-                </li>
-                <li class="nav-item">
-                    <a href="../blog.html" class="nav-link">Blog</a>
-                </li>
+                <li class="nav-item"><a href="../index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="../course.html" class="nav-link">Course</a></li>
+                <li class="nav-item"><a href="../blog.html" class="nav-link">Blog</a></li>
                 <li class="nav-item dropdown">
                     <div class="nav-link dropdown-toggle">
                         <a href="#" class="main-link">Tools</a>
@@ -268,9 +194,7 @@
                         <a href="trader-journal.html">Trader Journal</a>
                     </div>
                 </li>
-                <li class="nav-item">
-                    <a href="../contact.html" class="nav-link">Contact</a>
-                </li>
+                <li class="nav-item"><a href="../contact.html" class="nav-link">Contact</a></li>
             </ul>
             <div class="hamburger">
                 <span class="bar"></span>
@@ -280,135 +204,134 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero -->
     <section class="tool-hero">
         <div class="container">
+            <span class="tool-label">Free Trading Tool</span>
             <h1><i class="fas fa-calculator"></i>Position Size Calculator</h1>
-            <p>Optimize your trade sizes with a tool to calculate risk and reward ratios effectively. Manage your altcoin positions like a professional trader.</p>
+            <p>Optimize your trade sizes with precise risk and reward ratio calculations. Manage your altcoin positions like a professional trader.</p>
         </div>
     </section>
 
-    <!-- Tool Section -->
+    <!-- Tool -->
     <section class="tool-section">
-        <div class="tool-container">
-            
-            <div class="tool-content">
-            <div class="calculator-form">
-                <h2><i class="fas fa-cog"></i> Calculator Inputs</h2>
-                <div class="input-group">
-                    <label for="portfolioSize">Portfolio Size ($)</label>
-                    <input type="number" id="portfolioSize" min="0" step="0.01" placeholder="10000">
+        <div class="container">
+            <div class="tool-container">
+
+                <div class="calculator-form">
+                    <h2><i class="fas fa-cog"></i> Calculator Inputs</h2>
+                    <div class="input-group">
+                        <label for="portfolioSize">Portfolio Size ($)</label>
+                        <input type="number" id="portfolioSize" min="0" step="0.01" placeholder="10000">
+                    </div>
+                    <div class="input-group">
+                        <label for="entryPrice">Entry Price ($)</label>
+                        <input type="number" id="entryPrice" min="0" step="0.01" placeholder="50.00">
+                    </div>
+                    <div class="input-group">
+                        <label for="stopLoss">Stop-Loss Price ($)</label>
+                        <input type="number" id="stopLoss" min="0" step="0.01" placeholder="45.00">
+                    </div>
+                    <div class="input-group">
+                        <label for="riskPercentage">Risk Per Trade (%)</label>
+                        <input type="number" id="riskPercentage" min="0.1" max="100" step="0.1" value="1" placeholder="1">
+                    </div>
+                    <div class="input-group">
+                        <label for="takeProfitPrice">Take-Profit Price ($) <span class="optional">(optional)</span></label>
+                        <input type="number" id="takeProfitPrice" min="0" step="0.01" placeholder="65.00">
+                        <div class="target-hint" id="targetHint"></div>
+                    </div>
+                    <button id="calculateBtn" class="btn btn-primary">
+                        <i class="fas fa-play"></i> Calculate Position
+                    </button>
                 </div>
 
-                <div class="input-group">
-                    <label for="entryPrice">Entry Price ($)</label>
-                    <input type="number" id="entryPrice" min="0" step="0.01" placeholder="50.00">
+                <div class="results-container" id="resultsContainer">
+                    <h2><i class="fas fa-chart-line"></i> Results</h2>
+                    <div class="warning-message" id="warningMessage">
+                        <span>⚠️</span>
+                        <span class="warning-text">Stop-loss price must be lower than entry price for long positions</span>
+                    </div>
+                    <div class="results-grid" id="resultsGrid">
+                        <div class="result-card">
+                            <div class="result-label">Risk Amount</div>
+                            <div class="result-value" id="riskAmount">$0.00</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-label">Risk Per Token</div>
+                            <div class="result-value" id="riskPerToken">$0.00</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-label">Position Size</div>
+                            <div class="result-value" id="positionSize">0 tokens</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-label">Investment Amount</div>
+                            <div class="result-value" id="investmentAmount">$0.00</div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-label">Reward-to-Risk Ratio</div>
+                            <div class="result-value" id="rewardRiskRatio">—</div>
+                        </div>
+                    </div>
+                    <div class="formula-section">
+                        <h3>Formula Used</h3>
+                        <div class="formula-line">Risk Amount = Portfolio Size × Risk Percentage</div>
+                        <div class="formula-line">Risk Per Token = Entry Price − Stop-Loss Price</div>
+                        <div class="formula-line">Position Size = Risk Amount ÷ Risk Per Token</div>
+                        <div class="formula-line">Investment = Position Size × Entry Price</div>
+                        <div class="formula-line">R/R Ratio = (Take-Profit − Entry) ÷ (Entry − Stop-Loss)</div>
+                    </div>
                 </div>
 
-                <div class="input-group">
-                    <label for="stopLoss">Stop-Loss Price ($)</label>
-                    <input type="number" id="stopLoss" min="0" step="0.01" placeholder="45.00">
-                </div>
-
-                <div class="input-group">
-                    <label for="riskPercentage">Risk Per Trade (%)</label>
-                    <input type="number" id="riskPercentage" min="0.1" max="100" step="0.1" value="1" placeholder="1">
-                </div>
-
-                <div class="input-group">
-                    <label for="takeProfitPrice">Take-Profit Price ($) <span class="optional">(optional)</span></label>
-                    <input type="number" id="takeProfitPrice" min="0" step="0.01" placeholder="65.00">
-                    <div class="target-hint" id="targetHint"></div>
-                </div>
-
-                <button id="calculateBtn" class="btn btn-primary">
-                    <i class="fas fa-play"></i> Calculate Position
-                </button>
             </div>
-
-            <div class="results-container" id="resultsContainer">
-                <h2><i class="fas fa-chart-line"></i> Results</h2>
-                <div class="warning-message" id="warningMessage">
-                    <span class="warning-icon">⚠️</span>
-                    <span class="warning-text">Stop-loss price must be lower than entry price for long positions</span>
-                </div>
-
-                <div class="results-grid" id="resultsGrid">
-                    <div class="result-card">
-                        <div class="result-label">Risk Amount</div>
-                        <div class="result-value" id="riskAmount">$0.00</div>
-                    </div>
-
-                    <div class="result-card">
-                        <div class="result-label">Risk Per Token</div>
-                        <div class="result-value" id="riskPerToken">$0.00</div>
-                    </div>
-
-                    <div class="result-card">
-                        <div class="result-label">Position Size</div>
-                        <div class="result-value" id="positionSize">0 tokens</div>
-                    </div>
-
-                    <div class="result-card">
-                        <div class="result-label">Investment Amount</div>
-                        <div class="result-value" id="investmentAmount">$0.00</div>
-                    </div>
-
-                    <div class="result-card">
-                        <div class="result-label">Reward-to-Risk Ratio</div>
-                        <div class="result-value" id="rewardRiskRatio">—</div>
-                    </div>
-                </div>
-
-                <div class="formula-section">
-                    <h3>Formula Used:</h3>
-                    <div class="formula">
-                        <div class="formula-line">
-                            <span class="formula-text">Risk Amount = Portfolio Size × Risk Percentage</span>
-                        </div>
-                        <div class="formula-line">
-                            <span class="formula-text">Risk Per Token = Entry Price - Stop-Loss Price</span>
-                        </div>
-                        <div class="formula-line">
-                            <span class="formula-text">Position Size = Risk Amount ÷ Risk Per Token</span>
-                        </div>
-                        <div class="formula-line">
-                            <span class="formula-text">Investment = Position Size × Entry Price</span>
-                        </div>
-                        <div class="formula-line">
-                            <span class="formula-text">R/R Ratio = (Take-Profit - Entry) ÷ (Entry - Stop-Loss)</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </div> <!-- End tool-content -->
         </div>
     </section>
 
     <!-- Social Proof -->
     <section class="social-proof">
-        <div class="badge">
-            <i class="fas fa-users"></i>
-            110,000+ followers on eToro
-        </div>
-        <div class="badge">
-            <i class="fas fa-star"></i>
-            eToro Elite Popular Investor Since 2021
-        </div>
-        <div class="badge">
-            <i class="fas fa-copy"></i>
-            320+ Active Copiers
+        <div class="container">
+            <div class="badges-grid">
+                <div class="badge">
+                    <i class="fas fa-users"></i>
+                    <div class="badge-content">
+                        <span class="badge-number">110,000+</span>
+                        <span class="badge-label">Followers on eToro</span>
+                    </div>
+                </div>
+                <div class="badge">
+                    <i class="fas fa-copy"></i>
+                    <div class="badge-content">
+                        <span class="badge-number">320+</span>
+                        <span class="badge-label">Active Copiers</span>
+                    </div>
+                </div>
+                <div class="badge">
+                    <i class="fas fa-globe"></i>
+                    <div class="badge-content">
+                        <span class="badge-number">50+</span>
+                        <span class="badge-label">Countries</span>
+                    </div>
+                </div>
+                <div class="badge">
+                    <i class="fas fa-star"></i>
+                    <div class="badge-content">
+                        <span class="badge-number">Since 2021</span>
+                        <span class="badge-label">eToro Elite Popular Investor</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- Final CTA -->
-    <section class="final-cta">
+    <!-- CTA -->
+    <section class="tool-cta">
         <div class="container">
             <h2>Master Altcoin Trading with the Complete System</h2>
-            <p>This calculator is just one tool. Get the complete Altcoin Profit Toolkit with 8 modules, exclusive bonuses, and lifetime access for €350.</p>
-            <button class="cta-button primary large" onclick="window.location.href='https://panicdrop.thrivecart.com/apt/';">
+            <p>This calculator is one tool from the complete Altcoin Profit Toolkit — 8 modules, exclusive bonuses, and lifetime access.</p>
+            <button class="cta-button primary" onclick="window.location.href='https://panicdrop.thrivecart.com/apt/';">
                 <i class="fas fa-rocket"></i>
-                Get Course Access
+                Get Course Access — €350
             </button>
         </div>
     </section>
@@ -417,16 +340,46 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-text">
-                    <p>&copy; 2024 Timothy Assi - Panic Drop. All rights reserved.</p>
-                    <p>Professional crypto investment education and insights.</p>
-                    <p class="disclaimer">This tool is for educational purposes only and does not constitute financial advice.</p>
+                <div class="footer-main">
+                    <div class="footer-brand">
+                        <div class="footer-logo">
+                            <img src="../images/logo.png" alt="Panic Drop Logo" onerror="this.style.display='none'">
+                            <span class="logo-text">Panic Drop</span>
+                        </div>
+                        <p class="footer-description">
+                            Professional altcoin trading education and crypto investment strategies by Timothy Assi, eToro Elite Popular Investor since 2021.
+                        </p>
+                    </div>
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4>Navigation</h4>
+                            <ul>
+                                <li><a href="../index.html">Home</a></li>
+                                <li><a href="../course.html">Altcoin Trading Course</a></li>
+                                <li><a href="../blog.html">Blog</a></li>
+                                <li><a href="../contact.html">Contact</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-column">
+                            <h4>Tools</h4>
+                            <ul>
+                                <li><a href="screenshot-analyzer.html">Screenshot Analyzer</a></li>
+                                <li><a href="position-calculator.html">Position Calculator</a></li>
+                                <li><a href="trader-journal.html">Trader Journal</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-column">
+                            <h4>Resources</h4>
+                            <ul>
+                                <li><a href="https://panicdrop.substack.com" target="_blank">Substack Blog</a></li>
+                                <li><a href="../about.html">About Timothy</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="footer-links">
-                    <a href="../index.html">Home</a>
-                    <a href="../course.html">Course</a>
-                    <a href="../blog.html">Blog</a>
-                    <a href="../contact.html">Contact</a>
+                <div class="footer-bottom">
+                    <p>&copy; 2026 Timothy Assi - Panic Drop. All rights reserved.</p>
+                    <p class="disclaimer">This tool is for educational purposes only and does not constitute financial advice.</p>
                 </div>
             </div>
         </div>
