@@ -17,16 +17,16 @@
   /* ── Config ────────────────────────────────────── */
   const COUNT_MIN = 5;
   const COUNT_MAX = 10;
-  const ANGLE_MIN = 215;          // degrees — top-right → bottom-left
-  const ANGLE_MAX = 235;
+  const ANGLE_MIN = 125;          // degrees — top-right → bottom-left (canvas y-down)
+  const ANGLE_MAX = 145;
   const SPEED_MIN = 1.8;
   const SPEED_MAX = 4.5;
   const TAIL_MIN  = 80;
   const TAIL_MAX  = 180;
   const HEAD_MIN  = 1.8;
   const HEAD_MAX  = 3.5;
-  const OPACITY_MIN = 0.25;
-  const OPACITY_MAX = 0.6;
+  const OPACITY_MIN = 0.4;
+  const OPACITY_MAX = 0.8;
   const DELAY_MAX = 3000;         // ms — stagger spawn
   const GLOW_MIN  = 4;
   const GLOW_MAX  = 10;
