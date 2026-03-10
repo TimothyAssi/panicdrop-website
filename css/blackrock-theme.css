@@ -1999,3 +1999,12 @@ details p {
   to   { opacity: 1; transform: translateY(0); }
 }
 .fade-in-up { animation: fadeInUp 0.5s ease forwards; }
+
+/* ── 21. METEOR BACKGROUND CANVAS ──────────── */
+#meteorCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
