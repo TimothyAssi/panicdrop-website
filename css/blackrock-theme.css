@@ -428,18 +428,35 @@ strong { color: var(--text-1); font-weight: 600; }
   color: var(--text-1);
 }
 .metric-value.positive { color: var(--green); }
-.chart-preview {
-  height: 52px;
+.dashboard-price {
   background: var(--bg-3);
-  border: 1px solid var(--border);
-  position: relative;
-  overflow: hidden;
+  border: 1px solid var(--green-border);
+  padding: 0.85rem;
+  text-align: center;
 }
-.chart-line {
-  position: absolute;
-  bottom: 8px; left: 0; right: 0;
-  height: 1.5px;
-  background: linear-gradient(90deg, transparent, var(--green-border), var(--green));
+.price-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 0.35rem;
+}
+.price-original {
+  font-size: 0.95rem;
+  color: var(--text-3);
+  text-decoration: line-through;
+}
+.price-current {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--green);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.price-tag {
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
 }
 
 /* ── 8. SOCIAL PROOF STRIP ────────────────────── */
